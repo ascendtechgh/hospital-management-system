@@ -42,7 +42,7 @@ html {
 
 ::-webkit-scrollbar-thumb {
   border: 2px solid #f2f5fa;
-  border-radius: 10px;
+  border-radius: 50%;
   background: #a9bbd4;
   background-clip: padding-box;
 }
@@ -152,7 +152,7 @@ img {
 .sign-in-link,
 .footer-nav a {
   color: #535961;
-  font-size: calc(12px + 3px);
+  font-size: calc(11px + 3px);
   font-weight: 600;
   transition: color 160ms ease;
 }
@@ -4051,30 +4051,38 @@ button:focus-visible {
   line-height: 1.6;
 }
 
-.department-tool-list {
+.department-action-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.department-action-list a {
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 15px;
+  min-height: 43px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px;
+  border: 1px solid #e7edf5;
+  border-radius: 10px;
+  color: #40536d;
+  background: #fbfcfe;
+  font-size: calc(11px + 3px);
+  font-weight: 650;
+  text-decoration: none;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
 }
 
-.department-tool-list span {
-  padding: 6px 9px;
-  border: 1px solid #e3eaf4;
-  border-radius: 7px;
-  color: #5b7190;
-  background: #f8fbff;
-  font-size: calc(9px + 3px);
-  font-weight: 600;
+.department-action-list a:hover {
+  border-color: #c9d9f0;
+  color: #245da9;
+  background: #f5f9ff;
 }
 
-.department-workspace-note {
-  margin: 15px 0 0;
-  padding-top: 12px;
-  border-top: 1px solid #edf0f4;
-  color: #8a96a7;
-  font-size: calc(10px + 3px);
-  line-height: 1.55;
+.department-action-list a > span:last-child {
+  color: #3775c9;
+  font-size: 18px;
 }
 
 .dashboard-stat-grid.has-patients-stat {
@@ -4110,7 +4118,8 @@ button:focus-visible {
 
 .checked-in-patient-list {
   display: grid;
-  gap: 2px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
   margin: 13px 0 0;
   padding: 0;
   list-style: none;
@@ -4120,13 +4129,11 @@ button:focus-visible {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 10px;
-  padding: 9px 0;
-  border-bottom: 1px solid #edf0f4;
-}
-
-.checked-in-patient-list li:last-child {
-  border-bottom: 0;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid #edf0f4;
+  border-radius: 11px;
+  background: #fcfdff;
 }
 
 .checked-in-patient-avatar {
@@ -4159,12 +4166,29 @@ button:focus-visible {
 .checked-in-patient-list small {
   color: #8793a4;
   font-size: calc(10px + 3px);
+  line-height: 1.35;
+}
+
+.checked-in-patient-summary small.is-insured {
+  color: #27735c;
+}
+
+.checked-in-patient-summary small.is-non-insured {
+  color: #818b9b;
 }
 
 .checked-in-patient-list a {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 8px;
   color: #2862b4;
-  font-size: calc(16px + 3px);
+  background: #eef5ff;
+  font-size: calc(14px + 3px);
   font-weight: 700;
+  text-decoration: none;
 }
 
 .patients-page,
@@ -4544,36 +4568,48 @@ button:focus-visible {
   position: absolute;
   width: 1px;
   height: 1px;
+  clip-path: inset(50%);
   opacity: 0;
+  cursor: pointer;
 }
 
-.patient-insurance-check {
-  display: grid;
-  width: 20px;
-  height: 20px;
+.patient-insurance-switch {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 24px;
   flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid #c9d3e2;
-  border-radius: 6px;
-  background: #fff;
+  border: 1px solid #c8d2e0;
+  border-radius: 999px;
+  background: #dfe5ed;
+  transition: background 160ms ease, border-color 160ms ease;
 }
 
-.patient-insurance-toggle input:checked + .patient-insurance-check {
+.patient-insurance-switch::after {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(28 44 67 / 24%);
+  content: '';
+  transition: transform 160ms ease;
+}
+
+.patient-insurance-toggle input:checked + .patient-insurance-switch {
   border-color: #2577eb;
   background: #2577eb;
 }
 
-.patient-insurance-toggle input:checked + .patient-insurance-check::after {
-  width: 9px;
-  height: 5px;
-  border-bottom: 2px solid #fff;
-  border-left: 2px solid #fff;
-  content: '';
-  transform: translateY(-1px) rotate(-45deg);
+.patient-insurance-toggle input:checked + .patient-insurance-switch::after {
+  transform: translateX(18px);
 }
 
-.patient-insurance-toggle input:focus-visible + .patient-insurance-check {
+.patient-insurance-toggle input:focus-visible + .patient-insurance-switch {
   outline: 3px solid rgb(37 119 235 / 18%);
+  outline-offset: 2px;
 }
 
 .patient-insurance-toggle > span:last-child {
@@ -5345,6 +5381,15 @@ button:focus-visible {
   .dashboard-lower-grid {
     gap: 10px;
     margin-top: 10px;
+  }
+
+  .checked-in-patient-list {
+    grid-template-columns: 1fr;
+  }
+
+  .vitals-trend-grid {
+    grid-template-columns: 1fr;
+    padding-inline: 16px;
   }
 
   .workspace-panel {
@@ -6667,6 +6712,97 @@ button:focus-visible {
 
 .patient-vitals-history-panel .staff-empty-state {
   border: 0;
+}
+
+.vitals-trend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+  padding: 16px 22px 0;
+}
+
+.vitals-trend-card {
+  min-width: 0;
+  margin: 0;
+  padding: 12px 13px 10px;
+  border: 1px solid #e9eef5;
+  border-radius: 11px;
+  background: #fbfcfe;
+}
+
+.vitals-trend-card figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vitals-trend-card figcaption span {
+  overflow: hidden;
+  color: #718096;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vitals-trend-card figcaption strong {
+  flex: 0 0 auto;
+  color: #35475f;
+  font-size: 14px;
+}
+
+.vitals-trend-chart {
+  display: block;
+  width: 100%;
+  height: 70px;
+  margin-top: 5px;
+  overflow: visible;
+}
+
+.vitals-trend-chart line {
+  stroke: #e5ebf3;
+  stroke-width: 1;
+}
+
+.vitals-trend-chart polyline {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.vitals-trend-chart circle {
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.vitals-trend-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #8a96a7;
+  font-size: 10px;
+}
+
+.vitals-trend-footer span:first-child {
+  font-weight: 650;
+}
+
+.vitals-trend-disclaimer {
+  grid-column: 1 / -1;
+  margin: -3px 0 0;
+  color: #8995a6;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.vitals-trend-empty {
+  display: grid;
+  min-height: 76px;
+  align-items: center;
+  margin: 0;
+  color: #8592a4;
+  font-size: 11px;
 }
 
 .vitals-form-dialog {
@@ -8201,16 +8337,6 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   color: #203856;
   letter-spacing: -.025em;
 }
-.department-workspace-description,
-.department-workspace-note { color: #71839c; }
-.department-tool-list span {
-  padding: 7px 11px;
-  border-color: #e0e9f7;
-  border-radius: 10px;
-  color: #526d93;
-  background: #f6f9ff;
-}
-.department-workspace-note { border-top-color: #e9eff8; }
 .workspace-details > div,
 .account-detail-list > div,
 .profile-detail-grid > div {

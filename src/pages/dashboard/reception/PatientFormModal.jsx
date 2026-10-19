@@ -198,10 +198,11 @@ function PatientFormModal({ open, patient, insurers, onClose, onSaved }) {
             <label className="patient-insurance-toggle">
               <input
                 type="checkbox"
+                role="switch"
                 checked={form.insurance_enabled}
                 onChange={(event) => update('insurance_enabled', event.target.checked)}
               />
-              <span className="patient-insurance-check" aria-hidden="true" />
+              <span className="patient-insurance-switch" aria-hidden="true" />
               <span>
                 <strong>Patient has insurance</strong>
                 <small>Coverage is checked when the patient is checked in.</small>

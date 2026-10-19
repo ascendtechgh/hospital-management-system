@@ -385,7 +385,10 @@ function PatientDetailPage() {
                 {vitalsLoading ? (
                   <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading history…</div>
                 ) : filteredVitals.length ? (
-                  <VitalsHistory records={filteredVitals} />
+                  <>
+                    <VitalsTrendChart records={filteredVitals} />
+                    <VitalsHistory records={filteredVitals} />
+                  </>
                 ) : (
                   <div className="staff-empty-state nurse-empty-state"><h3>No vitals for this period</h3><p>Select another date range or record a new observation.</p></div>
                 )}
@@ -610,6 +613,88 @@ function VitalsSummary({ vital }) {
   );
 }
 
+function VitalsTrendChart({ records }) {
+  const measurements = [
+    { key: 'pulse_rate', label: 'Pulse', unit: 'bpm', color: '#3478d4' },
+    { key: 'temperature_c', label: 'Temperature', unit: '°C', color: '#d0783a' },
+    { key: 'oxygen_saturation', label: 'Oxygen saturation', unit: '%', color: '#268b77' },
+  ];
+  const chartRecords = records
+    .slice()
+    .sort((left, right) => new Date(left.recorded_at) - new Date(right.recorded_at))
+    .slice(-8);
+
+  return (
+    <div className="vitals-trend-grid" aria-label="Recent vitals trends">
+      {measurements.map((measurement) => {
+        const points = chartRecords
+          .flatMap((record) => {
+            const rawValue = record[measurement.key];
+            const value = Number(rawValue);
+            return rawValue === null || rawValue === undefined || rawValue === '' ||
+              !Number.isFinite(value)
+              ? []
+              : [{ value, recordedAt: record.recorded_at }];
+          });
+        const min = Math.min(...points.map((point) => point.value));
+        const max = Math.max(...points.map((point) => point.value));
+        const span = max - min || 1;
+        const coordinates = points.map((point, index) => ({
+          x: points.length < 2 ? 120 : 8 + (index / (points.length - 1)) * 224,
+          y: 61 - ((point.value - min) / span) * 48,
+        }));
+        const line = coordinates.map((point) => `${point.x},${point.y}`).join(' ');
+        const latest = points[points.length - 1];
+        const chartDescription = points
+          .map((point) => `${formatDateTime(point.recordedAt)}: ${point.value} ${measurement.unit}`)
+          .join('; ');
+
+        return (
+          <figure className="vitals-trend-card" key={measurement.key}>
+            <figcaption>
+              <span>{measurement.label}</span>
+              <strong>{latest ? `${latest.value} ${measurement.unit}` : 'No readings'}</strong>
+            </figcaption>
+            {points.length > 1 ? (
+              <svg
+                className="vitals-trend-chart"
+                viewBox="0 0 240 72"
+                role="img"
+                aria-label={`${measurement.label} readings over time. ${chartDescription}`}
+              >
+                <line x1="8" y1="65" x2="232" y2="65" />
+                <polyline points={line} style={{ stroke: measurement.color }} />
+                {coordinates.map((point, index) => (
+                  <circle
+                    key={`${points[index].recordedAt}-${index}`}
+                    cx={point.x}
+                    cy={point.y}
+                    r="3"
+                    style={{ fill: measurement.color }}
+                  />
+                ))}
+              </svg>
+            ) : (
+              <p className="vitals-trend-empty">
+                {points.length ? 'Trend appears after another reading.' : 'No readings recorded.'}
+              </p>
+            )}
+            {points.length > 1 && (
+              <div className="vitals-trend-footer">
+                <span>{min}–{max} {measurement.unit} observed</span>
+                <span>{formatShortDate(points[0].recordedAt)} – {formatShortDate(latest.recordedAt)}</span>
+              </div>
+            )}
+          </figure>
+        );
+      })}
+      <p className="vitals-trend-disclaimer">
+        Charts show relative changes across the displayed readings; they are not diagnostic reference ranges.
+      </p>
+    </div>
+  );
+}
+
 function DateFilter({ filter, setFilter, selectedDate, setSelectedDate }) {
   return (
     <label className="vitals-date-filter">
@@ -687,6 +772,10 @@ function formatDateOnly(value) {
 
 function formatDateTime(value) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+}
+
+function formatShortDate(value) {
+  return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date(value));
 }
 
 function localDateString(date) {

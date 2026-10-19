@@ -9,33 +9,50 @@ import { patientRequest } from '../../lib/patientApi.js';
 const departmentWorkspaces = {
   hospitaladmin: {
     title: 'Hospital operations',
-    description: 'Manage the people and activity across your hospital.',
-    tools: ['Staff accounts', 'Reports', 'Claims oversight'],
+    description: 'Manage staff accounts and review the active patient directory.',
+    actions: [
+      { label: 'Manage staff', to: '/dashboard/hospitaladmin/staff' },
+      { label: 'Patient directory', to: '/dashboard/hospitaladmin/patients' },
+    ],
   },
   consulting: {
     title: 'Clinical care',
-    description: 'A focused workspace for consultation and clinical decisions.',
-    tools: ['Consultation queue', 'Diagnoses', 'Prescriptions', 'Lab requests'],
+    description: 'Continue a visit or review a checked-in patient’s clinical record.',
+    actions: [
+      { label: 'Consultation queue', to: '/dashboard/consulting/consultations' },
+      { label: 'Patient records', to: '/dashboard/consulting/patients' },
+    ],
   },
   nurse: {
     title: 'Nursing',
-    description: 'A focused workspace for patient observations and care tasks.',
-    tools: ['Patient list', 'Vitals', 'Care tasks'],
+    description: 'Record observations for patients currently in the hospital.',
+    actions: [
+      { label: 'Check vitals', to: '/dashboard/nurse/vitals' },
+      { label: 'Patient records', to: '/dashboard/nurse/patients' },
+    ],
   },
   labs: {
     title: 'Laboratory',
-    description: 'A focused workspace for diagnostic requests and results.',
-    tools: ['Lab queue', 'Orders', 'Results', 'Inventory'],
+    description: 'Process requested tests and record results against patient records.',
+    actions: [
+      { label: 'Laboratory queue', to: '/dashboard/labs/lab-orders' },
+      { label: 'Patient records', to: '/dashboard/labs/patients' },
+    ],
   },
   pharmacy: {
     title: 'Pharmacy',
-    description: 'A focused workspace for prescriptions and dispensing.',
-    tools: ['Prescriptions', 'Dispensing', 'Inventory'],
+    description: 'Review prescriptions and record dispensing for checked-in patients.',
+    actions: [
+      { label: 'Prescription queue', to: '/dashboard/pharmacy/dispensing' },
+      { label: 'Patient records', to: '/dashboard/pharmacy/patients' },
+    ],
   },
   reception: {
-    title: 'Reception & billing',
-    description: 'A focused workspace for patient arrivals and billing.',
-    tools: ['Registration', 'Appointments', 'Invoices', 'Payments'],
+    title: 'Reception',
+    description: 'Register patients, review records, and check arrivals into care.',
+    actions: [
+      { label: 'Patient directory', to: '/dashboard/reception/patients' },
+    ],
   },
 };
 
@@ -59,6 +76,9 @@ function DashboardHome({ role: dashboardRole }) {
   const [staffError, setStaffError] = useState('');
   const [checkedInPatients, setCheckedInPatients] = useState([]);
   const [patientError, setPatientError] = useState('');
+  const activePatients = checkedInPatients
+    .filter((patient) => patient.checked_in_at)
+    .sort((left, right) => new Date(right.checked_in_at) - new Date(left.checked_in_at));
   const workspaceName = hospital?.name || (profile?.role === 'superadmin' ? 'AscendHMS' : 'Your hospital');
   const lastLogin = user?.last_sign_in_at
     ? new Intl.DateTimeFormat(undefined, {
@@ -168,7 +188,7 @@ function DashboardHome({ role: dashboardRole }) {
           >
             <span className="stat-icon stat-icon-patients">◎</span>
             <span className="stat-label">CHECKED-IN PATIENTS</span>
-            <strong className="stat-value">{patientError ? '—' : checkedInPatients.length}</strong>
+            <strong className="stat-value">{patientError ? '—' : activePatients.length}</strong>
             <small>{patientError || 'View active patients'} <span aria-hidden="true">→</span></small>
           </Link>
         )}
@@ -232,20 +252,17 @@ function DashboardHome({ role: dashboardRole }) {
 
         {department && (
           <article className="workspace-panel department-workspace-panel">
-            <span className="workspace-overline">DEPARTMENT WORKSPACE</span>
+            <span className="workspace-overline">YOUR WORKFLOW</span>
             <h2>{department.title}</h2>
-            <p className="department-workspace-description">
-              {department.description}
-            </p>
-            <div className="department-tool-list">
-              {department.tools.map((tool) => (
-                <span key={tool}>{tool}</span>
+            <p className="department-workspace-description">{department.description}</p>
+            <nav className="department-action-list" aria-label={`${department.title} shortcuts`}>
+              {department.actions.map((action) => (
+                <Link key={action.label} to={action.to}>
+                  <span>{action.label}</span>
+                  <span aria-hidden="true">→</span>
+                </Link>
               ))}
-            </div>
-            <p className="department-workspace-note">
-              Your hospital workspace is connected. Department workflows will
-              be available here as they are implemented.
-            </p>
+            </nav>
           </article>
         )}
 
@@ -254,18 +271,26 @@ function DashboardHome({ role: dashboardRole }) {
             <div className="workspace-panel-heading">
               <div>
                 <span className="workspace-overline">ACTIVE HOSPITAL FLOW</span>
-                <h2>Checked-in patients</h2>
+                <h2>Checked-in patient flow</h2>
               </div>
               <Link className="dashboard-text-link" to={`${basePath}/patients`}>View all →</Link>
             </div>
             {patientError ? (
               <p className="workspace-empty">Patient list unavailable: {patientError}</p>
-            ) : checkedInPatients.length ? (
+            ) : activePatients.length ? (
               <ul className="checked-in-patient-list">
-                {checkedInPatients.slice(0, 4).map((patient) => (
+                {activePatients.slice(0, 4).map((patient) => (
                   <li key={patient.id}>
                     <span className="checked-in-patient-avatar">{patient.full_name.trim().charAt(0).toUpperCase()}</span>
-                    <span><strong>{patient.full_name}</strong><small>{patient.sex === 'male' ? 'Male' : 'Female'} · Checked in</small></span>
+                    <span className="checked-in-patient-summary">
+                      <strong>{patient.full_name}</strong>
+                      <small>{patient.sex === 'male' ? 'Male' : 'Female'} · Checked in {formatDateTime(patient.checked_in_at)}</small>
+                      <small className={patient.checked_in_insured ? 'is-insured' : 'is-non-insured'}>
+                        {patient.checked_in_insured
+                          ? `Insured · ${patient.checked_in_insurance_provider || 'Provider recorded'}`
+                          : 'Non-insured visit'}
+                      </small>
+                    </span>
                     <Link to={`${basePath}/patients/${patient.id}`} aria-label={`View ${patient.full_name}`}>→</Link>
                   </li>
                 ))}
@@ -307,6 +332,18 @@ function DashboardHome({ role: dashboardRole }) {
       </section>
     </div>
   );
+}
+
+function formatDateTime(value) {
+  if (!value) return 'time unavailable';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'time unavailable';
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
 }
 
 export default DashboardHome;
