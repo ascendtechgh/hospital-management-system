@@ -146,6 +146,12 @@ function DashboardHome({ role: dashboardRole }) {
     void loadSummary();
   }, [loadSummary]);
 
+  // Fallback refresh keeps counts current while protected-table realtime policies are configured.
+  useEffect(() => {
+    const refreshId = window.setInterval(() => { void loadSummary(); }, 60000);
+    return () => window.clearInterval(refreshId);
+  }, [loadSummary]);
+
   const refreshFromRealtime = useCallback(() => { void loadSummary(); }, [loadSummary]);
   const isHospitalUser = role !== 'superadmin';
   const isAdmin = role === 'hospitaladmin';
@@ -238,6 +244,9 @@ function DashboardHome({ role: dashboardRole }) {
         <div className="dashboard-overview-meta">
           <span className="dashboard-overview-hospital">{workspaceName}</span>
           <span>{today}</span>
+          <button className="dashboard-refresh-button" type="button" onClick={() => { setLoading(true); void loadSummary(); }} disabled={loading}>
+            {loading ? 'Updating…' : 'Refresh summary'}
+          </button>
         </div>
       </section>
 
