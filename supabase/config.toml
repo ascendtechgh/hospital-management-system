@@ -1,0 +1,9 @@
+project_id = "hospital-management-system"
+
+[functions.staff-admin]
+verify_jwt = true
+entrypoint = "./functions/staff-admin/index.js"
+
+[functions.patient-admin]
+verify_jwt = true
+entrypoint = "./functions/patient-admin/index.js"
