@@ -24,6 +24,10 @@ CREATE INDEX IF NOT EXISTS patient_visits_patient_checked_in_idx
 CREATE INDEX IF NOT EXISTS patient_visits_hospital_status_idx
   ON public.patient_visits (hospital_id, status, checked_in_at DESC);
 
+-- Keep visit/insurance history inaccessible to browser roles until tenant policies are configured.
+REVOKE ALL ON TABLE public.patient_visits FROM anon, authenticated;
+GRANT ALL ON TABLE public.patient_visits TO service_role;
+
 -- Preserve the latest known check-in for existing patients. Older visits cannot be reconstructed.
 INSERT INTO public.patient_visits
   (hospital_id, patient_id, checked_in_by, checked_in_at, insured_at_checkin, insurance_provider_at_checkin)
