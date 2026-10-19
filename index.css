@@ -8472,3 +8472,36 @@ table tbody tr:hover { background: #f8faff; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Keep the established compact icon rail on small screens; do not let it become a full-height page column. */
+@media (max-width: 720px) {
+  .dashboard-app-shell { grid-template-columns: 72px minmax(0, 1fr); }
+  .dashboard-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    min-height: 360px;
+    border-right: 1px solid #e4ebf5;
+  }
+  .sidebar-brand-row {
+    height: 70px;
+    justify-content: center;
+    padding-inline: 5px;
+  }
+  .sidebar-logo img { width: 43px; height: 43px; }
+  .sidebar-section-label,
+  .sidebar-nav-link > span:not(.sidebar-nav-symbol),
+  .sidebar-bottom > span:last-child { display: none; }
+  .sidebar-navigation { padding: 19px 10px; }
+  .sidebar-nav-link { justify-content: center; padding-inline: 0; }
+  .sidebar-nav-link.is-active::before { left: -11px; }
+  .sidebar-bottom { justify-content: center; padding-inline: 0; }
+  .dashboard-topbar { height: 70px; gap: 10px; padding-inline: 13px; }
+  .topbar-actions { gap: 7px; }
+  .global-search-wrap { width: auto; min-width: 70px; flex: 1; }
+  .global-search { height: 39px; gap: 7px; padding-inline: 9px; }
+  .global-search kbd { display: none; }
+  .avatar-menu-button { min-height: 40px; gap: 0; padding: 3px; }
+  .avatar-account-name, .avatar-menu-button > svg { display: none; }
+}
