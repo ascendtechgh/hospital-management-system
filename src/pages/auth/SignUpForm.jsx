@@ -11,13 +11,13 @@ const initialHospital = {
   address: '',
 };
 
-function FormNotice({ children }) {
+function FormNotice({ children, type = 'error' }) {
   if (!children) {
     return null;
   }
 
   return (
-    <p className={`auth-notice auth-notice-${type}`} role="alert">
+    <p className={`auth-notice auth-notice-${type}`} role={type === 'error' ? 'alert' : 'status'}>
       {children}
     </p>
   );
@@ -247,7 +247,7 @@ export default function SignUpForm({ setupOnly = false }) {
   if (!setupOnly && !loading && session && !profile && step === 1) {
     return (
       <AuthLayout mode="signup">
-        <FormNotice>
+        <FormNotice type="info">
           Your account is signed in, but its profile hasn’t loaded. Verify that
           the Supabase migrations are applied, then refresh this page.
         </FormNotice>
