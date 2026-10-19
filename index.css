@@ -7309,3 +7309,44 @@ button:focus-visible {
   outline: 3px solid #2563eb;
   outline-offset: 3px;
 }
+
+
+.skip-to-content {
+  position: absolute;
+  z-index: 10000;
+  top: 8px;
+  left: 8px;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #fff;
+  background: #174ea6;
+  font-weight: 700;
+}
+
+.skip-to-content:focus {
+  transform: translateY(0);
+}
+
+.not-found-page {
+  display: grid;
+  min-height: 100vh;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  padding: clamp(24px, 7vw, 88px);
+  color: #1d2939;
+  background: #f7f9fc;
+}
+
+.not-found-page h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.04em;
+}
+
+.not-found-page > p:not(.workspace-overline) {
+  max-width: 34rem;
+  color: #667085;
+  line-height: 1.65;
+}
