@@ -4224,7 +4224,7 @@ button:focus-visible {
   font-size: calc(17px + 3px);
 }
 
-.patient-stat-icon-green {
+.patient-stat-icon-blue {
   color: #2d548a;
   background: #eaeff7;
 }
@@ -8421,7 +8421,7 @@ table tbody tr:hover { background: #f8faff; }
   color: #315fa8;
   background: #edf4ff;
 }
-.patient-stat-icon-green {
+.patient-stat-icon-blue {
   color: #2458b5;
   background: #edf4ff;
 }
