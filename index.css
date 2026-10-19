@@ -7957,3 +7957,19 @@ button:focus-visible {
   .landing .team-card { padding: 19px; }
   .landing .closing-card { border-radius: 20px; }
 }
+
+/* Final accent cleanup: all landing-page accent states use blue, never green. */
+.landing .workflow-note span { color: var(--landing-blue); }
+.landing .workflow-note {
+  border-color: #e1eaf6;
+  border-radius: 16px;
+  color: #617590;
+}
+.landing .workflow-step-label { color: #7e93b2; }
+.landing .workflow-step h3 { color: var(--landing-ink); }
+.landing .security-intro > p:not(.section-kicker) { color: var(--landing-muted); }
+.landing .security-seal strong { color: #3b5272; }
+.landing .security-seal small { color: #8192aa; }
+.landing .safeguard h3 { color: var(--landing-ink); }
+.landing .safeguard p { color: var(--landing-muted); }
+.landing .security-footnote { color: #8192aa; }
