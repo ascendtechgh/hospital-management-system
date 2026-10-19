@@ -5260,7 +5260,7 @@ button:focus-visible {
   }
 
   .sidebar-section-label,
-  .sidebar-nav-link > span,
+  .sidebar-nav-link > span:not(.sidebar-nav-symbol),
   .sidebar-bottom > span:last-child {
     display: none;
   }
@@ -7270,4 +7270,42 @@ button:focus-visible {
   .clinical-header-counts {
     flex-wrap: wrap;
   }
+}
+
+
+/* Responsive patient record refinements */
+.patient-detail-tabs {
+  max-width: 100%;
+}
+
+@media (max-width: 720px) {
+  .patient-detail-tabs {
+    width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    justify-content: flex-start;
+    scrollbar-width: thin;
+  }
+
+  .patient-detail-tabs button {
+    flex: 0 0 auto;
+    padding-inline: 12px;
+    white-space: nowrap;
+  }
+
+  .patient-current-vitals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-inline: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .patient-current-vitals-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
 }
