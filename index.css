@@ -9891,3 +9891,8 @@ table tbody tr:hover { background: #f8faff; }
   .dashboard-summary-error { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 380px) { .dashboard-operational-grid { grid-template-columns: 1fr; } .dashboard-operational-card { min-height: 115px; } }
+
+.dashboard-refresh-button { justify-self: end; width: fit-content; border: 1px solid var(--border-color, #e5eaf2); border-radius: 999px; padding: 7px 12px; background: var(--surface, #fff); color: var(--text-primary, #172033); font: inherit; font-size: .77rem; font-weight: 650; cursor: pointer; }
+.dashboard-refresh-button:hover:not(:disabled) { border-color: var(--blue-300, #93c5fd); background: var(--blue-50, #eff6ff); }
+.dashboard-refresh-button:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 760px) { .dashboard-refresh-button { justify-self: start; } }
