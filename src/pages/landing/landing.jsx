@@ -314,8 +314,8 @@ function Landing() {
               <h2>See the system your teams will use.</h2>
             </div>
             <p className="section-intro">
-              Real AscendHMS screens, not mock-ups. Each team works in a
-              focused view of the same hospital.
+              Explore the AscendHMS interface preview, shown with sample
+              data to illustrate how teams can work in one connected system.
             </p>
           </div>
           <div className="product-demo">
@@ -394,7 +394,7 @@ function Landing() {
             </div>
           </div>
           <p className="product-disclaimer">
-            Screens from the working application, shown with sample data.
+            Interface previews shown with sample data. Available workflows depend on the current deployment.
           </p>
         </section>
 
