@@ -253,15 +253,18 @@ function Landing() {
             <span />
           </button>
         </div>
-        {mobileNavOpen && (
-          <nav className="mobile-site-nav" id="mobile-site-nav" aria-label="Mobile navigation">
-            <a href="#product" onClick={() => setMobileNavOpen(false)}>Product</a>
-            <a href="#capabilities" onClick={() => setMobileNavOpen(false)}>Features</a>
-            <a href="#how-it-works" onClick={() => setMobileNavOpen(false)}>How it works</a>
-            <a href="#security" onClick={() => setMobileNavOpen(false)}>Security</a>
-            <a href="/login" onClick={() => setMobileNavOpen(false)}>Sign in</a>
-          </nav>
-        )}
+        <nav
+          className="mobile-site-nav"
+          id="mobile-site-nav"
+          aria-label="Mobile navigation"
+          hidden={!mobileNavOpen}
+        >
+          <a href="#product" onClick={() => setMobileNavOpen(false)}>Product</a>
+          <a href="#capabilities" onClick={() => setMobileNavOpen(false)}>Features</a>
+          <a href="#how-it-works" onClick={() => setMobileNavOpen(false)}>How it works</a>
+          <a href="#security" onClick={() => setMobileNavOpen(false)}>Security</a>
+          <a href="/login" onClick={() => setMobileNavOpen(false)}>Sign in</a>
+        </nav>
       </header>
 
       <main id="top">
