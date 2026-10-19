@@ -7958,7 +7958,7 @@ button:focus-visible {
   .landing .closing-card { border-radius: 20px; }
 }
 
-/* Final accent cleanup: all landing-page accent states use blue, never green. */
+/* Final accent cleanup: all landing-page accents use the blue system. */
 .landing .workflow-note span { color: var(--landing-blue); }
 .landing .workflow-note {
   border-color: #e1eaf6;
@@ -8504,4 +8504,97 @@ table tbody tr:hover { background: #f8faff; }
   .global-search kbd { display: none; }
   .avatar-menu-button { min-height: 40px; gap: 0; padding: 3px; }
   .avatar-account-name, .avatar-menu-button > svg { display: none; }
+}
+
+
+/* Cross-role polish for staff, nursing, consulting, laboratory and pharmacy screens. */
+.dashboard-app-shell :is(
+  .staff-directory, .staff-detail-panel, .staff-detail-section,
+  .patients-directory, .patient-detail-panel, .patient-vitals-history-panel,
+  .nurse-vitals-queue, .clinical-inventory-card, .consultation-card,
+  .lab-order-card, .pharmacy-card, .account-panel, .department-workspace-panel
+) {
+  border: 1px solid #e1e9f4;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: var(--app-shadow-sm);
+}
+.dashboard-app-shell :is(
+  .staff-directory-toolbar, .patients-toolbar, .clinical-workspace-toolbar,
+  .nurse-vitals-section-heading, .staff-detail-section-heading,
+  .patient-detail-tabs, .workspace-panel-heading
+) {
+  border-color: #e6edf7;
+}
+.dashboard-app-shell :is(
+  .staff-detail-heading h1, .staff-detail-person h2,
+  .patient-detail-identity h2, .clinical-workspace-toolbar h1,
+  .nurse-vitals-section-heading h2, .staff-directory-toolbar h2,
+  .patients-toolbar h2
+) {
+  color: #203856;
+  letter-spacing: -.025em;
+}
+.dashboard-app-shell :is(
+  .staff-role-badge, .staff-stat-status, .clinical-priority-badge,
+  .clinical-status-badge, .patient-insurance-badge, .patient-current-insurance,
+  .patient-checkin-state, .workspace-status, .status-badge, .status-pill
+) {
+  border-radius: 999px;
+}
+.dashboard-app-shell :is(.staff-primary-button, .staff-inline-button, .staff-secondary-button,
+  .staff-delete-button, .staff-close-button, .staff-detail-actions button,
+  .patient-detail-actions-top button, .patient-card-vitals-action,
+  .clinical-workspace-toolbar button, .patient-detail-tabs button) {
+  min-height: 40px;
+  border-radius: 12px;
+  font-weight: 650;
+}
+.dashboard-app-shell :is(.staff-secondary-button, .staff-close-button, .patient-detail-tabs button) {
+  border-color: #dce6f3;
+  color: #526b8d;
+  background: #fff;
+}
+.dashboard-app-shell :is(.staff-secondary-button, .staff-close-button, .patient-detail-tabs button):hover {
+  border-color: #c6d8f5;
+  color: #2458b5;
+  background: #f5f8ff;
+}
+.dashboard-app-shell :is(.patient-form-dialog, .staff-create-dialog, .vitals-form-dialog,
+  .clinical-dialog, .clinical-small-dialog) {
+  border: 1px solid #dfe8f5;
+  border-radius: 24px;
+  box-shadow: 0 28px 80px rgb(19 45 83 / 22%);
+}
+.dashboard-app-shell :is(.patient-form-dialog, .staff-create-dialog, .vitals-form-dialog,
+  .clinical-dialog, .clinical-small-dialog)::backdrop {
+  background: rgb(17 36 65 / 42%);
+  backdrop-filter: blur(4px);
+}
+.dashboard-app-shell :is(.staff-empty-state, .staff-empty-icon, .workspace-empty) {
+  border-radius: 18px;
+}
+.dashboard-app-shell :is(.staff-empty-icon, .empty-bell, .account-detail-icon,
+  .clinical-inventory-card-icon, .clinical-patient-actions) {
+  color: #2458b5;
+  background: #edf4ff;
+}
+.dashboard-app-shell :is(.staff-table, .patient-table) {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.dashboard-app-shell :is(.staff-table, .patient-table) th:first-child { border-top-left-radius: 12px; }
+.dashboard-app-shell :is(.staff-table, .patient-table) th:last-child { border-top-right-radius: 12px; }
+.dashboard-app-shell :is(.staff-table, .patient-table) tbody tr:last-child td { border-bottom: 0; }
+.dashboard-app-shell button:not(.topbar-icon-button):not(.avatar-menu-button) {
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease,
+    box-shadow 150ms ease, transform 150ms ease;
+}
+@media (max-width: 720px) {
+  .dashboard-app-shell :is(.staff-directory, .staff-detail-panel, .staff-detail-section,
+    .patients-directory, .patient-detail-panel, .patient-vitals-history-panel,
+    .nurse-vitals-queue, .clinical-inventory-card, .consultation-card,
+    .lab-order-card, .pharmacy-card, .account-panel, .department-workspace-panel) {
+    border-radius: 16px;
+  }
 }
