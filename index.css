@@ -9896,3 +9896,112 @@ table tbody tr:hover { background: #f8faff; }
 .dashboard-refresh-button:hover:not(:disabled) { border-color: var(--blue-300, #93c5fd); background: var(--blue-50, #eff6ff); }
 .dashboard-refresh-button:disabled { opacity: .65; cursor: wait; }
 @media (max-width: 760px) { .dashboard-refresh-button { justify-self: start; } }
+
+/* CarePoint-inspired dashboard refresh: calm clinical blue, stronger hierarchy, and actionable surfaces. */
+.dashboard-app-shell {
+  background: #f4f7fb;
+}
+.dashboard-sidebar {
+  background: #0f6eae;
+  border-right: 0;
+  color: #eaf6ff;
+  box-shadow: 8px 0 28px rgb(15 110 174 / 12%);
+}
+.sidebar-brand-row {
+  min-height: 76px;
+  border-bottom-color: rgb(255 255 255 / 14%);
+}
+.sidebar-logo img { filter: brightness(0) invert(1); }
+.sidebar-section-label { color: rgb(234 246 255 / 58%); }
+.sidebar-nav-link {
+  color: rgb(234 246 255 / 76%);
+  border-radius: 10px;
+}
+.sidebar-nav-link:hover,
+.sidebar-nav-link.is-active {
+  color: #fff;
+  background: #2f82df;
+  box-shadow: 0 8px 18px rgb(4 56 107 / 18%);
+}
+.sidebar-bottom {
+  color: rgb(234 246 255 / 70%);
+  border-top-color: rgb(255 255 255 / 14%);
+}
+.sidebar-live-dot { background: #6ee7b7; box-shadow: 0 0 0 4px rgb(110 231 183 / 16%); }
+.dashboard-main-column { background: #f4f7fb; }
+.dashboard-topbar {
+  background: rgb(255 255 255 / 90%);
+  border-bottom-color: #e4ebf3;
+  backdrop-filter: blur(14px);
+}
+.dashboard-operations-home { gap: 22px; }
+.dashboard-overview-heading {
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: 25px 28px;
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(115deg, #075d98 0%, #1479ba 55%, #236fb2 100%);
+  box-shadow: 0 14px 28px rgb(15 110 174 / 16%);
+}
+.dashboard-overview-heading::after {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  right: -70px;
+  top: -105px;
+  border: 24px solid rgb(255 255 255 / 8%);
+  border-radius: 50%;
+  content: '';
+}
+.dashboard-overview-heading h1 { color: #fff; margin-top: 7px; }
+.dashboard-overview-heading p { color: rgb(255 255 255 / 76%); }
+.dashboard-overview-heading .workspace-overline,
+.dashboard-overview-meta,
+.dashboard-overview-hospital { color: rgb(255 255 255 / 78%); }
+.dashboard-overview-hospital { color: #fff; }
+.dashboard-refresh-button { border-color: rgb(255 255 255 / 26%); background: rgb(255 255 255 / 12%); color: #fff; }
+.dashboard-refresh-button:hover:not(:disabled) { border-color: rgb(255 255 255 / 44%); background: rgb(255 255 255 / 20%); }
+.dashboard-operational-grid { gap: 13px; }
+.dashboard-operational-card {
+  position: relative;
+  min-height: 142px;
+  padding: 19px 20px 17px;
+  border-color: #e2e8f0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgb(31 58 86 / 5%);
+}
+.dashboard-operational-card::before {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  left: 20px;
+  height: 3px;
+  border-radius: 0 0 6px 6px;
+  background: #24a8a0;
+  content: '';
+}
+.dashboard-operational-card:nth-child(4n + 2)::before { background: #3b82d0; }
+.dashboard-operational-card:nth-child(4n + 3)::before { background: #f2a13b; }
+.dashboard-operational-card:nth-child(4n + 4)::before { background: #8b6edb; }
+.dashboard-operational-label { color: #64748b; font-size: .78rem; }
+.dashboard-operational-value { color: #172b49; }
+.dashboard-operational-hint { color: #8a9bb1; }
+.dashboard-operations-section {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgb(31 58 86 / 4%);
+}
+.dashboard-section-heading h2 { color: #172b49; }
+.dashboard-quick-action { border-color: #e5ebf2; border-radius: 11px; background: #f8fbfe; }
+.dashboard-quick-action:hover { border-color: #8ac1e8; background: #edf7ff; }
+.dashboard-summary-note { color: #6d7f95; }
+.dashboard-summary-error { border-color: #f7caca; background: #fff8f8; }
+@media (max-width: 760px) {
+  .dashboard-overview-heading { padding: 21px; border-radius: 15px; }
+  .dashboard-operations-section { padding: 17px; }
+}
