@@ -216,10 +216,10 @@ function PatientDetailPage() {
                 <h1>{patient.full_name}</h1>
                 <span className="patient-detail-subtitle">
                   {calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? 'Age not provided'}
-                  {calculateAge(patient.date_of_birth, today) !== null || patient.age_at_registration !== null
+                  {calculateAge(patient.date_of_birth, today) != null || patient.age_at_registration != null
                     ? ' years'
                     : ''}
-                  {' · '}{patient.sex === 'male' ? 'Male' : 'Female'}
+                  {' · '}{patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'}
                 </span>
               </div>
             </div>
@@ -255,6 +255,21 @@ function PatientDetailPage() {
                   type="button"
                   aria-selected={selectedTab === tab}
                   aria-controls={`patient-${tab}-panel`}
+                  tabIndex={selectedTab === tab ? 0 : -1}
+                  onKeyDown={(event) => {
+                    const currentIndex = tabs.indexOf(tab);
+                    let nextIndex = null;
+                    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+                    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                    if (event.key === 'Home') nextIndex = 0;
+                    if (event.key === 'End') nextIndex = tabs.length - 1;
+                    if (nextIndex !== null) {
+                      event.preventDefault();
+                      const nextTab = tabs[nextIndex];
+                      setSearchParams(nextTab === 'details' ? {} : { tab: nextTab });
+                      document.getElementById(`patient-${nextTab}-tab`)?.focus();
+                    }
+                  }}
                   onClick={() => setSearchParams(tab === 'details' ? {} : { tab })}
                 >
                   {tab === 'labs' ? 'Lab results' : tab === 'pharmacy' ? 'Pharmacy' : tab[0].toUpperCase() + tab.slice(1)}
@@ -274,7 +289,7 @@ function PatientDetailPage() {
                 <DetailField label="Full name" value={patient.full_name} />
                 <DetailField label="Date of birth" value={formatDateOnly(patient.date_of_birth)} />
                 <DetailField label="Age" value={calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? 'Not provided'} />
-                <DetailField label="Sex" value={patient.sex === 'male' ? 'Male' : 'Female'} />
+                <DetailField label="Sex" value={patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'} />
                 <DetailField label="Residence" value={patient.residence} />
                 <DetailField label="Address" value={patient.address} />
               </dl>
