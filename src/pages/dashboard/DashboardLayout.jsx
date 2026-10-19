@@ -383,6 +383,7 @@ export default function DashboardLayout() {
 
   return (
     <div className="dashboard-app-shell">
+      <a className="skip-to-content" href="#main-content">Skip to main content</a>
       <aside className="dashboard-sidebar" aria-label="Main sidebar">
         <div className="sidebar-brand-row">
           <Link className="sidebar-logo" to="/" aria-label="AscendHMS homepage">
@@ -656,7 +657,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main className="workspace-main">
+        <main className="workspace-main" id="main-content" tabIndex="-1">
           <div className="workspace-content">
             {hospitalError && (
               <p className="auth-notice auth-notice-error" role="alert">
