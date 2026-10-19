@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function AuthLayout({ children, mode }) {
   return (
-    <main className="auth-shell">
+    <main className={`auth-shell auth-shell-${mode}`}>
       <aside className="auth-showcase">
         <Link className="auth-brand" to="/" aria-label="AscendHMS homepage">
           <img src="/branding/ascendhms-logo.png" alt="AscendHMS" />
@@ -32,10 +32,14 @@ export default function AuthLayout({ children, mode }) {
         <span className="auth-orb auth-orb-two" />
       </aside>
 
-      <section className="auth-panel">
+      <section className={`auth-panel auth-panel-${mode}`}>
         <Link className="auth-mobile-brand" to="/" aria-label="AscendHMS homepage">
           <img src="/branding/ascendhms-logo.png" alt="AscendHMS" />
         </Link>
+        <div className="auth-panel-caption" aria-hidden="true">
+          <span className="auth-panel-caption-mark">A</span>
+          <span>{mode === 'signup' ? 'HOSPITAL WORKSPACE SETUP' : 'HOSPITAL STAFF PORTAL'}</span>
+        </div>
         <div className="auth-card">
           {children}
           <p className="auth-legal">

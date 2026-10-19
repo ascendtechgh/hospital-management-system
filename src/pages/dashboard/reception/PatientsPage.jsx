@@ -156,20 +156,45 @@ function PatientsPage() {
         <div className="patients-toolbar">
           <div>
             <h2>Patient directory</h2>
-            <span>{loading ? 'Loading patients…' : `${filteredPatients.length} patient${filteredPatients.length === 1 ? '' : 's'}`}</span>
+            <span aria-live="polite">
+              {loading
+                ? 'Loading patient records…'
+                : search
+                  ? `Showing ${filteredPatients.length} of ${patients.length} patients`
+                  : `${patients.length} registered patient${patients.length === 1 ? '' : 's'}`}
+            </span>
           </div>
           <div className="staff-directory-actions">
-            <label className="staff-search">
+            <label className="staff-search patients-search">
               <span className="sr-only">Search patients</span>
               <span aria-hidden="true">⌕</span>
-              <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search patients" />
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Name, residence or insurance"
+                aria-describedby="patients-search-hint"
+              />
+              {search && (
+                <button
+                  className="patients-search-clear"
+                  type="button"
+                  aria-label="Clear patient search"
+                  onClick={() => setSearch('')}
+                >
+                  Clear
+                </button>
+              )}
             </label>
-            <div className="staff-view-toggle" role="group" aria-label="Patient directory view">
+            <div className="staff-view-toggle patients-view-toggle" role="group" aria-label="Patient directory view">
               <button className={view === 'cards' ? 'is-active' : ''} type="button" aria-label="Card view" aria-pressed={view === 'cards'} onClick={() => setView('cards')}>▦</button>
               <button className={view === 'list' ? 'is-active' : ''} type="button" aria-label="List view" aria-pressed={view === 'list'} onClick={() => setView('list')}>☷</button>
             </div>
           </div>
         </div>
+        <span className="sr-only" id="patients-search-hint">
+          Searches patient names, residence, address, insurance provider, and insurance number.
+        </span>
 
         {loading ? (
           <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading patients…</div>
@@ -184,18 +209,47 @@ function PatientsPage() {
             <div className="staff-table-wrap">
               <table className="staff-table patient-table">
                 <thead><tr>
-                  <th scope="col">Patient</th><th scope="col">Age</th><th scope="col">Sex</th>
-                  <th scope="col">Insurance</th><th scope="col">Check-in</th><th scope="col"><span className="sr-only">Details</span></th>
+                  <th scope="col">Patient</th><th scope="col">Age / sex</th>
+                  <th scope="col">Coverage</th><th scope="col">Visit status</th>
+                  <th scope="col"><span className="sr-only">Details</span></th>
                 </tr></thead>
                 <tbody>
                   {filteredPatients.map((patient) => (
                     <tr key={patient.id}>
-                      <td><Link className="patient-table-name" to={`${basePath}/patients/${patient.id}`}>{patient.full_name}</Link></td>
-                      <td>{calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? '—'}</td>
-                      <td>{patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'}</td>
-                      <td><InsuranceBadge patient={patient} today={today} /></td>
-                      <td>{patient.checked_in_at ? 'Checked in' : 'Not checked in'}</td>
-                      <td><Link className="staff-row-link" to={`${basePath}/patients/${patient.id}`}>Details →</Link></td>
+                      <td>
+                        <div className="patient-table-person">
+                          <span className="patient-table-avatar" aria-hidden="true">
+                            {patient.full_name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')}
+                          </span>
+                          <span className="patient-table-identity">
+                            <Link className="patient-table-name" to={`${basePath}/patients/${patient.id}`}>{patient.full_name}</Link>
+                            <small>{patient.residence || patient.address || 'Residence not recorded'}</small>
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className="patient-table-age">
+                          {calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? '—'}
+                          {(calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration) != null && <small> yrs</small>}
+                        </span>
+                        <small className="patient-table-secondary">
+                          {patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'}
+                        </small>
+                      </td>
+                      <td>
+                        <span className="patient-table-coverage">
+                          <InsuranceBadge patient={patient} today={today} />
+                          {patient.insurance_enabled && <small>{patient.insurance_provider || 'Provider not recorded'}</small>}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`patient-table-visit${patient.checked_in_at ? ' is-checked-in' : ''}`}>
+                          <i aria-hidden="true" />
+                          {patient.checked_in_at ? 'Checked in' : 'Not checked in'}
+                        </span>
+                        {patient.checked_in_at && <small className="patient-table-secondary">{formatCheckIn(patient.checked_in_at)}</small>}
+                      </td>
+                      <td><Link className="patient-table-action" to={`${basePath}/patients/${patient.id}`}>View record <span aria-hidden="true">→</span></Link></td>
                     </tr>
                   ))}
                 </tbody>
@@ -222,6 +276,17 @@ function PatientsPage() {
       )}
     </section>
   );
+}
+
+function formatCheckIn(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Check-in time unavailable';
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
 }
 
 export default PatientsPage;

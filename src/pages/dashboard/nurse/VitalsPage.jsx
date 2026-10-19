@@ -22,6 +22,7 @@ function VitalsPage() {
   const [filter, setFilter] = useState('today');
   const [selectedDate, setSelectedDate] = useState('');
   const [search, setSearch] = useState('');
+  const [historySearch, setHistorySearch] = useState('');
   const [selectedPatient, setSelectedPatient] = useState(null);
 
   const loadPatients = useCallback(async () => {
@@ -76,6 +77,16 @@ function VitalsPage() {
         .includes(query),
     );
   }, [patients, search]);
+
+  const filteredHistory = useMemo(() => {
+    const query = historySearch.trim().toLocaleLowerCase();
+    if (!query) return vitals;
+    return vitals.filter((vital) =>
+      `${vital.patient?.full_name || ''} ${vital.patient?.residence || ''}`
+        .toLocaleLowerCase()
+        .includes(query),
+    );
+  }, [historySearch, vitals]);
 
   if (profile?.role !== 'nurse') {
     return <Navigate to={basePath} replace />;
@@ -181,19 +192,29 @@ function VitalsPage() {
               />
             )}
           </label>
+          <label className="staff-search clinical-search vitals-history-search">
+            <span className="sr-only">Search vitals history by patient</span>
+            <span aria-hidden="true">⌕</span>
+            <input
+              type="search"
+              value={historySearch}
+              onChange={(event) => setHistorySearch(event.target.value)}
+              placeholder="Search patient history"
+            />
+          </label>
         </div>
 
         {vitalsError && <p className="auth-notice auth-notice-error" role="alert">{vitalsError}</p>}
         {loadingVitals ? (
           <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading vitals history…</div>
-        ) : vitals.length ? (
+        ) : filteredHistory.length ? (
           <div className="staff-table-wrap">
             <table className="staff-table vitals-history-table">
               <thead>
-                <tr><th scope="col">Patient</th><th scope="col">Recorded</th><th scope="col">Blood pressure</th><th scope="col">Pulse</th><th scope="col">Temp.</th><th scope="col">Resp.</th><th scope="col">SpO₂</th><th scope="col"><span className="sr-only">Patient details</span></th></tr>
+                <tr><th scope="col">Patient</th><th scope="col">Recorded</th><th scope="col">Blood pressure</th><th scope="col">Pulse</th><th scope="col">Temperature</th><th scope="col">Respiratory rate</th><th scope="col">SpO₂</th><th scope="col"><span className="sr-only">Patient details</span></th></tr>
               </thead>
               <tbody>
-                {vitals.map((vital) => (
+                {filteredHistory.map((vital) => (
                   <tr key={vital.id}>
                     <td><Link className="patient-table-name" to={`${basePath}/patients/${vital.patient_id}`}>{vital.patient?.full_name || 'Patient'}</Link></td>
                     <td>{formatDateTime(vital.recorded_at)}</td>
@@ -210,8 +231,8 @@ function VitalsPage() {
           </div>
         ) : (
           <div className="staff-empty-state nurse-empty-state">
-            <h3>No vitals for this period</h3>
-            <p>Recorded observations will appear here as soon as a nurse saves them.</p>
+            <h3>{historySearch ? 'No matching vitals' : 'No vitals for this period'}</h3>
+            <p>{historySearch ? 'Try another patient name or residence.' : 'Recorded observations will appear here as soon as a nurse saves them.'}</p>
           </div>
         )}
       </section>

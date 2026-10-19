@@ -131,7 +131,7 @@ img {
 .demo-brand > span {
   color: #182639;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
   font-weight: 800;
   letter-spacing: -0.8px;
 }
@@ -152,7 +152,7 @@ img {
 .sign-in-link,
 .footer-nav a {
   color: #535961;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 600;
   transition: color 160ms ease;
 }
@@ -180,7 +180,7 @@ img {
   padding: 0 21px;
   border: 1px solid transparent;
   border-radius: 9px;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 700;
   transition:
     background 180ms ease,
@@ -218,7 +218,7 @@ img {
   min-height: 39px;
   gap: 8px;
   padding-inline: 15px;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .button-small svg {
@@ -247,7 +247,7 @@ img {
   align-items: center;
   gap: 8px;
   color: #4e5865;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -284,7 +284,7 @@ p {
   margin-block: 27px 19px;
   color: #171e28;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(40px, 5vw, 59px) + 3px);
+  font-size: calc(clamp(40px, 5vw, 59px) + 6px);
   font-weight: 700;
   letter-spacing: -3.6px;
   line-height: 1.1;
@@ -298,7 +298,7 @@ p {
   max-width: 490px;
   margin-bottom: 28px;
   color: #686e76;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   line-height: 1.85;
 }
 
@@ -325,7 +325,7 @@ p {
   align-items: center;
   gap: 6px;
   color: #565d66;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 600;
 }
 
@@ -414,12 +414,12 @@ p {
   border-radius: 5px;
   color: #838890;
   background: #f5f6f7;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .address-lock {
   color: #64758d;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .window-avatar,
@@ -431,7 +431,7 @@ p {
   border-radius: 50%;
   color: #354f74;
   background: #e9edf3;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
 }
 
@@ -466,7 +466,7 @@ p {
   border-radius: 9px;
   color: #fff;
   background: #214a84;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
 }
 
 .floating-note strong,
@@ -479,12 +479,12 @@ p {
 .floating-note strong {
   margin-bottom: 3px;
   color: #29313b;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .floating-note small {
   color: #898e95;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .note-live {
@@ -493,7 +493,7 @@ p {
   border-radius: 10px;
   color: #204a84;
   background: #eaeff6;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
 }
 
@@ -505,7 +505,7 @@ p {
   align-items: center;
   gap: 9px;
   color: #828890;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .caption-pulse {
@@ -562,7 +562,7 @@ p {
 .section-kicker {
   margin-bottom: 13px;
   color: var(--blue);
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -574,7 +574,7 @@ p {
   margin-bottom: 0;
   color: #1b212a;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(27px, 3.2vw, 38px) + 3px);
+  font-size: calc(clamp(27px, 3.2vw, 38px) + 6px);
   font-weight: 700;
   letter-spacing: -1.8px;
   line-height: 1.2;
@@ -584,7 +584,7 @@ p {
   max-width: 355px;
   margin-bottom: 2px;
   color: #767b82;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   line-height: 1.8;
 }
 
@@ -623,13 +623,13 @@ p {
 }
 
 .demo-brand > span {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .demo-side-label {
   margin: 0 0 8px 8px;
   color: #a0a4aa;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -642,7 +642,7 @@ p {
   padding-inline: 9px;
   border-radius: 5px;
   color: #757a81;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 500;
 }
 
@@ -655,7 +655,7 @@ p {
 .demo-nav-icon {
   width: 12px;
   color: #6f7e92;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   text-align: center;
 }
 
@@ -674,18 +674,18 @@ p {
 .sidebar-avatar {
   width: 25px;
   height: 25px;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .demo-sidebar-bottom strong {
   color: #444a53;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .demo-sidebar-bottom small {
   margin-top: 2px;
   color: #92969c;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
 }
 
 .sidebar-more {
@@ -710,7 +710,7 @@ p {
 
 .screen-overline {
   color: #868b93;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
   font-weight: 700;
   letter-spacing: 0.11em;
 }
@@ -719,7 +719,7 @@ p {
   margin: 8px 0 4px;
   color: #242b35;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(19px + 3px);
+  font-size: calc(19px + 6px);
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -728,7 +728,7 @@ p {
   max-width: 500px;
   margin-bottom: 13px;
   color: #7d8289;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   line-height: 1.5;
 }
 
@@ -743,7 +743,7 @@ p {
   border-radius: 20px;
   color: #6b7481;
   background: #fbfcfd;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
 }
 
 .screen-status i {
@@ -766,7 +766,7 @@ p {
   color: #878c93;
   background: transparent;
   cursor: pointer;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 600;
   transition: color 160ms ease;
 }
@@ -827,7 +827,7 @@ button:focus-visible {
   justify-content: space-between;
   padding-top: 10px;
   color: #858a92;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .screen-foot-dot {
@@ -838,7 +838,7 @@ button:focus-visible {
 .product-disclaimer {
   margin: 13px 0 0;
   color: #9a9ea4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   text-align: right;
 }
 
@@ -894,13 +894,13 @@ button:focus-visible {
   border-radius: 10px;
   color: #264979;
   background: #f0f3f7;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .card-number {
   color: #b1b6bc;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 600;
   letter-spacing: 0.07em;
 }
@@ -910,7 +910,7 @@ button:focus-visible {
   margin: 19px 0 6px;
   color: #262d37;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   font-weight: 700;
   letter-spacing: -0.35px;
 }
@@ -919,7 +919,7 @@ button:focus-visible {
   min-height: 33px;
   margin-bottom: 13px;
   color: #787d84;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.6;
 }
 
@@ -936,7 +936,7 @@ button:focus-visible {
   align-items: center;
   gap: 7px;
   color: #585e66;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   line-height: 1.35;
 }
 
@@ -982,7 +982,7 @@ button:focus-visible {
 .connected-note .section-kicker {
   position: relative;
   margin: 2px 0 11px;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .connected-note h3 {
@@ -991,7 +991,7 @@ button:focus-visible {
   margin-bottom: 10px;
   color: #243347;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
   font-weight: 700;
   letter-spacing: -0.8px;
   line-height: 1.35;
@@ -1002,7 +1002,7 @@ button:focus-visible {
   max-width: 275px;
   margin-bottom: 17px;
   color: #626b77;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.7;
 }
 
@@ -1012,7 +1012,7 @@ button:focus-visible {
   align-items: center;
   gap: 6px;
   color: #1c3d6b;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
 }
 
@@ -1044,19 +1044,19 @@ button:focus-visible {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .team-card h3 {
   margin: 14px 0 4px;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .team-card > p {
   min-height: 30px;
   margin-bottom: 12px;
   color: #7c8188;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   line-height: 1.55;
 }
 
@@ -1072,7 +1072,7 @@ button:focus-visible {
   border-radius: 5px;
   color: #656a72;
   background: #fafafb;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .workflow-section {
@@ -1117,14 +1117,14 @@ button:focus-visible {
   color: #385379;
   background: #eff2f7;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
 }
 
 .workflow-step-label {
   margin: 21px 0 7px;
   color: #9398a0;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -1135,7 +1135,7 @@ button:focus-visible {
   margin-bottom: 5px;
   color: #2d3540;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
   line-height: 1.45;
 }
@@ -1144,7 +1144,7 @@ button:focus-visible {
   max-width: 125px;
   margin: 0;
   color: #838890;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   line-height: 1.55;
 }
 
@@ -1158,13 +1158,13 @@ button:focus-visible {
   border-radius: 7px;
   color: #717780;
   background: #fff;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   line-height: 1.7;
 }
 
 .workflow-note span {
   color: #365580;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .security-section {
@@ -1180,14 +1180,14 @@ button:focus-visible {
 
 .security-intro h2 {
   max-width: 405px;
-  font-size: calc(clamp(29px, 3.3vw, 39px) + 3px);
+  font-size: calc(clamp(29px, 3.3vw, 39px) + 6px);
 }
 
 .security-intro > p:not(.section-kicker) {
   max-width: 360px;
   margin: 15px 0 24px;
   color: #787d84;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.75;
 }
 
@@ -1209,7 +1209,7 @@ button:focus-visible {
   border-radius: 8px;
   color: #284a7a;
   background: #edf1f6;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .security-seal strong,
@@ -1220,12 +1220,12 @@ button:focus-visible {
 .security-seal strong {
   margin-bottom: 3px;
   color: #404853;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .security-seal small {
   color: #898e95;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .safeguard-list {
@@ -1245,7 +1245,7 @@ button:focus-visible {
   padding-top: 2px;
   color: #9a9fa7;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
 }
 
@@ -1253,7 +1253,7 @@ button:focus-visible {
   margin: 0 0 5px;
   color: #343c47;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
 }
 
@@ -1261,7 +1261,7 @@ button:focus-visible {
   max-width: 470px;
   margin: 0;
   color: #777c84;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   line-height: 1.7;
 }
 
@@ -1288,7 +1288,7 @@ button:focus-visible {
   grid-column: 2;
   margin: -4px 0 0;
   color: #9a9ea4;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   line-height: 1.6;
 }
 
@@ -1323,7 +1323,7 @@ button:focus-visible {
 .closing-kicker {
   margin-bottom: 14px;
   color: #a4b6ce;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -1334,7 +1334,7 @@ button:focus-visible {
   margin-bottom: 13px;
   color: #fff;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(29px, 3.6vw, 42px) + 3px);
+  font-size: calc(clamp(29px, 3.6vw, 42px) + 6px);
   font-weight: 700;
   letter-spacing: -1.9px;
   line-height: 1.2;
@@ -1344,7 +1344,7 @@ button:focus-visible {
   max-width: 460px;
   margin-bottom: 23px;
   color: #c0c8d3;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.75;
 }
 
@@ -1361,7 +1361,7 @@ button:focus-visible {
 
 .closing-sign-in {
   color: #edf0f5;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 600;
 }
 
@@ -1410,7 +1410,7 @@ button:focus-visible {
 
 .closing-cross {
   font-family: 'Manrope', sans-serif;
-  font-size: calc(64px + 3px);
+  font-size: calc(64px + 6px);
   font-weight: 400;
   line-height: 1;
 }
@@ -1418,7 +1418,7 @@ button:focus-visible {
 .closing-decoration-label {
   position: absolute;
   bottom: 17px;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
   font-weight: 700;
   letter-spacing: 0.17em;
 }
@@ -1444,7 +1444,7 @@ button:focus-visible {
 .footer-description {
   margin: 0;
   color: #91969c;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .footer-nav {
@@ -1455,7 +1455,7 @@ button:focus-visible {
 }
 
 .footer-nav a {
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .footer-bottom {
@@ -1466,7 +1466,7 @@ button:focus-visible {
   gap: 16px;
   border-top: 1px solid #f0f1f3;
   color: #9b9fa5;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 @media (min-width: 1400px) {
@@ -1489,7 +1489,7 @@ button:focus-visible {
   }
 
   .hero h1 {
-    font-size: calc(clamp(39px, 5.4vw, 52px) + 3px);
+    font-size: calc(clamp(39px, 5.4vw, 52px) + 6px);
     letter-spacing: -2.8px;
   }
 
@@ -1566,7 +1566,7 @@ button:focus-visible {
   }
 
   .sign-in-link {
-    font-size: calc(11px + 3px);
+    font-size: calc(11px + 6px);
   }
 
   .button-small {
@@ -1586,13 +1586,13 @@ button:focus-visible {
 
   .hero h1 {
     margin-top: 22px;
-    font-size: calc(clamp(42px, 9vw, 59px) + 3px);
+    font-size: calc(clamp(42px, 9vw, 59px) + 6px);
     letter-spacing: -3px;
   }
 
   .hero-copy {
     max-width: 550px;
-    font-size: calc(13px + 3px);
+    font-size: calc(13px + 6px);
   }
 
   .hero-visual {
@@ -1633,7 +1633,7 @@ button:focus-visible {
 
   .section-heading h2,
   .security-intro h2 {
-    font-size: calc(31px + 3px);
+    font-size: calc(31px + 6px);
     letter-spacing: -1.3px;
   }
 
@@ -1661,13 +1661,13 @@ button:focus-visible {
   }
 
   .demo-brand > span {
-    font-size: calc(10px + 3px);
+    font-size: calc(10px + 6px);
   }
 
   .demo-nav-item {
     gap: 5px;
     padding-inline: 5px;
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .product-screen-area {
@@ -1681,7 +1681,7 @@ button:focus-visible {
 
   .product-screen-head h3 {
     margin-block: 5px 3px;
-    font-size: calc(17px + 3px);
+    font-size: calc(17px + 6px);
   }
 
   .screen-status {
@@ -1693,7 +1693,7 @@ button:focus-visible {
   }
 
   .product-tab {
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .product-image-frame img {
@@ -1722,7 +1722,7 @@ button:focus-visible {
   }
 
   .connected-note h3 {
-    font-size: calc(16px + 3px);
+    font-size: calc(16px + 6px);
   }
 
   .teams-grid {
@@ -1785,7 +1785,7 @@ button:focus-visible {
 
   .closing-content h2 {
     max-width: 500px;
-    font-size: calc(34px + 3px);
+    font-size: calc(34px + 6px);
   }
 
   .closing-decoration {
@@ -1797,12 +1797,12 @@ button:focus-visible {
   }
 
   .closing-cross {
-    font-size: calc(47px + 3px);
+    font-size: calc(47px + 6px);
   }
 
   .closing-decoration-label {
     bottom: 11px;
-    font-size: calc(5px + 3px);
+    font-size: calc(5px + 6px);
   }
 
   .footer-main {
@@ -1847,7 +1847,7 @@ button:focus-visible {
   .button-small {
     min-height: 34px;
     padding-inline: 10px;
-    font-size: calc(9px + 3px);
+    font-size: calc(9px + 6px);
   }
 
   .hero {
@@ -1857,17 +1857,17 @@ button:focus-visible {
 
   .eyebrow {
     flex-wrap: wrap;
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .hero h1 {
     margin-block: 19px 15px;
-    font-size: calc(43px + 3px);
+    font-size: calc(43px + 6px);
     letter-spacing: -2.5px;
   }
 
   .hero-copy {
-    font-size: calc(12px + 3px);
+    font-size: calc(12px + 6px);
     line-height: 1.75;
   }
 
@@ -1879,7 +1879,7 @@ button:focus-visible {
     min-height: 43px;
     gap: 7px;
     padding-inline: 13px;
-    font-size: calc(10px + 3px);
+    font-size: calc(10px + 6px);
   }
 
   .hero-proof {
@@ -1888,7 +1888,7 @@ button:focus-visible {
   }
 
   .hero-proof span {
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .hero-visual {
@@ -1902,7 +1902,7 @@ button:focus-visible {
 
   .window-address {
     min-width: 130px;
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .window-avatar {
@@ -1921,29 +1921,29 @@ button:focus-visible {
   .note-icon {
     width: 27px;
     height: 27px;
-    font-size: calc(12px + 3px);
+    font-size: calc(12px + 6px);
   }
 
   .floating-note strong {
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .floating-note small {
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .note-live {
     padding: 3px 5px;
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .hero-caption {
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .section-heading h2,
   .security-intro h2 {
-    font-size: calc(28px + 3px);
+    font-size: calc(28px + 6px);
   }
 
   .product-demo {
@@ -1960,7 +1960,7 @@ button:focus-visible {
   }
 
   .product-screen-head p {
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .product-tabs {
@@ -1969,7 +1969,7 @@ button:focus-visible {
   }
 
   .product-tab {
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .product-image-frame img {
@@ -1977,7 +1977,7 @@ button:focus-visible {
   }
 
   .screen-foot {
-    font-size: calc(7px + 3px);
+    font-size: calc(7px + 6px);
   }
 
   .capability-grid,
@@ -2029,7 +2029,7 @@ button:focus-visible {
 
   .workflow-note {
     padding: 12px;
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 
   .safeguard {
@@ -2042,12 +2042,12 @@ button:focus-visible {
   }
 
   .closing-content h2 {
-    font-size: calc(29px + 3px);
+    font-size: calc(29px + 6px);
   }
 
   .closing-content > p:not(.closing-kicker) {
     max-width: 330px;
-    font-size: calc(10px + 3px);
+    font-size: calc(10px + 6px);
   }
 
   .closing-decoration {
@@ -2060,7 +2060,7 @@ button:focus-visible {
   }
 
   .closing-cross {
-    font-size: calc(33px + 3px);
+    font-size: calc(33px + 6px);
   }
 
   .closing-decoration-label {
@@ -2081,11 +2081,11 @@ button:focus-visible {
   }
 
   .footer-description {
-    font-size: calc(11px + 3px);
+    font-size: calc(11px + 6px);
   }
 
   .footer-nav a {
-    font-size: calc(10px + 3px);
+    font-size: calc(10px + 6px);
   }
 
   .footer-bottom {
@@ -2094,7 +2094,7 @@ button:focus-visible {
     justify-content: center;
     gap: 5px;
     padding-block: 10px;
-    font-size: calc(9px + 3px);
+    font-size: calc(9px + 6px);
   }
 }
 
@@ -2257,30 +2257,30 @@ button:focus-visible {
 }
 
 .footer-description {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .footer-nav a {
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .footer-bottom {
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 @media (max-width: 720px) {
   .footer-description {
-    font-size: calc(11px + 3px);
+    font-size: calc(11px + 6px);
   }
 
   .footer-bottom {
-    font-size: calc(9px + 3px);
+    font-size: calc(9px + 6px);
   }
 }
 
 @media (max-width: 460px) {
   .footer-bottom {
-    font-size: calc(9px + 3px);
+    font-size: calc(9px + 6px);
   }
 }
 
@@ -2333,7 +2333,7 @@ button:focus-visible {
 .auth-kicker {
   display: inline-block;
   color: #6c96d1;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
   letter-spacing: 0.14em;
 }
@@ -2347,7 +2347,7 @@ button:focus-visible {
   margin: 22px 0 16px;
   color: #fff;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(35px, 4vw, 52px) + 3px);
+  font-size: calc(clamp(35px, 4vw, 52px) + 6px);
   font-weight: 700;
   letter-spacing: -2px;
   line-height: 1.16;
@@ -2361,7 +2361,7 @@ button:focus-visible {
   max-width: 405px;
   margin-bottom: 25px;
   color: #d0dced;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   line-height: 1.8;
 }
 
@@ -2385,7 +2385,7 @@ button:focus-visible {
   border-radius: 10px;
   color: #fff;
   background: #2577eb;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .auth-showcase-note strong,
@@ -2396,12 +2396,12 @@ button:focus-visible {
 .auth-showcase-note strong {
   margin-bottom: 3px;
   color: #fff;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .auth-showcase-note small {
   color: #c0d2eb;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .auth-showcase-footer {
@@ -2411,7 +2411,7 @@ button:focus-visible {
   align-items: center;
   gap: 9px;
   color: #bfd1e9;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -2469,14 +2469,14 @@ button:focus-visible {
 
 .auth-heading .auth-kicker {
   margin-bottom: 12px;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .auth-heading h2 {
   margin: 0 0 8px;
   color: #1b212a;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(26px, 2.4vw, 32px) + 3px);
+  font-size: calc(clamp(26px, 2.4vw, 32px) + 6px);
   font-weight: 700;
   letter-spacing: -1.2px;
   line-height: 1.25;
@@ -2485,7 +2485,7 @@ button:focus-visible {
 .auth-heading > p {
   margin: 0;
   color: #787d84;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   line-height: 1.6;
 }
 
@@ -2501,7 +2501,7 @@ button:focus-visible {
   align-items: center;
   gap: 7px;
   color: #a1a5aa;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -2515,7 +2515,7 @@ button:focus-visible {
   border-radius: 50%;
   color: #898e94;
   background: #fff;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .signup-progress-step.is-current {
@@ -2547,7 +2547,7 @@ button:focus-visible {
 
 .auth-field > span {
   color: #434952;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   font-weight: 600;
 }
 
@@ -2563,7 +2563,7 @@ button:focus-visible {
   outline: none;
   color: #242b36;
   background: #fff;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease;
@@ -2589,7 +2589,7 @@ button:focus-visible {
 
 .auth-field > small {
   color: #878c92;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .auth-password-wrap {
@@ -2609,7 +2609,7 @@ button:focus-visible {
   color: #2866bd;
   background: transparent;
   cursor: pointer;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 700;
   transform: translateY(-50%);
 }
@@ -2630,7 +2630,7 @@ button:focus-visible {
   border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   font-weight: 700;
   transition:
     background 150ms ease,
@@ -2682,7 +2682,7 @@ button:focus-visible {
   padding: 10px 12px;
   border: 1px solid;
   border-radius: 7px;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   line-height: 1.55;
 }
 
@@ -2701,7 +2701,7 @@ button:focus-visible {
 .auth-legal {
   margin: 16px 0 0;
   color: #9a9ea4;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.6;
   text-align: center;
 }
@@ -2709,7 +2709,7 @@ button:focus-visible {
 .auth-panel-footer {
   margin: 17px 0 0;
   color: #787d84;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   text-align: center;
 }
 
@@ -2734,7 +2734,7 @@ button:focus-visible {
   border-radius: 8px;
   color: #65748a;
   background: #f8fbff;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .auth-tenant-icon {
@@ -2746,7 +2746,7 @@ button:focus-visible {
   border-radius: 7px;
   color: #2866bd;
   background: #eaf3ff;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .auth-spinner {
@@ -2786,7 +2786,7 @@ button:focus-visible {
   color: #58667a;
   background: #fff;
   box-shadow: 0 14px 35px rgb(30 57 95 / 6%);
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   line-height: 1.7;
 }
 
@@ -2824,7 +2824,7 @@ button:focus-visible {
   align-items: center;
   gap: 7px;
   color: #748296;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .realtime-indicator i {
@@ -2841,7 +2841,7 @@ button:focus-visible {
 
 .dashboard-user {
   color: #546377;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .dashboard-signout {
@@ -2851,7 +2851,7 @@ button:focus-visible {
   color: #516075;
   background: #fff;
   cursor: pointer;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 600;
 }
 
@@ -2870,7 +2870,7 @@ button:focus-visible {
   margin: 13px 0 9px;
   color: #1c2c43;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(32px, 4vw, 44px) + 3px);
+  font-size: calc(clamp(32px, 4vw, 44px) + 6px);
   letter-spacing: -1.8px;
 }
 
@@ -2878,7 +2878,7 @@ button:focus-visible {
   max-width: 620px;
   margin-bottom: 27px;
   color: #728196;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   line-height: 1.75;
 }
 
@@ -2887,7 +2887,7 @@ button:focus-visible {
   align-items: center;
   gap: 11px;
   color: #67778d;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .hospital-summary {
@@ -2909,7 +2909,7 @@ button:focus-visible {
 
 .hospital-summary-label {
   color: #7187a5;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
   letter-spacing: 0.13em;
 }
@@ -2919,7 +2919,7 @@ button:focus-visible {
   margin: 7px 0 0;
   color: #293b55;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
   letter-spacing: -0.5px;
 }
 
@@ -2929,7 +2929,7 @@ button:focus-visible {
   border-radius: 6px;
   color: #2b62ae;
   background: #f4f9ff;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -2940,7 +2940,7 @@ button:focus-visible {
   gap: 18px;
   padding-top: 17px;
   color: #506076;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   overflow-wrap: anywhere;
 }
 
@@ -2948,7 +2948,7 @@ button:focus-visible {
   display: block;
   margin-bottom: 5px;
   color: #8693a5;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .dashboard-next {
@@ -2971,26 +2971,26 @@ button:focus-visible {
   border-radius: 10px;
   color: #2577eb;
   background: #edf5ff;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .dashboard-next h2 {
   margin: 1px 0 6px;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
 }
 
 .dashboard-next p {
   max-width: 650px;
   margin: 0;
   color: #77869a;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   line-height: 1.7;
 }
 
 .auth-secondary-link {
   display: inline-block;
   margin-top: 12px;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
 }
 
 @media (max-width: 800px) {
@@ -3003,7 +3003,7 @@ button:focus-visible {
   }
 
   .auth-showcase-content h1 {
-    font-size: calc(36px + 3px);
+    font-size: calc(36px + 6px);
   }
 
   .auth-panel {
@@ -3101,7 +3101,7 @@ button:focus-visible {
   }
 
   .auth-heading h2 {
-    font-size: calc(26px + 3px);
+    font-size: calc(26px + 6px);
   }
 
   .auth-field-row {
@@ -3114,7 +3114,7 @@ button:focus-visible {
 
   .signup-progress-step {
     gap: 5px;
-    font-size: calc(11px + 3px);
+    font-size: calc(11px + 6px);
   }
 
   .signup-progress-line {
@@ -3179,7 +3179,7 @@ button:focus-visible {
   margin: 29px 0 11px;
   padding-inline: 25px;
   color: #98a4b4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -3200,7 +3200,7 @@ button:focus-visible {
   border: 1px solid transparent;
   border-radius: 8px;
   color: #657489;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 600;
   transition:
     color 160ms ease,
@@ -3249,7 +3249,7 @@ button:focus-visible {
   padding: 0 21px;
   border-top: 1px solid #edf0f4;
   color: #7f8b9c;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .sidebar-live-dot,
@@ -3298,19 +3298,19 @@ button:focus-visible {
 
 .topbar-context-label {
   color: #41526a;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 700;
 }
 
 .topbar-context-divider {
   color: #c1c9d5;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .topbar-context-page {
   overflow: hidden;
   color: #8793a4;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   text-overflow: ellipsis;
 }
 
@@ -3369,7 +3369,7 @@ button:focus-visible {
   outline: 0;
   color: #384a64;
   background: transparent;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .global-search input::placeholder {
@@ -3386,7 +3386,7 @@ button:focus-visible {
   color: #8c98a8;
   background: #fff;
   font-family: inherit;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .topbar-menu-anchor {
@@ -3440,7 +3440,7 @@ button:focus-visible {
   border-radius: 12px;
   color: #fff;
   background: #347adb;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
 }
 
@@ -3476,7 +3476,7 @@ button:focus-visible {
   border-radius: 50%;
   color: #245ba9;
   background: #edf5ff;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
 }
 
@@ -3489,7 +3489,7 @@ button:focus-visible {
 .avatar-account-name strong {
   overflow: hidden;
   color: #405169;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3497,7 +3497,7 @@ button:focus-visible {
 
 .avatar-account-name small {
   color: #8793a4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .avatar-menu-button > svg {
@@ -3558,7 +3558,7 @@ button:focus-visible {
 
 .dropdown-eyebrow {
   color: #8b98aa;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -3567,7 +3567,7 @@ button:focus-visible {
   margin: 5px 0 0;
   color: #33455f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   letter-spacing: -0.3px;
 }
 
@@ -3576,7 +3576,7 @@ button:focus-visible {
   border-radius: 12px;
   color: #2866bd;
   background: #edf5ff;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
 }
 
@@ -3613,14 +3613,14 @@ button:focus-visible {
 
 .dropdown-empty-state > strong {
   color: #44546b;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .dropdown-empty-state > p,
 .dropdown-empty {
   margin: 5px 0 0;
   color: #8793a4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.55;
 }
 
@@ -3658,27 +3658,27 @@ button:focus-visible {
 .notification-item h3 {
   margin: 0 0 4px;
   color: #3c4c63;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
 }
 
 .notification-item p {
   margin: 0 0 5px;
   color: #728196;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.5;
 }
 
 .notification-item time {
   color: #9aa5b4;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .dropdown-error {
   margin: 0;
   padding: 14px 17px;
   color: #a23c38;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.6;
 }
 
@@ -3711,12 +3711,12 @@ button:focus-visible {
 .profile-dropdown-person strong {
   margin-bottom: 4px;
   color: #3e4f66;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .profile-dropdown-person small {
   color: #8793a4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .dropdown-divider {
@@ -3737,7 +3737,7 @@ button:focus-visible {
   color: #56667c;
   background: transparent;
   cursor: pointer;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   text-align: left;
   transition:
     color 140ms ease,
@@ -3755,7 +3755,7 @@ button:focus-visible {
   height: 20px;
   place-items: center;
   color: #71829a;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .profile-dropdown-logout {
@@ -3804,7 +3804,7 @@ button:focus-visible {
   border-radius: 8px;
   color: #3268b4;
   background: #f0f5fd;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
 }
 
@@ -3823,12 +3823,12 @@ button:focus-visible {
 
 .search-result strong {
   color: #40526a;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .search-result small {
   color: #8995a5;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .search-result-enter {
@@ -3864,7 +3864,7 @@ button:focus-visible {
   border-top: 1px solid #e8ecf2;
   color: #8b97a7;
   background: #fff;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .workspace-footer > span:first-child {
@@ -3883,7 +3883,7 @@ button:focus-visible {
 .workspace-overline {
   display: inline-block;
   color: #7790b3;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
   letter-spacing: 0.13em;
 }
@@ -3901,7 +3901,7 @@ button:focus-visible {
   margin: 9px 0 6px;
   color: #243752;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(clamp(28px, 3vw, 38px) + 3px);
+  font-size: calc(clamp(28px, 3vw, 38px) + 6px);
   font-weight: 700;
   letter-spacing: -1.5px;
   line-height: 1.2;
@@ -3911,7 +3911,7 @@ button:focus-visible {
 .subpage-heading > p {
   margin: 0;
   color: #7b899d;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   line-height: 1.7;
 }
 
@@ -3938,13 +3938,13 @@ button:focus-visible {
 }
 
 .welcome-avatar > span {
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
   font-weight: 700;
 }
 
 .welcome-avatar > small {
   color: #6780a4;
-  font-size: calc(7px + 3px);
+  font-size: calc(7px + 6px);
 }
 
 .dashboard-stat-grid {
@@ -3978,7 +3978,7 @@ button:focus-visible {
   margin-bottom: 12px;
   place-items: center;
   border-radius: 9px;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
 }
 
 .stat-icon-blue {
@@ -3999,7 +3999,7 @@ button:focus-visible {
 .stat-label {
   margin-bottom: 5px;
   color: #8a96a8;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
   letter-spacing: 0.1em;
 }
@@ -4008,7 +4008,7 @@ button:focus-visible {
   overflow: hidden;
   width: 100%;
   color: #34465e;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -4019,7 +4019,7 @@ button:focus-visible {
   width: 100%;
   margin-top: 4px;
   color: #8995a7;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4039,7 +4039,7 @@ button:focus-visible {
   margin: 7px 0 6px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
   font-weight: 700;
   letter-spacing: -0.4px;
 }
@@ -4047,7 +4047,7 @@ button:focus-visible {
 .department-workspace-description {
   margin: 0;
   color: #77869a;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.6;
 }
 
@@ -4068,7 +4068,7 @@ button:focus-visible {
   border-radius: 10px;
   color: #40536d;
   background: #fbfcfe;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 650;
   text-decoration: none;
   transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
@@ -4082,7 +4082,7 @@ button:focus-visible {
 
 .department-action-list a > span:last-child {
   color: #3775c9;
-  font-size: 18px;
+  font-size: 21px;
 }
 
 .dashboard-stat-grid.has-patients-stat {
@@ -4158,14 +4158,14 @@ button:focus-visible {
 .checked-in-patient-list strong {
   overflow: hidden;
   color: #3c4e66;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .checked-in-patient-list small {
   color: #8793a4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.35;
 }
 
@@ -4186,7 +4186,7 @@ button:focus-visible {
   border-radius: 8px;
   color: #2862b4;
   background: #eef5ff;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   font-weight: 700;
   text-decoration: none;
 }
@@ -4213,7 +4213,7 @@ button:focus-visible {
   margin: 5px 0 0;
   color: #243752;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(26px + 3px);
+  font-size: calc(26px + 6px);
   font-weight: 700;
   letter-spacing: -0.9px;
 }
@@ -4245,7 +4245,7 @@ button:focus-visible {
   border-radius: 10px;
   color: #2965ba;
   background: #edf5ff;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
 }
 
 .patient-stat-icon-blue {
@@ -4265,14 +4265,14 @@ button:focus-visible {
 
 .patient-stat-card small {
   color: #8793a4;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
 
 .patient-stat-card strong {
   color: #34465e;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .patients-directory {
@@ -4293,12 +4293,12 @@ button:focus-visible {
   margin: 0 0 4px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
 }
 
 .patients-toolbar > div:first-child > span {
   color: #8793a4;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-card-grid {
@@ -4343,7 +4343,7 @@ button:focus-visible {
   border-radius: 13px;
   color: #2b64b5;
   background: #edf5ff;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   font-weight: 700;
 }
 
@@ -4352,7 +4352,7 @@ button:focus-visible {
   margin: 14px 0 4px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4360,7 +4360,7 @@ button:focus-visible {
 .patient-card-subtitle {
   margin: 0;
   color: #7c899c;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-card-meta {
@@ -4371,7 +4371,7 @@ button:focus-visible {
   gap: 7px;
   margin-top: 13px;
   color: #8290a3;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .patient-checkin-state {
@@ -4385,7 +4385,7 @@ button:focus-visible {
 
 .patient-current-insurance {
   margin: 12px 0 0;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 600;
 }
 
@@ -4409,7 +4409,7 @@ button:focus-visible {
   padding: 5px 8px;
   border: 1px solid transparent;
   border-radius: 20px;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -4445,13 +4445,13 @@ button:focus-visible {
 
 .patient-card-footer > span {
   color: #8a96a7;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .patient-card-footer a,
 .patient-table-name {
   color: #2862b4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
 }
 
@@ -4498,21 +4498,21 @@ button:focus-visible {
   border-radius: 12px;
   color: #2862b4;
   background: #edf5ff;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
 }
 
 .patient-modal-title {
   margin: 5px 0;
   color: #2b3e58;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
   letter-spacing: -0.6px;
 }
 
 .patient-modal-description {
   margin: 0 0 18px;
   color: #7c899c;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-form {
@@ -4533,7 +4533,7 @@ button:focus-visible {
   margin: 0;
   color: #455770;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .patient-form-row {
@@ -4547,14 +4547,14 @@ button:focus-visible {
 }
 
 .patient-form .auth-field > span {
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .patient-form .auth-field input,
 .patient-form .auth-field select {
   min-height: 38px;
   padding: 7px 10px;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .patient-insurance-toggle {
@@ -4619,12 +4619,12 @@ button:focus-visible {
 
 .patient-insurance-toggle strong {
   color: #43536a;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-insurance-toggle small {
   color: #8793a4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .patient-form-actions {
@@ -4636,7 +4636,7 @@ button:focus-visible {
 
 .patient-form-actions .auth-button {
   min-height: 38px;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-submit-button {
@@ -4664,17 +4664,17 @@ button:focus-visible {
   width: 59px;
   height: 59px;
   border-radius: 16px;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
 }
 
 .patient-detail-header h1 {
   margin-bottom: 4px;
-  font-size: calc(24px + 3px);
+  font-size: calc(24px + 6px);
 }
 
 .patient-detail-subtitle {
   color: #7d8a9c;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .patient-detail-actions-top {
@@ -4696,7 +4696,7 @@ button:focus-visible {
   background: #fff;
   cursor: pointer;
   font: inherit;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
 }
 
@@ -4730,21 +4730,21 @@ button:focus-visible {
 .patient-detail-fields dt {
   margin-bottom: 4px;
   color: #8793a4;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .patient-detail-fields dd {
   overflow-wrap: anywhere;
   margin: 0;
   color: #43536a;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 600;
 }
 
 .patient-no-insurance,
 .patient-not-checked-in > span {
   color: #8692a3;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.6;
 }
 
@@ -4760,12 +4760,12 @@ button:focus-visible {
 
 .patient-checkin-coverage strong {
   color: #52647c;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .patient-checkin-coverage span {
   color: #718197;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   overflow-wrap: anywhere;
 }
 
@@ -4792,12 +4792,12 @@ button:focus-visible {
 .patient-checked-in-state strong,
 .patient-not-checked-in strong {
   color: #40536d;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .patient-checked-in-state span:last-child {
   color: #8793a4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .patient-not-checked-in .staff-primary-button {
@@ -4910,7 +4910,7 @@ button:focus-visible {
   margin: 6px 0 0;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
   font-weight: 700;
   letter-spacing: -0.4px;
 }
@@ -4924,7 +4924,7 @@ button:focus-visible {
   border-radius: 15px;
   color: #5177ac;
   background: #f5f9fe;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 600;
 }
 
@@ -4951,7 +4951,7 @@ button:focus-visible {
 .profile-detail-grid dt {
   margin-bottom: 5px;
   color: #8a96a8;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .workspace-details dd,
@@ -4959,7 +4959,7 @@ button:focus-visible {
   margin: 0;
   overflow-wrap: anywhere;
   color: #4a5a71;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 600;
   line-height: 1.5;
 }
@@ -4971,7 +4971,7 @@ button:focus-visible {
   justify-content: center;
   gap: 10px;
   color: #828fa2;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .workspace-superadmin-note {
@@ -4997,7 +4997,7 @@ button:focus-visible {
 .workspace-empty {
   margin: 0;
   color: #828fa2;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   line-height: 1.65;
 }
 
@@ -5035,7 +5035,7 @@ button:focus-visible {
   border-radius: 8px;
   color: #6480a8;
   background: #f6f9fc;
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .account-detail-list small,
@@ -5046,14 +5046,14 @@ button:focus-visible {
 .account-detail-list small {
   margin-bottom: 3px;
   color: #8995a5;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
 }
 
 .account-detail-list strong {
   overflow: hidden;
   max-width: 230px;
   color: #526278;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -5066,7 +5066,7 @@ button:focus-visible {
   margin-top: auto;
   padding-top: 17px;
   color: #2b66b8;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
 }
 
@@ -5116,7 +5116,7 @@ button:focus-visible {
   border-radius: 16px;
   color: #245ba9;
   background: #edf5ff;
-  font-size: calc(22px + 3px);
+  font-size: calc(22px + 6px);
   font-weight: 700;
 }
 
@@ -5124,13 +5124,13 @@ button:focus-visible {
   margin: 0 0 4px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .profile-hero p {
   margin: 0;
   color: #818fa3;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .profile-detail-grid {
@@ -5171,21 +5171,21 @@ button:focus-visible {
   border-radius: 10px;
   color: #2b65b6;
   background: #f0f6ff;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
 }
 
 .settings-panel-heading h2 {
   margin: 0 0 4px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
 }
 
 .settings-panel-heading p,
 .settings-identity p {
   margin: 0;
   color: #818fa3;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   line-height: 1.6;
 }
 
@@ -5208,7 +5208,7 @@ button:focus-visible {
   border-radius: 7px;
   color: #245dae;
   background: #f3f8ff;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .settings-identity {
@@ -5230,7 +5230,7 @@ button:focus-visible {
 .settings-identity h2 {
   margin: 0 0 4px;
   color: #43536a;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .settings-identity .dashboard-text-link {
@@ -5425,7 +5425,7 @@ button:focus-visible {
   }
 
   .global-search input {
-    font-size: calc(9px + 3px);
+    font-size: calc(9px + 6px);
   }
 
   .topbar-icon-button {
@@ -5450,7 +5450,7 @@ button:focus-visible {
 
   .dashboard-welcome h1,
   .subpage-heading h1 {
-    font-size: calc(25px + 3px);
+    font-size: calc(25px + 6px);
   }
 
   .welcome-avatar {
@@ -5489,7 +5489,7 @@ button:focus-visible {
     justify-content: center;
     gap: 5px;
     padding-block: 10px;
-    font-size: calc(8px + 3px);
+    font-size: calc(8px + 6px);
   }
 }
 
@@ -5531,11 +5531,11 @@ button:focus-visible {
 }
 
 .topbar-context-label {
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
 }
 
 .topbar-context-page {
-  font-size: calc(13px + 3px);
+  font-size: calc(13px + 6px);
 }
 
 .global-search-wrap {
@@ -5547,7 +5547,7 @@ button:focus-visible {
 }
 
 .global-search input {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .topbar-icon-button {
@@ -5589,11 +5589,11 @@ button:focus-visible {
   width: 40px;
   height: 40px;
   margin-bottom: 15px;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
 }
 
 .dashboard-stat-card .stat-value {
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
 }
 
 .dashboard-lower-grid {
@@ -5606,7 +5606,7 @@ button:focus-visible {
 }
 
 .workspace-panel h2 {
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .workspace-details {
@@ -5616,12 +5616,12 @@ button:focus-visible {
 
 .workspace-details dt,
 .profile-detail-grid dt {
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .workspace-details dd,
 .profile-detail-grid dd {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .account-detail-list {
@@ -5648,7 +5648,7 @@ button:focus-visible {
 }
 
 .settings-password-form .auth-field > span {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 @media (max-width: 1000px) {
@@ -5761,7 +5761,7 @@ button:focus-visible {
   color: #242b36;
   background: #fff;
   font: inherit;
-  font-size: calc(14px + 3px);
+  font-size: calc(14px + 6px);
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease;
@@ -5791,7 +5791,7 @@ button:focus-visible {
   margin: 5px 0 0;
   color: #243752;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(26px + 3px);
+  font-size: calc(26px + 6px);
   font-weight: 700;
   letter-spacing: -0.9px;
 }
@@ -5808,7 +5808,7 @@ button:focus-visible {
   border-radius: 8px;
   cursor: pointer;
   font: inherit;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
   transition:
     background 150ms ease,
@@ -5827,7 +5827,7 @@ button:focus-visible {
 }
 
 .staff-primary-button > span {
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   line-height: 1;
 }
 
@@ -5856,7 +5856,7 @@ button:focus-visible {
   flex: 0 0 auto;
   place-items: center;
   border-radius: 10px;
-  font-size: calc(17px + 3px);
+  font-size: calc(17px + 6px);
 }
 
 .staff-stat-icon-blue {
@@ -5882,7 +5882,7 @@ button:focus-visible {
 
 .staff-stat small {
   color: #8793a4;
-  font-size: calc(8px + 3px);
+  font-size: calc(8px + 6px);
   font-weight: 700;
   letter-spacing: 0.08em;
 }
@@ -5890,13 +5890,13 @@ button:focus-visible {
 .staff-stat strong {
   overflow: hidden;
   color: #34465e;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .staff-stat .staff-stat-status {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .staff-directory,
@@ -5914,7 +5914,7 @@ button:focus-visible {
   margin: 5px 0 0;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
   font-weight: 700;
   letter-spacing: -0.4px;
 }
@@ -5929,7 +5929,7 @@ button:focus-visible {
   color: #66768d;
   background: #fff;
   cursor: pointer;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
 }
 
 .staff-create-dialog {
@@ -5973,7 +5973,7 @@ button:focus-visible {
   border-radius: 13px;
   color: #2862b4;
   background: #edf5ff;
-  font-size: calc(22px + 3px);
+  font-size: calc(22px + 6px);
   font-weight: 500;
 }
 
@@ -5981,7 +5981,7 @@ button:focus-visible {
   margin: 5px 0 5px;
   color: #2b3e58;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
   font-weight: 700;
   letter-spacing: -0.6px;
 }
@@ -5989,7 +5989,7 @@ button:focus-visible {
 .staff-modal-description {
   margin: 0 0 20px;
   color: #7c899c;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   line-height: 1.55;
 }
 
@@ -6014,7 +6014,7 @@ button:focus-visible {
 
 .staff-form-actions .auth-button {
   min-height: 38px;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .staff-form-actions .auth-button-primary {
@@ -6055,7 +6055,7 @@ button:focus-visible {
 
 .staff-directory-toolbar > div:first-child > span {
   color: #8793a4;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .staff-directory-actions {
@@ -6078,7 +6078,7 @@ button:focus-visible {
 }
 
 .staff-search > span:not(.sr-only) {
-  font-size: calc(20px + 3px);
+  font-size: calc(20px + 6px);
   line-height: 1;
 }
 
@@ -6090,7 +6090,7 @@ button:focus-visible {
   color: #34465e;
   background: transparent;
   font: inherit;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
 }
 
 .staff-view-toggle {
@@ -6112,7 +6112,7 @@ button:focus-visible {
   color: #76859a;
   background: transparent;
   cursor: pointer;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .staff-view-toggle button.is-active {
@@ -6170,7 +6170,7 @@ button:focus-visible {
   border-radius: 13px;
   color: #2b64b5;
   background: #edf5ff;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   font-weight: 700;
 }
 
@@ -6182,7 +6182,7 @@ button:focus-visible {
   border-radius: 20px;
   color: #5474a2;
   background: #f5f8fd;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -6192,7 +6192,7 @@ button:focus-visible {
   margin: 15px 0 4px;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(15px + 3px);
+  font-size: calc(15px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -6201,7 +6201,7 @@ button:focus-visible {
   overflow: hidden;
   margin: 0;
   color: #7c899c;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -6214,13 +6214,13 @@ button:focus-visible {
 
 .staff-card-footer > span {
   color: #8a96a7;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
 }
 
 .staff-card-footer a,
 .staff-row-link {
   color: #2862b4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 700;
 }
 
@@ -6234,7 +6234,7 @@ button:focus-visible {
   padding: 25px;
   color: #748399;
   text-align: center;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .staff-empty-state {
@@ -6249,14 +6249,14 @@ button:focus-visible {
   border-radius: 14px;
   color: #4774b2;
   background: #eef4fd;
-  font-size: calc(22px + 3px);
+  font-size: calc(22px + 6px);
 }
 
 .staff-empty-state h3 {
   margin: 2px 0 0;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(16px + 3px);
+  font-size: calc(16px + 6px);
 }
 
 .staff-empty-state p {
@@ -6280,14 +6280,14 @@ button:focus-visible {
   padding: 13px 17px;
   border-bottom: 1px solid #edf0f4;
   color: #58677d;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   white-space: nowrap;
 }
 
 .staff-table th {
   color: #8390a2;
   background: #fafbfd;
-  font-size: calc(9px + 3px);
+  font-size: calc(9px + 6px);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -6305,7 +6305,7 @@ button:focus-visible {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .staff-table-person strong {
@@ -6318,7 +6318,7 @@ button:focus-visible {
   gap: 7px;
   margin-bottom: 19px;
   color: #5274a4;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
   font-weight: 600;
 }
 
@@ -6335,12 +6335,12 @@ button:focus-visible {
   width: 58px;
   height: 58px;
   border-radius: 16px;
-  font-size: calc(21px + 3px);
+  font-size: calc(21px + 6px);
 }
 
 .staff-detail-heading h1 {
   margin-bottom: 6px;
-  font-size: calc(24px + 3px);
+  font-size: calc(24px + 6px);
 }
 
 .staff-delete-button {
@@ -6372,7 +6372,7 @@ button:focus-visible {
 
 .staff-detail-id {
   color: #8490a1;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
   font-weight: 600;
 }
 
@@ -6396,12 +6396,12 @@ button:focus-visible {
 
 .staff-detail-meta small {
   color: #8793a4;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .staff-detail-meta strong {
   color: #43536a;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .staff-detail-actions {
@@ -6425,7 +6425,7 @@ button:focus-visible {
 
   .staff-page-heading h1,
   .staff-detail-heading h1 {
-    font-size: calc(22px + 3px);
+    font-size: calc(22px + 6px);
   }
 
   .staff-stats {
@@ -6505,7 +6505,7 @@ button:focus-visible {
   }
 
   .staff-modal-title {
-    font-size: calc(19px + 3px);
+    font-size: calc(19px + 6px);
   }
 }
 
@@ -6558,13 +6558,13 @@ button:focus-visible {
   margin: 4px 0;
   color: #34465e;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(19px + 3px);
+  font-size: calc(19px + 6px);
 }
 
 .nurse-vitals-section-heading p {
   margin: 0;
   color: #7e8a9b;
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 6px);
 }
 
 .nurse-patient-count {
@@ -6573,7 +6573,7 @@ button:focus-visible {
   border-radius: 999px;
   color: #3766a8;
   background: #eef5ff;
-  font-size: calc(11px + 3px);
+  font-size: calc(11px + 6px);
   font-weight: 700;
 }
 
@@ -6646,7 +6646,7 @@ button:focus-visible {
   border-radius: 99px;
   color: #5274a3;
   background: #edf3fb;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .patient-current-vitals-grid {
@@ -6669,19 +6669,19 @@ button:focus-visible {
 
 .patient-vital-reading > span {
   color: #818fa3;
-  font-size: calc(10px + 3px);
+  font-size: calc(10px + 6px);
 }
 
 .patient-vital-reading strong {
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(18px + 3px);
+  font-size: calc(18px + 6px);
 }
 
 .patient-vital-reading small {
   color: #8793a4;
   font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
 }
 
@@ -6740,7 +6740,7 @@ button:focus-visible {
 .vitals-trend-card figcaption span {
   overflow: hidden;
   color: #718096;
-  font-size: 12px;
+  font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -6748,7 +6748,7 @@ button:focus-visible {
 .vitals-trend-card figcaption strong {
   flex: 0 0 auto;
   color: #35475f;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .vitals-trend-chart {
@@ -6781,7 +6781,7 @@ button:focus-visible {
   justify-content: space-between;
   gap: 8px;
   color: #8a96a7;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .vitals-trend-footer span:first-child {
@@ -6792,7 +6792,7 @@ button:focus-visible {
   grid-column: 1 / -1;
   margin: -3px 0 0;
   color: #8995a6;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -6802,7 +6802,7 @@ button:focus-visible {
   align-items: center;
   margin: 0;
   color: #8592a4;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .vitals-form-dialog {
@@ -6895,7 +6895,7 @@ button:focus-visible {
   border-radius: 10px;
   color: #785b21;
   background: #fffaf0;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 .clinical-header-counts,
@@ -6918,7 +6918,7 @@ button:focus-visible {
   height: 33px;
   justify-content: center;
   padding: 0 11px;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
   font-weight: 600;
   white-space: nowrap;
 }
@@ -6969,7 +6969,7 @@ button:focus-visible {
 
 .clinical-patient-identity > div > span {
   color: #8490a2;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 .clinical-patient-row .staff-primary-button,
@@ -6981,7 +6981,7 @@ button:focus-visible {
   flex: 0 0 auto;
   min-height: 36px;
   padding: 0 13px;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 .clinical-work-item {
@@ -7006,7 +7006,7 @@ button:focus-visible {
   margin: 0;
   color: #34465e;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(17px + 2px);
+  font-size: calc(17px + 5px);
 }
 
 .clinical-work-item-main > p,
@@ -7030,7 +7030,7 @@ button:focus-visible {
   border-radius: 999px;
   color: #556d8f;
   background: #f0f3f8;
-  font-size: calc(10px + 2px);
+  font-size: calc(10px + 5px);
   font-weight: 700;
   text-transform: capitalize;
 }
@@ -7083,12 +7083,12 @@ button:focus-visible {
   margin: 0;
   color: #35475f;
   font-family: 'Manrope', sans-serif;
-  font-size: calc(16px + 2px);
+  font-size: calc(16px + 5px);
 }
 
 .clinical-catalog-group > header > span {
   color: #8793a4;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 .clinical-inventory-grid {
@@ -7132,14 +7132,14 @@ button:focus-visible {
 .clinical-inventory-card h3 {
   margin: 0;
   color: #35475f;
-  font-size: calc(14px + 2px);
+  font-size: calc(14px + 5px);
   line-height: 1.4;
 }
 
 .clinical-inventory-card > p {
   margin: 0;
   color: #8793a4;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
 }
 
 .clinical-inventory-card-footer {
@@ -7152,12 +7152,12 @@ button:focus-visible {
 
 .clinical-inventory-card-footer > span {
   color: #66758a;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
 }
 
 .clinical-inventory-card-footer > span strong {
   color: #35475f;
-  font-size: calc(16px + 2px);
+  font-size: calc(16px + 5px);
 }
 
 .clinical-inventory-card-footer > span small {
@@ -7166,7 +7166,7 @@ button:focus-visible {
 
 .clinical-demo-tag {
   color: #987230;
-  font-size: calc(10px + 2px);
+  font-size: calc(10px + 5px);
 }
 
 .clinical-form-grid {
@@ -7225,14 +7225,14 @@ button:focus-visible {
   border: 0;
   color: #a14c49;
   background: transparent;
-  font-size: 19px;
+  font-size: 22px;
   cursor: pointer;
 }
 
 .clinical-helper {
   margin: 9px 0 0;
   color: #7f8b9b;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
 }
 
 .clinical-dialog {
@@ -7253,7 +7253,7 @@ button:focus-visible {
   border-radius: 9px;
   color: #5c6c83;
   background: #f5f8fc;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 .patient-clinical-tab {
@@ -7290,7 +7290,7 @@ button:focus-visible {
 
 .clinical-entry-heading > strong {
   color: #35475f;
-  font-size: calc(14px + 2px);
+  font-size: calc(14px + 5px);
 }
 
 .clinical-entry-text-grid {
@@ -7311,14 +7311,14 @@ button:focus-visible {
 .clinical-history-entry b,
 .clinical-dispensation-list > b {
   color: #828fa2;
-  font-size: calc(10px + 2px);
+  font-size: calc(10px + 5px);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .clinical-entry-meta {
   color: #8793a4 !important;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
 }
 
 .clinical-result-value {
@@ -7340,7 +7340,7 @@ button:focus-visible {
   border-radius: 999px;
   color: #42699f;
   background: #eff5fd;
-  font-size: calc(11px + 2px);
+  font-size: calc(11px + 5px);
   font-weight: 600;
 }
 
@@ -7353,7 +7353,7 @@ button:focus-visible {
 
 .clinical-dispensation-list > span {
   color: #5f6e83;
-  font-size: calc(12px + 2px);
+  font-size: calc(12px + 5px);
 }
 
 @media (max-width: 960px) {
@@ -7477,7 +7477,7 @@ button:focus-visible {
 
 .not-found-page h1 {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: calc(clamp(2rem, 5vw, 3.5rem) + 3px);
   letter-spacing: -0.04em;
 }
 
@@ -7644,7 +7644,7 @@ button:focus-visible {
 @media (max-width: 900px) {
   .landing .site-header { gap: 16px; }
   .landing .main-nav { gap: 18px; padding-inline: 10px; }
-  .landing .main-nav a { font-size: 13px; }
+  .landing .main-nav a { font-size: 16px; }
   .landing .brand-mark { width: 165px; }
 }
 
@@ -7713,7 +7713,7 @@ button:focus-visible {
     padding: 0 13px;
     border-radius: 9px;
     color: #334c70;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 600;
   }
 
@@ -7741,9 +7741,9 @@ button:focus-visible {
   .landing .site-header { padding-inline: 16px; }
   .landing .brand-mark { width: 138px; max-height: 42px; }
   .landing .header-actions { gap: 8px; }
-  .landing .header-actions .button-small { padding-inline: 10px; font-size: 12px; }
+  .landing .header-actions .button-small { padding-inline: 10px; font-size: 15px; }
   .landing .mobile-menu-toggle { width: 37px; height: 37px; }
-  .landing .hero h1 { font-size: clamp(36px, 10vw, 46px); letter-spacing: -1.8px; }
+  .landing .hero h1 { font-size: calc(clamp(36px, 10vw, 46px) + 3px); letter-spacing: -1.8px; }
   .landing .floating-note { right: 0; }
 }
 
@@ -8168,7 +8168,7 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   margin-top: 28px;
   padding-inline: 22px;
   color: #8b9bb2;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: .13em;
 }
 .sidebar-navigation { gap: 5px; padding-inline: 12px; }
@@ -8178,7 +8178,7 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   padding-inline: 13px;
   border-radius: 13px;
   color: #62758f;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
 }
 .sidebar-nav-link:hover {
@@ -8373,7 +8373,7 @@ table thead { background: #f6f9fe; }
 table th {
   color: #7588a3;
   border-bottom-color: #e2eaf5;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: .045em;
 }
@@ -8578,7 +8578,7 @@ table tbody tr:hover { background: #f8faff; }
   .dashboard-welcome h1,
   .subpage-heading h1,
   .patients-page-heading h1,
-  .patient-detail-header h1 { font-size: 28px; }
+  .patient-detail-header h1 { font-size: 31px; }
   .workspace-panel { padding: 16px; border-radius: 17px; }
   .dashboard-stat-card,
   .patient-stat-card { border-radius: 17px; }
@@ -8722,5 +8722,1135 @@ table tbody tr:hover { background: #f8faff; }
     .nurse-vitals-queue, .clinical-inventory-card, .consultation-card,
     .lab-order-card, .pharmacy-card, .account-panel, .department-workspace-panel) {
     border-radius: 16px;
+  }
+}
+
+/* Shared, quiet table and search language for every hospital workspace. */
+.dashboard-app-shell .staff-table-wrap,
+.dashboard-app-shell .patient-table-wrap,
+.dashboard-app-shell .table-wrap,
+.dashboard-app-shell .data-table-wrap {
+  overflow: auto;
+  border: 1px solid #e3eaf3;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgb(31 54 86 / 4%);
+  scrollbar-color: #c4d1e2 #f5f7fb;
+  scrollbar-width: thin;
+}
+
+.dashboard-app-shell :is(.staff-directory, .patients-directory, .nurse-vitals-history,
+  .patient-vitals-history-panel) .staff-table-wrap {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.dashboard-app-shell .staff-table,
+.dashboard-app-shell .patient-table {
+  min-width: 720px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.dashboard-app-shell .vitals-history-table {
+  min-width: 980px;
+}
+
+.dashboard-app-shell .staff-table th,
+.dashboard-app-shell .patient-table th {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e5ebf3;
+  color: #63758e;
+  background: #f7f9fc;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.dashboard-app-shell .staff-table td,
+.dashboard-app-shell .patient-table td {
+  height: 58px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #edf1f6;
+  color: #40536d;
+  background: #fff;
+  font-size: 16px;
+  line-height: 1.45;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.dashboard-app-shell .staff-table tbody tr,
+.dashboard-app-shell .patient-table tbody tr {
+  transition: background-color 140ms ease;
+}
+
+.dashboard-app-shell .staff-table tbody tr:hover td,
+.dashboard-app-shell .patient-table tbody tr:hover td {
+  background: #f8faff;
+}
+
+.dashboard-app-shell .staff-table tbody tr:last-child td,
+.dashboard-app-shell .patient-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dashboard-app-shell .staff-table-person strong,
+.dashboard-app-shell .staff-table td:first-child,
+.dashboard-app-shell .patient-table td:first-child {
+  color: #2c405c;
+  font-weight: 600;
+}
+
+.dashboard-app-shell .staff-table td small,
+.dashboard-app-shell .patient-table td small {
+  color: #8290a3;
+  font-size: 14px;
+}
+
+.dashboard-app-shell .staff-table th:first-child,
+.dashboard-app-shell .patient-table th:first-child {
+  border-top-left-radius: 15px;
+}
+
+.dashboard-app-shell .staff-table th:last-child,
+.dashboard-app-shell .patient-table th:last-child {
+  border-top-right-radius: 15px;
+}
+
+.dashboard-app-shell .staff-search {
+  width: min(320px, 36vw);
+  min-width: 210px;
+  min-height: 44px;
+  gap: 10px;
+  padding: 0 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+  color: #7a8ba2;
+  background: #f8fafd;
+  box-shadow: inset 0 1px 1px rgb(25 45 72 / 2%);
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.dashboard-app-shell .staff-search:focus-within {
+  border-color: #a9c4ed;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(51 113 205 / 9%);
+}
+
+.dashboard-app-shell .staff-search > span:not(.sr-only) {
+  position: relative;
+  display: block;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+}
+
+.dashboard-app-shell .staff-search > span:not(.sr-only)::before {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 10px;
+  height: 10px;
+  border: 1.7px solid #8293aa;
+  border-radius: 50%;
+  content: '';
+}
+
+.dashboard-app-shell .staff-search > span:not(.sr-only)::after {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+  width: 5px;
+  height: 1.7px;
+  border-radius: 2px;
+  background: #8293aa;
+  content: '';
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.dashboard-app-shell .staff-search input {
+  min-width: 0;
+  height: 40px;
+  color: #30445f;
+  font-size: 16px;
+}
+
+.dashboard-app-shell .staff-search input::placeholder {
+  color: #8998ab;
+}
+
+.dashboard-app-shell .staff-directory-toolbar,
+.dashboard-app-shell .patients-toolbar,
+.dashboard-app-shell .clinical-workspace-toolbar {
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #edf1f6;
+  background: #fff;
+}
+
+.dashboard-app-shell .clinical-workspace-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-block: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.dashboard-app-shell .clinical-workspace-toolbar .staff-search {
+  width: min(370px, 45%);
+}
+
+.dashboard-app-shell .staff-directory-actions {
+  gap: 10px;
+}
+
+.dashboard-app-shell .staff-view-toggle {
+  min-height: 44px;
+  align-items: center;
+  padding: 4px;
+  border-color: #e3e9f1;
+  border-radius: 13px;
+  background: #f4f6f9;
+}
+
+.dashboard-app-shell .staff-view-toggle button {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: #7a899d;
+}
+
+.dashboard-app-shell .staff-view-toggle button.is-active {
+  color: #285fa9;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(31 54 86 / 12%);
+}
+
+.dashboard-app-shell .nurse-history-heading {
+  flex-wrap: wrap;
+}
+
+.dashboard-app-shell .nurse-history-heading .vitals-history-search {
+  width: min(280px, 100%);
+  min-width: 210px;
+}
+
+/* The account/setup pane is a deliberate card layout, not a form floating on a split screen. */
+.auth-shell {
+  min-height: 100svh;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  background: #f5f7fb;
+}
+
+.auth-showcase {
+  min-height: 100svh;
+}
+
+.auth-panel {
+  position: relative;
+  min-width: 0;
+  min-height: 100svh;
+  justify-content: center;
+  gap: 13px;
+  padding: 38px clamp(24px, 5vw, 68px);
+  background:
+    radial-gradient(ellipse at 92% 4%, rgb(216 230 252 / 68%), transparent 34%),
+    linear-gradient(180deg, #f7f9fd 0%, #f1f5fb 100%);
+}
+
+.auth-panel-caption {
+  display: flex;
+  width: min(100%, 520px);
+  align-items: center;
+  gap: 9px;
+  color: #7788a0;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.auth-panel-caption-mark {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 1px solid #d7e4f6;
+  border-radius: 9px;
+  color: #2b63b1;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(37 67 109 / 5%);
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.auth-card {
+  width: min(100%, 520px);
+  padding: clamp(25px, 3.1vw, 38px);
+  border: 1px solid #e2e9f3;
+  border-radius: 26px;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 24px 65px rgb(30 57 95 / 9%), 0 2px 8px rgb(30 57 95 / 3%);
+}
+
+.auth-card .auth-heading {
+  margin-bottom: 22px;
+}
+
+.auth-card .auth-heading .auth-kicker {
+  margin-bottom: 11px;
+  font-size: 13px;
+}
+
+.auth-card .auth-heading h2 {
+  max-width: 440px;
+  margin-bottom: 9px;
+  font-size: calc(clamp(28px, 3vw, 36px) + 3px);
+  line-height: 1.14;
+}
+
+.auth-card .auth-heading > p {
+  max-width: 430px;
+  font-size: 17px;
+}
+
+.auth-card .auth-form {
+  gap: 15px;
+}
+
+.auth-card .auth-field {
+  gap: 7px;
+}
+
+.auth-card .auth-field > span {
+  color: #445873;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.auth-card .auth-field input,
+.auth-card .auth-field select,
+.auth-card .auth-password-wrap input {
+  min-height: 48px;
+  padding: 11px 14px;
+  border-color: #dfe6f0;
+  border-radius: 12px;
+  color: #253953;
+  background: #fbfcfe;
+  font-size: 17px;
+}
+
+.auth-card .auth-password-wrap input {
+  padding-right: 68px;
+}
+
+.auth-card .auth-password-wrap input:focus,
+.auth-card .auth-field input:focus,
+.auth-card .auth-field select:focus {
+  border-color: #91b3e8;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(47 105 191 / 10%);
+}
+
+.auth-card .auth-field > small {
+  color: #8795a8;
+  font-size: 14px;
+}
+
+.auth-card .password-toggle {
+  right: 12px;
+  color: #2862ad;
+  font-size: 15px;
+}
+
+.auth-card .auth-button-primary {
+  min-height: 48px;
+  margin-top: 3px;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #3479dc, #2464bd);
+  box-shadow: 0 8px 18px rgb(37 99 190 / 19%);
+  font-size: 17px;
+}
+
+.auth-card .auth-button-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #2b6fcf, #1e58a8);
+  box-shadow: 0 10px 22px rgb(37 99 190 / 24%);
+}
+
+.auth-card .auth-legal {
+  margin-top: 20px;
+  color: #8a97a9;
+  font-size: 14px;
+}
+
+.auth-panel-footer {
+  width: min(100%, 520px);
+  margin-top: 4px;
+  color: #738198;
+  font-size: 16px;
+}
+
+.auth-panel-footer a {
+  color: #245fae;
+}
+
+.auth-card .auth-tenant-note {
+  margin-bottom: 19px;
+  padding: 12px 14px;
+  border-radius: 13px;
+  background: #f6f9fe;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.auth-card .signup-progress {
+  gap: 9px;
+  margin: -2px 0 21px;
+}
+
+.auth-card .signup-progress-step {
+  gap: 7px;
+  color: #8b98aa;
+  font-size: 14px;
+}
+
+.auth-card .signup-progress-step > span {
+  width: 27px;
+  height: 27px;
+  border-color: #e2e8f1;
+  color: #718199;
+  background: #fff;
+  font-size: 13px;
+}
+
+.auth-card .signup-progress-step.is-current {
+  color: #2d5f9f;
+}
+
+.auth-card .signup-progress-step.is-current > span {
+  border-color: #cfdef4;
+  color: #245fae;
+  background: #eef5ff;
+}
+
+.auth-card .signup-progress-line {
+  flex: 1;
+  max-width: 60px;
+  background: #dfe6f0;
+}
+
+@media (max-width: 920px) {
+  .auth-shell {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  }
+
+  .auth-panel {
+    padding-inline: clamp(20px, 4vw, 38px);
+  }
+
+  .auth-card {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .auth-shell {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0;
+    background:
+      radial-gradient(ellipse at 92% 0%, rgb(226 237 253 / 78%), transparent 35%),
+      #f4f7fc;
+  }
+
+  .auth-showcase {
+    display: none;
+  }
+
+  .auth-panel {
+    width: 100%;
+    min-height: 100svh;
+    justify-content: center;
+    gap: 12px;
+    padding: 28px 20px;
+    background: transparent;
+  }
+
+  .auth-mobile-brand {
+    display: inline-flex;
+    align-self: center;
+    margin: 0 0 8px;
+  }
+
+  .auth-mobile-brand img {
+    width: 166px;
+    max-height: 54px;
+    object-fit: contain;
+  }
+
+  .auth-panel-caption {
+    display: none;
+  }
+
+  .auth-card {
+    width: min(100%, 520px);
+    padding: clamp(24px, 6vw, 34px);
+    border-radius: 23px;
+  }
+
+  .auth-panel-footer {
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 430px) {
+  .auth-panel {
+    padding-inline: 15px;
+  }
+
+  .auth-card {
+    padding: 23px 19px;
+    border-radius: 20px;
+  }
+
+  .auth-card .auth-heading h2 {
+    font-size: 31px;
+  }
+
+  .auth-card .auth-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel-footer {
+    font-size: 15px;
+  }
+
+  .dashboard-app-shell .staff-directory-toolbar,
+  .dashboard-app-shell .patients-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-app-shell .staff-directory-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-app-shell .staff-directory-actions .staff-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-app-shell .clinical-workspace-toolbar .staff-search,
+  .dashboard-app-shell .nurse-history-heading .vitals-history-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-app-shell .nurse-history-heading .vitals-date-filter {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+}
+
+/* Patient directory: make search and record rows read as one focused workspace. */
+.dashboard-app-shell .patients-directory {
+  overflow: hidden;
+  border-color: #e4eaf2;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgb(31 54 86 / 5%);
+}
+
+.dashboard-app-shell .patients-toolbar {
+  align-items: flex-end;
+  padding: 20px 22px;
+  border-bottom-color: #edf1f6;
+  background:
+    linear-gradient(180deg, #fff 0%, #fcfdff 100%);
+}
+
+.dashboard-app-shell .patients-toolbar > div:first-child {
+  display: grid;
+  gap: 5px;
+  min-width: 180px;
+}
+
+.dashboard-app-shell .patients-toolbar h2 {
+  margin: 0;
+  color: #263d5b;
+  font-family: 'Manrope', sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.dashboard-app-shell .patients-toolbar > div:first-child > span {
+  color: #7f8da1;
+  font-size: 15px;
+}
+
+.dashboard-app-shell .patients-toolbar .staff-directory-actions {
+  flex: 1;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.dashboard-app-shell .patients-toolbar .patients-search {
+  width: min(400px, 100%);
+  min-height: 46px;
+  padding-inline: 14px;
+  border-color: #e0e7f0;
+  border-radius: 14px;
+  background: #f7f9fc;
+}
+
+.dashboard-app-shell .patients-toolbar .patients-search:focus-within {
+  border-color: #9bb9e4;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(48 105 185 / 9%);
+}
+
+.dashboard-app-shell .patients-search input {
+  height: 42px;
+  font-size: 16px;
+}
+
+.dashboard-app-shell .patients-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.dashboard-app-shell .patients-search-clear {
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border: 0;
+  border-radius: 7px;
+  color: #55749e;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.dashboard-app-shell .patients-search-clear:hover {
+  color: #2458a3;
+  background: #eaf1fb;
+}
+
+.dashboard-app-shell .patients-view-toggle {
+  flex: 0 0 auto;
+}
+
+.dashboard-app-shell .patients-directory .staff-table-wrap {
+  overflow-x: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.dashboard-app-shell .patient-table {
+  min-width: 850px;
+}
+
+.dashboard-app-shell .patient-table th {
+  height: 44px;
+  padding: 11px 18px;
+  color: #74849a;
+  background: #f7f9fc;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.dashboard-app-shell .patient-table td {
+  height: 72px;
+  padding: 12px 18px;
+  color: #52647b;
+  font-size: 16px;
+}
+
+.dashboard-app-shell .patient-table tbody tr:hover td {
+  background: #f7faff;
+}
+
+.dashboard-app-shell .patient-table-person {
+  display: flex;
+  min-width: 220px;
+  align-items: center;
+  gap: 11px;
+}
+
+.dashboard-app-shell .patient-table-avatar {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #e1eafa;
+  border-radius: 13px;
+  color: #3569ad;
+  background: #eff5ff;
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.dashboard-app-shell .patient-table-identity,
+.dashboard-app-shell .patient-table-coverage {
+  display: grid;
+  min-width: 0;
+  justify-items: start;
+  gap: 4px;
+}
+
+.dashboard-app-shell .patient-table .patient-table-name {
+  overflow: hidden;
+  max-width: 255px;
+  color: #2d4564;
+  font-size: 16px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.dashboard-app-shell .patient-table .patient-table-name:hover {
+  color: #1d5eaf;
+}
+
+.dashboard-app-shell .patient-table-identity small,
+.dashboard-app-shell .patient-table-secondary,
+.dashboard-app-shell .patient-table-coverage > small {
+  display: block;
+  overflow: hidden;
+  max-width: 245px;
+  color: #8794a6;
+  font-size: 14px;
+  font-weight: 450;
+  text-overflow: ellipsis;
+}
+
+.dashboard-app-shell .patient-table-age {
+  color: #344b69;
+  font-weight: 650;
+}
+
+.dashboard-app-shell .patient-table-age small {
+  color: #8996a8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dashboard-app-shell .patient-table-visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #79879a;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.dashboard-app-shell .patient-table-visit i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b5bfcc;
+}
+
+.dashboard-app-shell .patient-table-visit.is-checked-in {
+  color: #32745f;
+}
+
+.dashboard-app-shell .patient-table-visit.is-checked-in i {
+  background: #48a987;
+  box-shadow: 0 0 0 3px #e9f6f0;
+}
+
+.dashboard-app-shell .patient-table td .patient-table-secondary {
+  margin-top: 5px;
+}
+
+.dashboard-app-shell .patient-table-action {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid #e0e9f7;
+  border-radius: 10px;
+  color: #3568ae;
+  background: #f8faff;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.dashboard-app-shell .patient-table-action:hover {
+  border-color: #c9d9f1;
+  background: #edf4ff;
+}
+
+@media (max-width: 720px) {
+  .dashboard-app-shell .patients-toolbar {
+    align-items: stretch;
+    padding: 17px;
+  }
+
+  .dashboard-app-shell .patients-toolbar .staff-directory-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .dashboard-app-shell .patients-toolbar .patients-search {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard-app-shell .patients-toolbar .staff-directory-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-app-shell .patients-view-toggle {
+    justify-self: end;
+  }
+}
+
+/* Frosted patient identity cards, shared by reception and nursing queues. */
+.dashboard-app-shell .patient-card-grid {
+  align-items: stretch;
+  gap: 15px;
+  padding: 18px;
+}
+
+.dashboard-app-shell .patient-card {
+  position: relative;
+  display: flex;
+  min-height: 285px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgb(207 222 240 / 86%);
+  border-radius: 23px;
+  background:
+    radial-gradient(ellipse at 88% 4%, rgb(187 221 246 / 74%), transparent 46%),
+    radial-gradient(ellipse at 8% 98%, rgb(194 240 231 / 70%), transparent 46%),
+    linear-gradient(145deg, #f7faff 0%, #eef5fc 48%, #e9f7f5 100%);
+  box-shadow: 0 10px 28px rgb(37 67 109 / 7%), inset 0 1px 0 rgb(255 255 255 / 88%);
+  isolation: isolate;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.dashboard-app-shell .patient-card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 1px;
+  border: 1px solid rgb(255 255 255 / 70%);
+  border-radius: 22px;
+  content: '';
+  pointer-events: none;
+}
+
+.dashboard-app-shell .patient-card-glow {
+  position: absolute;
+  z-index: -1;
+  top: -66px;
+  right: -48px;
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 42%);
+  filter: blur(3px);
+  pointer-events: none;
+}
+
+.dashboard-app-shell .patient-card:hover {
+  border-color: #bed2eb;
+  box-shadow: 0 16px 34px rgb(37 67 109 / 11%), inset 0 1px 0 rgb(255 255 255 / 90%);
+  transform: translateY(-3px);
+}
+
+.dashboard-app-shell .patient-card-content {
+  display: flex;
+  min-height: 100%;
+  flex: 1;
+  flex-direction: column;
+  padding: 18px;
+}
+
+.dashboard-app-shell .patient-card-topline {
+  display: flex;
+  min-height: 26px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashboard-app-shell .patient-card-record-label {
+  color: #7d90a8;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.dashboard-app-shell .patient-card .patient-insurance-badge {
+  padding: 5px 9px;
+  border-color: rgb(255 255 255 / 85%);
+  background: rgb(255 255 255 / 70%);
+  box-shadow: 0 2px 7px rgb(49 76 111 / 5%);
+  font-size: 13px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dashboard-app-shell .patient-card .patient-insurance-badge.is-active {
+  color: #28775f;
+  background: rgb(232 249 241 / 84%);
+}
+
+.dashboard-app-shell .patient-card .patient-insurance-badge.is-nearing {
+  color: #92671f;
+  background: rgb(255 248 232 / 88%);
+}
+
+.dashboard-app-shell .patient-card .patient-insurance-badge.is-expired,
+.dashboard-app-shell .patient-card .patient-insurance-badge.is-uninsured {
+  color: #8a6370;
+  background: rgb(255 244 246 / 84%);
+}
+
+.dashboard-app-shell .patient-card-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.dashboard-app-shell .patient-card .patient-avatar {
+  width: 52px;
+  height: 52px;
+  border: 2px solid rgb(255 255 255 / 92%);
+  border-radius: 18px;
+  color: #315f9c;
+  background: linear-gradient(145deg, #b9d8f8, #d5f0ed);
+  box-shadow: 0 5px 14px rgb(44 81 132 / 12%);
+  font-family: 'Manrope', sans-serif;
+  font-size: 20px;
+}
+
+.dashboard-app-shell .patient-card-name-group {
+  min-width: 0;
+}
+
+.dashboard-app-shell .patient-card h3 {
+  margin: 0 0 5px;
+  color: #213b5b;
+  font-family: 'Manrope', sans-serif;
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.dashboard-app-shell .patient-card-subtitle {
+  margin: 0;
+  color: #6e8199;
+  font-size: 15px;
+}
+
+.dashboard-app-shell .patient-card-residence {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  margin: 14px 0 0;
+  color: #687e98;
+  font-size: 14px;
+}
+
+.dashboard-app-shell .patient-card-residence > span:first-child {
+  flex: 0 0 auto;
+  color: #497ab6;
+  font-size: 18px;
+}
+
+.dashboard-app-shell .patient-card-residence > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-app-shell .patient-card-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 0;
+  border-top: 1px solid rgb(255 255 255 / 82%);
+  border-bottom: 1px solid rgb(255 255 255 / 82%);
+}
+
+.dashboard-app-shell .patient-card-fact {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 4px;
+}
+
+.dashboard-app-shell .patient-card-fact > span {
+  color: #8494a8;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.dashboard-app-shell .patient-card-fact strong {
+  overflow: hidden;
+  color: #536b87;
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-app-shell .patient-card-fact strong.is-active,
+.dashboard-app-shell .patient-card-fact strong.is-checked-in {
+  color: #28775f;
+}
+
+.dashboard-app-shell .patient-card-fact strong.is-nearing {
+  color: #946920;
+}
+
+.dashboard-app-shell .patient-card-fact strong.is-expired,
+.dashboard-app-shell .patient-card-fact strong.is-uninsured {
+  color: #956472;
+}
+
+.dashboard-app-shell .patient-card-fact small {
+  overflow: hidden;
+  color: #798ba1;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-app-shell .patient-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 14px;
+  border: 0;
+}
+
+.dashboard-app-shell .patient-card-primary-action {
+  display: inline-flex;
+  min-height: 38px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 11px;
+  border: 1px solid rgb(255 255 255 / 92%);
+  border-radius: 13px;
+  color: #294c78;
+  background: rgb(255 255 255 / 74%);
+  box-shadow: 0 3px 9px rgb(41 70 106 / 6%);
+  font-size: 14px;
+  font-weight: 750;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.dashboard-app-shell .patient-card-primary-action:hover {
+  border-color: #c9daef;
+  color: #1f5a9f;
+  background: #fff;
+}
+
+.dashboard-app-shell .patient-card-footer .patient-card-vitals-action {
+  min-height: 38px;
+  flex: 0 0 auto;
+  padding-inline: 11px;
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 13px;
+  background: rgb(255 255 255 / 66%);
+  font-size: 14px;
+}
+
+.dashboard-app-shell .patient-card-footer .patient-card-vitals-action:hover {
+  border-color: #c9daef;
+  background: #fff;
+}
+
+@media (max-width: 420px) {
+  .dashboard-app-shell .patient-card-content {
+    padding: 16px;
+  }
+
+  .dashboard-app-shell .patient-card-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-app-shell .patient-card-footer > * {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 761px) and (max-height: 820px) {
+  .auth-panel {
+    justify-content: flex-start;
+    padding-block: 22px;
+    gap: 9px;
+  }
+
+  .auth-card {
+    padding: 24px;
+  }
+
+  .auth-card .auth-heading {
+    margin-bottom: 15px;
+  }
+
+  .auth-card .auth-form {
+    gap: 11px;
+  }
+
+  .auth-card .auth-field input,
+  .auth-card .auth-field select,
+  .auth-card .auth-password-wrap input {
+    min-height: 44px;
+    padding-block: 9px;
+  }
+
+  .auth-card .auth-button-primary {
+    min-height: 44px;
   }
 }
