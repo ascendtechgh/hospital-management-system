@@ -192,7 +192,7 @@ function PatientsPage() {
                     <tr key={patient.id}>
                       <td><Link className="patient-table-name" to={`${basePath}/patients/${patient.id}`}>{patient.full_name}</Link></td>
                       <td>{calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? '—'}</td>
-                      <td>{patient.sex === 'male' ? 'Male' : 'Female'}</td>
+                      <td>{patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'}</td>
                       <td><InsuranceBadge patient={patient} today={today} /></td>
                       <td>{patient.checked_in_at ? 'Checked in' : 'Not checked in'}</td>
                       <td><Link className="staff-row-link" to={`${basePath}/patients/${patient.id}`}>Details →</Link></td>
