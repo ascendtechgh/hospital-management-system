@@ -7621,3 +7621,8 @@ button:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Keep the mobile menu absent from layout and accessibility tree while closed. */
+.landing .mobile-site-nav[hidden] {
+  display: none;
+}
