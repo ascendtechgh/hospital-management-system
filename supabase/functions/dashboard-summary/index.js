@@ -89,7 +89,7 @@ Deno.serve(async (request) => {
       ] = await Promise.all([
         count(admin, 'patients', hospital),
         count(admin, 'patients', (q) => hospital(q).eq('insurance_enabled', true).gte('insurance_expiry', date)),
-        count(admin, 'patients', (q) => hospital(q).eq('insurance_enabled', false)),
+        count(admin, 'patients', (q) => hospital(q).or(`insurance_enabled.eq.false,insurance_expiry.lt.${date}`)),
         count(admin, 'patients', (q) => hospital(q).eq('insurance_enabled', true).lt('insurance_expiry', date)),
         count(admin, 'patients', (q) => hospital(q).eq('insurance_enabled', true).gte('insurance_expiry', date).lte('insurance_expiry', new Date(Date.parse(date + 'T00:00:00Z') + 90 * 86400000).toISOString().slice(0, 10))),
         count(admin, 'patients', today('created_at')),
