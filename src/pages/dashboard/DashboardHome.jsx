@@ -2,348 +2,315 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useRealtimeSubscription } from '../../hooks/useRealtimeSubscription.js';
-import { usePatientRealtime } from '../../hooks/usePatientRealtime.js';
-import { staffRequest } from '../../lib/staffApi.js';
-import { patientRequest } from '../../lib/patientApi.js';
+import { dashboardSummary } from '../../lib/dashboardApi.js';
 
-const departmentWorkspaces = {
+const dashboardConfig = {
+  superadmin: {
+    eyebrow: 'PLATFORM OVERVIEW',
+    title: 'Platform operations',
+    description: 'A current view of hospitals and accounts across AscendHMS.',
+    cards: [
+      ['hospitals', 'Registered hospitals', 'Hospital workspaces'],
+      ['staff', 'User accounts', 'All platform profiles'],
+    ],
+    actions: [],
+  },
   hospitaladmin: {
+    eyebrow: 'HOSPITAL OVERVIEW',
     title: 'Hospital operations',
-    description: 'Manage staff accounts and review the active patient directory.',
-    actions: [
-      { label: 'Manage staff', to: '/dashboard/hospitaladmin/staff' },
-      { label: 'Patient directory', to: '/dashboard/hospitaladmin/patients' },
+    description: 'Patient activity, insurance coverage, staffing, and department workload.',
+    cards: [
+      ['patients', 'Registered patients', 'All patient records'],
+      ['insuredPatients', 'Currently insured', 'Insurance expiry is today or later'],
+      ['uninsuredPatients', 'Uninsured / expired', 'No insurance or coverage has expired'],
+      ['arrivalsToday', 'Arrivals today', 'Recorded check-ins today'],
+      ['registrationsToday', 'New registrations', 'Patients added today'],
+      ['staff', 'Hospital staff', 'Staff accounts assigned here'],
+      ['consultationsToday', 'Consultations today', 'Consultations created today'],
+      ['pendingLabs', 'Pending lab orders', 'Waiting for laboratory processing'],
+      ['lowLabStock', 'Low lab stock', 'Items at or below reorder level'],
+      ['lowPharmacyStock', 'Low medicine stock', 'Items at or below reorder level'],
     ],
-  },
-  consulting: {
-    title: 'Clinical care',
-    description: 'Continue a visit or review a checked-in patient’s clinical record.',
     actions: [
-      { label: 'Consultation queue', to: '/dashboard/consulting/consultations' },
-      { label: 'Patient records', to: '/dashboard/consulting/patients' },
-    ],
-  },
-  nurse: {
-    title: 'Nursing',
-    description: 'Record observations for patients currently in the hospital.',
-    actions: [
-      { label: 'Check vitals', to: '/dashboard/nurse/vitals' },
-      { label: 'Patient records', to: '/dashboard/nurse/patients' },
-    ],
-  },
-  labs: {
-    title: 'Laboratory',
-    description: 'Process requested tests and record results against patient records.',
-    actions: [
-      { label: 'Laboratory queue', to: '/dashboard/labs/lab-orders' },
-      { label: 'Patient records', to: '/dashboard/labs/patients' },
-    ],
-  },
-  pharmacy: {
-    title: 'Pharmacy',
-    description: 'Review prescriptions and record dispensing for checked-in patients.',
-    actions: [
-      { label: 'Prescription queue', to: '/dashboard/pharmacy/dispensing' },
-      { label: 'Patient records', to: '/dashboard/pharmacy/patients' },
+      ['Manage staff', '/dashboard/hospitaladmin/staff'],
+      ['Patient directory', '/dashboard/hospitaladmin/patients'],
+      ['Clinical inventory', '/dashboard/hospitaladmin/clinical-inventory'],
     ],
   },
   reception: {
-    title: 'Reception',
-    description: 'Register patients, review records, and check arrivals into care.',
+    eyebrow: 'FRONT DESK',
+    title: 'Patient flow',
+    description: 'Registration, arrivals, and insurance status at a glance.',
+    cards: [
+      ['patients', 'Registered patients', 'Hospital patient directory'],
+      ['registrationsToday', 'New registrations', 'Patients added today'],
+      ['arrivalsToday', 'Arrivals today', 'Check-ins recorded today'],
+      ['insuredArrivalsToday', 'Insured arrivals', 'Insurance confirmed at check-in'],
+      ['uninsuredArrivalsToday', 'Non-insured arrivals', 'Insurance not confirmed at check-in'],
+      ['expiringSoon', 'Insurance expiring soon', 'Coverage ending within 90 days'],
+    ],
+    actions: [['Patient directory', '/dashboard/reception/patients']],
+  },
+  nurse: {
+    eyebrow: 'NURSING OVERVIEW',
+    title: 'Patient observations',
+    description: 'Track today’s arrivals and nursing observations.',
+    cards: [
+      ['arrivalsToday', 'Arrivals today', 'Recorded patient check-ins'],
+      ['vitalsToday', 'Vitals recorded today', 'Observations saved today'],
+      ['patients', 'Registered patients', 'Hospital patient directory'],
+    ],
     actions: [
-      { label: 'Patient directory', to: '/dashboard/reception/patients' },
+      ['Record vitals', '/dashboard/nurse/vitals'],
+      ['Patient records', '/dashboard/nurse/patients'],
+    ],
+  },
+  consulting: {
+    eyebrow: 'CLINICAL OVERVIEW',
+    title: 'Consultation workload',
+    description: 'A live snapshot of consultations, investigations, and prescriptions.',
+    cards: [
+      ['consultationsToday', 'Consultations today', 'Consultations created today'],
+      ['arrivalsToday', 'Arrivals today', 'Recorded patient check-ins'],
+      ['pendingLabs', 'Pending lab orders', 'Awaiting laboratory processing'],
+      ['inProgressLabs', 'Tests in progress', 'Laboratory work underway'],
+      ['pendingPrescriptions', 'Pending prescriptions', 'Awaiting pharmacy dispensing'],
+    ],
+    actions: [
+      ['Consultations', '/dashboard/consulting/consultations'],
+      ['Patient records', '/dashboard/consulting/patients'],
+    ],
+  },
+  labs: {
+    eyebrow: 'LABORATORY OVERVIEW',
+    title: 'Laboratory workload',
+    description: 'Prioritize pending tests, follow work in progress, and watch stock levels.',
+    cards: [
+      ['pendingLabs', 'Pending orders', 'Waiting to be processed'],
+      ['inProgressLabs', 'Tests in progress', 'Currently being processed'],
+      ['completedLabsToday', 'Completed today', 'Results recorded today'],
+      ['lowStockItems', 'Low-stock items', 'At or below reorder level'],
+    ],
+    actions: [
+      ['Open lab queue', '/dashboard/labs/lab-orders'],
+      ['Patient records', '/dashboard/labs/patients'],
+    ],
+  },
+  pharmacy: {
+    eyebrow: 'PHARMACY OVERVIEW',
+    title: 'Dispensing and stock',
+    description: 'Keep prescriptions moving and identify medicines that need replenishment.',
+    cards: [
+      ['pendingPrescriptions', 'Pending prescriptions', 'Waiting to be dispensed'],
+      ['partialPrescriptions', 'Partially dispensed', 'Remaining quantity still due'],
+      ['dispensedToday', 'Dispensed today', 'Dispensing transactions recorded today'],
+      ['lowStockItems', 'Low-stock medicines', 'At or below reorder level'],
+    ],
+    actions: [
+      ['Open prescription queue', '/dashboard/pharmacy/dispensing'],
+      ['Patient records', '/dashboard/pharmacy/patients'],
     ],
   },
 };
 
+function formatMetric(value, loading, error) {
+  if (loading) return '—';
+  if (error || value === undefined || value === null) return '—';
+  return new Intl.NumberFormat().format(value);
+}
+
 function DashboardHome({ role: dashboardRole }) {
-  const { profile, user } = useAuth();
-  const {
-    hospital,
-    hospitalLoading,
-    hospitalRealtimeStatus,
-    hospitalRealtimeError,
-    notificationRealtimeStatus,
-    notificationRealtimeError,
-    unreadCount,
-  } = useOutletContext();
-  const activeRole = dashboardRole || profile?.role;
-  const isHospitalAdmin = activeRole === 'hospitaladmin';
-  const canViewPatients = activeRole && activeRole !== 'superadmin';
-  const basePath = `/dashboard/${profile?.role || activeRole}`;
-  const department = departmentWorkspaces[activeRole];
-  const [staffCount, setStaffCount] = useState(null);
-  const [staffError, setStaffError] = useState('');
-  const [checkedInPatients, setCheckedInPatients] = useState([]);
-  const [patientError, setPatientError] = useState('');
-  const activePatients = checkedInPatients
-    .filter((patient) => patient.checked_in_at)
-    .sort((left, right) => new Date(right.checked_in_at) - new Date(left.checked_in_at));
-  const workspaceName = hospital?.name || (profile?.role === 'superadmin' ? 'AscendHMS' : 'Your hospital');
-  const lastLogin = user?.last_sign_in_at
-    ? new Intl.DateTimeFormat(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(new Date(user.last_sign_in_at))
-    : 'This session';
+  const { profile } = useAuth();
+  const { hospital, hospitalLoading } = useOutletContext();
+  const role = dashboardRole || profile?.role;
+  const config = dashboardConfig[role] || dashboardConfig.superadmin;
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const loadStaffCount = useCallback(async () => {
-    if (!isHospitalAdmin) {
-      return;
-    }
-
+  const loadSummary = useCallback(async () => {
     try {
-      const result = await staffRequest('list');
-      setStaffCount(result.staff?.length ?? 0);
-      setStaffError('');
-    } catch (error) {
-      setStaffError(error.message || 'Could not load staff count.');
+      const result = await dashboardSummary();
+      if (result.role !== role) throw new Error('Your role changed. Refresh the page to reload your dashboard.');
+      setSummary(result);
+      setError('');
+    } catch (loadError) {
+      setError(loadError.message || 'Dashboard information could not be loaded.');
+    } finally {
+      setLoading(false);
     }
-  }, [isHospitalAdmin]);
+  }, [role]);
 
   useEffect(() => {
-    void loadStaffCount();
-  }, [loadStaffCount]);
+    setLoading(true);
+    void loadSummary();
+  }, [loadSummary]);
 
+  const refreshFromRealtime = useCallback(() => { void loadSummary(); }, [loadSummary]);
+  const isHospitalUser = role !== 'superadmin';
+  const isAdmin = role === 'hospitaladmin';
+  const isReception = role === 'reception';
+  const isNurse = role === 'nurse';
+  const isConsulting = role === 'consulting';
+  const isLabs = role === 'labs';
+  const isPharmacy = role === 'pharmacy';
+
+  useRealtimeSubscription({
+    table: 'patients',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isHospitalUser && Boolean(profile?.hospital_id) && (isAdmin || isReception),
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'patient_visits',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isHospitalUser && Boolean(profile?.hospital_id),
+    onChange: refreshFromRealtime,
+  });
   useRealtimeSubscription({
     table: 'profiles',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isHospitalAdmin && Boolean(profile?.hospital_id),
-    onChange: () => {
-      void loadStaffCount();
-    },
+    enabled: isAdmin && Boolean(profile?.hospital_id),
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'patient_vitals',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isNurse && Boolean(profile?.hospital_id),
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'consultations',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isConsulting,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'lab_orders',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isConsulting || isLabs,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'prescriptions',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isConsulting || isPharmacy,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'pharmacy_dispensations',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isPharmacy,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'hospital_lab_inventory',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isLabs,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'hospital_pharmacy_inventory',
+    filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
+    enabled: isAdmin || isPharmacy,
+    onChange: refreshFromRealtime,
+  });
+  useRealtimeSubscription({
+    table: 'hospitals',
+    enabled: role === 'superadmin',
+    onChange: refreshFromRealtime,
   });
 
-  const loadCheckedInPatients = useCallback(async () => {
-    if (!canViewPatients) return;
-    try {
-      const result = await patientRequest('list');
-      setCheckedInPatients(result.patients || []);
-      setPatientError('');
-    } catch (error) {
-      setPatientError(error.message || 'Could not load checked-in patients.');
-    }
-  }, [canViewPatients]);
-
-  useEffect(() => {
-    void loadCheckedInPatients();
-  }, [loadCheckedInPatients]);
-
-  usePatientRealtime(profile?.hospital_id, () => {
-    void loadCheckedInPatients();
-  });
+  const metrics = summary?.metrics || {};
+  const workspaceName = role === 'superadmin' ? 'AscendHMS' : hospital?.name || 'Your hospital';
+  const today = new Intl.DateTimeFormat(undefined, {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+  }).format(new Date());
 
   return (
-    <div className="dashboard-home">
-      <section
-        className={`dashboard-stat-grid${isHospitalAdmin ? ' has-staff-stat' : ''}${canViewPatients ? ' has-patients-stat' : ''}`}
-        aria-label="Workspace summary"
-      >
-        <article className="dashboard-stat-card">
-          <span className="stat-icon stat-icon-blue">⌂</span>
-          <span className="stat-label">HOSPITAL WORKSPACE</span>
-          <strong className="stat-value">
-            {hospitalLoading ? 'Loading…' : workspaceName}
-          </strong>
-          <small>{hospital?.id || (profile?.role === 'superadmin' ? 'Platform administration' : 'Workspace')}</small>
-        </article>
-        <article className="dashboard-stat-card">
-          <span className="stat-icon stat-icon-violet">◎</span>
-          <span className="stat-label">SIGNED-IN ACCOUNT</span>
-          <strong className="stat-value">{profile?.full_name || 'Account'}</strong>
-          <small>{user?.email}</small>
-        </article>
-        <article className="dashboard-stat-card">
-          <span className="stat-icon stat-icon-cyan">⌁</span>
-          <span className="stat-label">LIVE CONNECTION</span>
-          <strong className="stat-value">
-            {hospitalRealtimeStatus === 'SUBSCRIBED' ||
-            notificationRealtimeStatus === 'SUBSCRIBED'
-              ? 'Connected'
-              : hospitalRealtimeError || notificationRealtimeError
-                ? 'Unavailable'
-                : 'Connecting'}
-          </strong>
-          <small>
-            {unreadCount ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}` : 'Waiting for workspace updates'}
-          </small>
-        </article>
-        {isHospitalAdmin && (
-          <Link
-            className="dashboard-stat-card dashboard-staff-stat"
-            to="/dashboard/hospitaladmin/staff"
-          >
-            <span className="stat-icon stat-icon-staff">◉</span>
-            <span className="stat-label">HOSPITAL STAFF</span>
-            <strong className="stat-value">
-              {staffCount === null ? '—' : staffCount}
-            </strong>
-            <small>{staffError || 'Manage team accounts'} <span aria-hidden="true">→</span></small>
-          </Link>
-        )}
-        {canViewPatients && (
-          <Link
-            className="dashboard-stat-card dashboard-patients-stat"
-            to={`${basePath}/patients`}
-          >
-            <span className="stat-icon stat-icon-patients">◎</span>
-            <span className="stat-label">CHECKED-IN PATIENTS</span>
-            <strong className="stat-value">{patientError ? '—' : activePatients.length}</strong>
-            <small>{patientError || 'View active patients'} <span aria-hidden="true">→</span></small>
-          </Link>
-        )}
+    <div className="dashboard-home dashboard-operations-home">
+      <section className="dashboard-overview-heading">
+        <div>
+          <span className="workspace-overline">{config.eyebrow}</span>
+          <h1>{config.title}</h1>
+          <p>{config.description}</p>
+        </div>
+        <div className="dashboard-overview-meta">
+          <span className="dashboard-overview-hospital">{workspaceName}</span>
+          <span>{today}</span>
+        </div>
       </section>
 
-      {staffError && (
-        <p className="auth-notice auth-notice-error dashboard-staff-error" role="status">
-          Staff summary unavailable: {staffError}
-        </p>
+      {error && (
+        <div className="dashboard-summary-error" role="alert">
+          <span>{error}</span>
+          <button type="button" onClick={() => { setLoading(true); void loadSummary(); }}>Try again</button>
+        </div>
       )}
 
-      <section
-        className={`dashboard-lower-grid${department ? ' has-department' : ''}`}
-      >
-        <article className="workspace-panel workspace-details-panel">
-          <div className="workspace-panel-heading">
-            <div>
-              <span className="workspace-overline">YOUR WORKSPACE</span>
-              <h2>{hospital ? hospital.name : profile?.role === 'superadmin' ? 'AscendHMS platform' : 'Workspace details'}</h2>
-            </div>
-            {hospital && <span className="workspace-status"><i /> Active</span>}
-          </div>
-          {hospitalLoading ? (
-            <div className="workspace-loading">
-              <span className="auth-spinner" aria-hidden="true" />
-              Loading workspace details…
-            </div>
-          ) : hospital ? (
-            <dl className="workspace-details">
-              <div>
-                <dt>Hospital ID</dt>
-                <dd>{hospital.id}</dd>
-              </div>
-              <div>
-                <dt>Contact number</dt>
-                <dd>{hospital.phone}</dd>
-              </div>
-              <div>
-                <dt>Hospital email</dt>
-                <dd>{hospital.email}</dd>
-              </div>
-              <div>
-                <dt>Address</dt>
-                <dd>{hospital.address}</dd>
-              </div>
-            </dl>
-          ) : profile?.role === 'superadmin' ? (
-            <div className="workspace-superadmin-note">
-              <span>◎</span>
-              <p>
-                You’re signed in as a platform administrator. This account
-                isn’t scoped to a hospital.
-              </p>
-            </div>
-          ) : (
-            <p className="workspace-empty">
-              Hospital details aren’t available right now. Refresh to try again.
-            </p>
-          )}
-        </article>
-
-        {department && (
-          <article className="workspace-panel department-workspace-panel">
-            <span className="workspace-overline">YOUR WORKFLOW</span>
-            <h2>{department.title}</h2>
-            <p className="department-workspace-description">{department.description}</p>
-            <nav className="department-action-list" aria-label={`${department.title} shortcuts`}>
-              {department.actions.map((action) => (
-                <Link key={action.label} to={action.to}>
-                  <span>{action.label}</span>
-                  <span aria-hidden="true">→</span>
-                </Link>
-              ))}
-            </nav>
+      <section className="dashboard-operational-grid" aria-label="Operational summary">
+        {config.cards.map(([key, label, hint]) => (
+          <article className="dashboard-operational-card" key={key}>
+            <span className="dashboard-operational-label">{label}</span>
+            <strong className="dashboard-operational-value">{formatMetric(metrics[key], loading, error)}</strong>
+            <span className="dashboard-operational-hint">{hint}</span>
           </article>
-        )}
-
-        {canViewPatients && (
-          <article className="workspace-panel checked-in-patients-panel">
-            <div className="workspace-panel-heading">
-              <div>
-                <span className="workspace-overline">ACTIVE HOSPITAL FLOW</span>
-                <h2>Checked-in patient flow</h2>
-              </div>
-              <Link className="dashboard-text-link" to={`${basePath}/patients`}>View all →</Link>
-            </div>
-            {patientError ? (
-              <p className="workspace-empty">Patient list unavailable: {patientError}</p>
-            ) : activePatients.length ? (
-              <ul className="checked-in-patient-list">
-                {activePatients.slice(0, 4).map((patient) => (
-                  <li key={patient.id}>
-                    <span className="checked-in-patient-avatar">{patient.full_name.trim().charAt(0).toUpperCase()}</span>
-                    <span className="checked-in-patient-summary">
-                      <strong>{patient.full_name}</strong>
-                      <small>{patient.sex === 'male' ? 'Male' : 'Female'} · Checked in {formatDateTime(patient.checked_in_at)}</small>
-                      <small className={patient.checked_in_insured ? 'is-insured' : 'is-non-insured'}>
-                        {patient.checked_in_insured
-                          ? `Insured · ${patient.checked_in_insurance_provider || 'Provider recorded'}`
-                          : 'Non-insured visit'}
-                      </small>
-                    </span>
-                    <Link to={`${basePath}/patients/${patient.id}`} aria-label={`View ${patient.full_name}`}>→</Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="workspace-empty">
-                {hospitalLoading ? 'Loading patients…' : 'No patients have been checked in yet.'}
-              </p>
-            )}
-          </article>
-        )}
-
-        <article className="workspace-panel account-panel">
-          <span className="workspace-overline">YOUR ACCOUNT</span>
-          <h2>Account overview</h2>
-          <div className="account-detail-list">
-            <div>
-              <span className="account-detail-icon">◎</span>
-              <span>
-                <small>Role</small>
-                <strong>{profile?.role}</strong>
-              </span>
-            </div>
-            <div>
-              <span className="account-detail-icon">◷</span>
-              <span>
-                <small>Last signed in</small>
-                <strong>{lastLogin}</strong>
-              </span>
-            </div>
-          </div>
-          <Link
-            className="dashboard-text-link"
-            to={`/dashboard/${profile?.role}/profile`}
-          >
-            View account profile <span aria-hidden="true">→</span>
-          </Link>
-        </article>
+        ))}
       </section>
+
+      {isHospitalUser && (
+        <section className="dashboard-operations-section">
+          <div className="dashboard-section-heading">
+            <div>
+              <span className="workspace-overline">QUICK ACCESS</span>
+              <h2>Go to work</h2>
+            </div>
+          </div>
+          <div className="dashboard-quick-actions">
+            {config.actions.map(([label, to]) => (
+              <Link className="dashboard-quick-action" to={to} key={to}>
+                <span>{label}</span>
+                <span aria-hidden="true">↗</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {role === 'superadmin' && (
+        <section className="dashboard-operations-section">
+          <div className="dashboard-section-heading">
+            <div>
+              <span className="workspace-overline">PLATFORM</span>
+              <h2>System-wide overview</h2>
+            </div>
+          </div>
+          <p className="dashboard-summary-note">
+            These totals reflect registered hospitals and user profiles. Subscription, claims, and revenue metrics are not shown until their source data is available.
+          </p>
+        </section>
+      )}
+
+      {isAdmin && (
+        <section className="dashboard-operations-section">
+          <div className="dashboard-section-heading">
+            <div>
+              <span className="workspace-overline">PATIENT COVERAGE</span>
+              <h2>Insurance at a glance</h2>
+            </div>
+            <Link className="dashboard-text-link" to="/dashboard/hospitaladmin/patients">Patient directory <span aria-hidden="true">→</span></Link>
+          </div>
+          <p className="dashboard-summary-note">
+            “Currently insured” uses the recorded expiry date. “Uninsured / expired” includes patients without insurance and patients whose recorded coverage has expired. Arrivals are counted from visit history.
+          </p>
+        </section>
+      )}
+
+      {hospitalLoading && role !== 'superadmin' && (
+        <p className="dashboard-summary-note">Loading hospital workspace…</p>
+      )}
     </div>
   );
-}
-
-function formatDateTime(value) {
-  if (!value) return 'time unavailable';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'time unavailable';
-  return new Intl.DateTimeFormat(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(date);
 }
 
 export default DashboardHome;
