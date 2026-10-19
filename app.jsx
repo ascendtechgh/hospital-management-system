@@ -18,6 +18,17 @@ import LaboratoryPage from './src/pages/dashboard/labs/LaboratoryPage.jsx';
 import PharmacyPage from './src/pages/dashboard/pharmacy/PharmacyPage.jsx';
 import ProtectedRoute from './src/components/ProtectedRoute.jsx';
 
+function NotFoundPage() {
+  return (
+    <main className="not-found-page">
+      <p className="workspace-overline">ERROR 404</p>
+      <h1>Page not found</h1>
+      <p>The page may have moved, or the address may be incorrect.</p>
+      <a className="staff-primary-button" href="/">Return to AscendHMS</a>
+    </main>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -55,7 +66,7 @@ function App() {
             <Route path="lab-orders" element={<LaboratoryPage />} />
             <Route path="dispensing" element={<PharmacyPage />} />
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
