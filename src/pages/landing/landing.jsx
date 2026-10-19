@@ -7,7 +7,6 @@ const productViews = [
     description:
       'Register once, find anyone fast, and keep demographics and insurance details together.',
     alt: 'AscendHMS patient list with identifiers, age, contact details and insurance',
-    path: '/app/patients',
   },
   {
     name: 'Appointments',
@@ -15,7 +14,6 @@ const productViews = [
     description:
       'See the day at a glance and keep appointments connected to the right patient and team.',
     alt: 'AscendHMS appointments workspace',
-    path: '/app/appointments',
   },
   {
     name: 'Laboratory',
@@ -23,7 +21,6 @@ const productViews = [
     description:
       'Track investigations from request to result with a queue organized around your team.',
     alt: 'AscendHMS laboratory workspace',
-    path: '/app/laboratory',
   },
   {
     name: 'Pharmacy',
@@ -31,7 +28,6 @@ const productViews = [
     description:
       'Move from prescription to dispensing while keeping pharmacy work in one focused view.',
     alt: 'AscendHMS pharmacy workspace',
-    path: '/app/pharmacy',
   },
   {
     name: 'Billing',
@@ -39,7 +35,6 @@ const productViews = [
     description:
       'Bring invoices, payments, patient and insurer shares, and NHIS claims together.',
     alt: 'AscendHMS billing workspace',
-    path: '/app/billing',
   },
 ];
 
@@ -202,7 +197,20 @@ function CheckIcon() {
 
 function Landing() {
   const [activeView, setActiveView] = useState(0);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const selectedView = productViews[activeView];
+
+  const selectProductTab = (event, index) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? productViews.length - 1
+        : (index + (event.key === 'ArrowRight' ? 1 : -1) + productViews.length) % productViews.length;
+    setActiveView(nextIndex);
+    document.getElementById(`product-tab-${nextIndex}`)?.focus();
+  };
 
   return (
     <div className="landing">
@@ -220,10 +228,10 @@ function Landing() {
           />
         </a>
         <nav className="main-nav" aria-label="Main navigation">
-          <a href="#product">Product</a>
-          <a href="#capabilities">Features</a>
-          <a href="#how-it-works">How it works</a>
-          <a href="#security">Security</a>
+          <a href="#product" onClick={() => setMobileNavOpen(false)}>Product</a>
+          <a href="#capabilities" onClick={() => setMobileNavOpen(false)}>Features</a>
+          <a href="#how-it-works" onClick={() => setMobileNavOpen(false)}>How it works</a>
+          <a href="#security" onClick={() => setMobileNavOpen(false)}>Security</a>
         </nav>
         <div className="header-actions">
           <a className="sign-in-link" href="/login">
@@ -232,7 +240,28 @@ function Landing() {
           <a className="button button-small button-dark" href="/signup">
             Get started <ArrowIcon />
           </a>
+          <button
+            className={`mobile-menu-toggle${mobileNavOpen ? ' is-open' : ''}`}
+            type="button"
+            aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileNavOpen}
+            aria-controls="mobile-site-nav"
+            onClick={() => setMobileNavOpen((open) => !open)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
+        {mobileNavOpen && (
+          <nav className="mobile-site-nav" id="mobile-site-nav" aria-label="Mobile navigation">
+            <a href="#product" onClick={() => setMobileNavOpen(false)}>Product</a>
+            <a href="#capabilities" onClick={() => setMobileNavOpen(false)}>Features</a>
+            <a href="#how-it-works" onClick={() => setMobileNavOpen(false)}>How it works</a>
+            <a href="#security" onClick={() => setMobileNavOpen(false)}>Security</a>
+            <a href="/login" onClick={() => setMobileNavOpen(false)}>Sign in</a>
+          </nav>
+        )}
       </header>
 
       <main id="top">
@@ -244,9 +273,10 @@ function Landing() {
               the <span>modern hospital.</span>
             </h1>
             <p className="hero-copy">
-              AscendHMS brings patients, clinical care, laboratory, pharmacy,
-              billing, NHIS claims and hospital management into one connected
-              system, so every team works from the same patient record.
+              AscendHMS brings patient records, clinical care, nursing, laboratory,
+              pharmacy and hospital administration into one connected workspace.
+              Teams can work from a shared patient record, with available features
+              depending on your hospital's deployment.
             </p>
             <div className="hero-actions">
               <a className="button button-dark" href="/signup">
@@ -261,7 +291,7 @@ function Landing() {
                 <CheckIcon /> Role-based workspaces
               </span>
               <span>
-                <CheckIcon /> NHIS claims built in
+                <CheckIcon /> NHIS workflow support
               </span>
               <span>
                 <CheckIcon /> Desktop, tablet and phone
@@ -295,7 +325,6 @@ function Landing() {
                 <strong>One connected record</strong>
                 <small>Every team, in sync</small>
               </span>
-              <span className="note-live">Live</span>
             </div>
             <div className="hero-caption">
               <span className="caption-pulse" />
@@ -346,8 +375,8 @@ function Landing() {
               <div className="demo-sidebar-bottom">
                 <span className="sidebar-avatar">A</span>
                 <span>
-                  <strong>Admin account</strong>
-                  <small>Hospital workspace</small>
+                  <strong>Sample account</strong>
+                  <small>Illustrative workspace</small>
                 </span>
                 <span className="sidebar-more">···</span>
               </div>
@@ -359,8 +388,8 @@ function Landing() {
                   <h3>{selectedView.name}</h3>
                   <p>{selectedView.description}</p>
                 </div>
-                <span className="screen-status">
-                  <i /> All systems operational
+                <span className="screen-status screen-status-preview">
+                  <i /> Interface preview
                 </span>
               </div>
               <div className="product-tabs" role="tablist" aria-label="Product screens">
@@ -373,6 +402,8 @@ function Landing() {
                     role="tab"
                     aria-selected={activeView === index}
                     aria-controls="product-screen"
+                    tabIndex={activeView === index ? 0 : -1}
+                    onKeyDown={(event) => selectProductTab(event, index)}
                     onClick={() => setActiveView(index)}
                   >
                     {view.name}
@@ -388,13 +419,13 @@ function Landing() {
                 <img src={selectedView.image} alt={selectedView.alt} />
               </div>
               <div className="screen-foot">
-                <span>AscendHMS <span className="screen-foot-dot">·</span> {selectedView.path}</span>
+                <span>AscendHMS <span className="screen-foot-dot">·</span> Product preview</span>
                 <span>Sample data</span>
               </div>
             </div>
           </div>
           <p className="product-disclaimer">
-            Interface previews shown with sample data. Available workflows depend on the current deployment.
+            Illustrative interface previews use sample data and are not a live hospital workspace. Confirm enabled modules during deployment.
           </p>
         </section>
 
