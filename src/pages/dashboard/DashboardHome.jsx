@@ -182,31 +182,31 @@ function DashboardHome({ role: dashboardRole }) {
   useRealtimeSubscription({
     table: 'consultations',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isAdmin || isConsulting,
+    enabled: Boolean(profile?.hospital_id) && (isAdmin || isConsulting),
     onChange: refreshFromRealtime,
   });
   useRealtimeSubscription({
     table: 'lab_orders',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isAdmin || isConsulting || isLabs,
+    enabled: Boolean(profile?.hospital_id) && (isAdmin || isConsulting || isLabs),
     onChange: refreshFromRealtime,
   });
   useRealtimeSubscription({
     table: 'prescriptions',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isAdmin || isConsulting || isPharmacy,
+    enabled: Boolean(profile?.hospital_id) && (isAdmin || isConsulting || isPharmacy),
     onChange: refreshFromRealtime,
   });
   useRealtimeSubscription({
     table: 'pharmacy_dispensations',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isAdmin || isPharmacy,
+    enabled: Boolean(profile?.hospital_id) && (isAdmin || isPharmacy),
     onChange: refreshFromRealtime,
   });
   useRealtimeSubscription({
     table: 'hospital_lab_inventory',
     filter: profile?.hospital_id ? `hospital_id=eq.${profile.hospital_id}` : null,
-    enabled: isAdmin || isLabs,
+    enabled: Boolean(profile?.hospital_id) && (isAdmin || isLabs),
     onChange: refreshFromRealtime,
   });
   useRealtimeSubscription({
