@@ -231,41 +231,20 @@ async function updatePatient(client, hospitalId, patientId, payload) {
 }
 
 async function checkInPatient(client, hospitalId, userId, patientId) {
-  const patient = await getPatient(client, patientId, hospitalId, 'reception');
-  const today = new Date();
-  const thresholdMonth = today.getUTCMonth() + 3;
-  const thresholdLastDay = new Date(Date.UTC(today.getUTCFullYear(), thresholdMonth + 1, 0)).getUTCDate();
-  const threshold = new Date(Date.UTC(
-    today.getUTCFullYear(),
-    thresholdMonth,
-    Math.min(today.getUTCDate(), thresholdLastDay),
-  ))
-    .toISOString().slice(0, 10);
-  const insured = Boolean(
-    patient.insurance_enabled &&
-    patient.insurance_expiry &&
-    patient.insurance_expiry >= threshold,
-  );
-  const { data, error } = await client.from('patients').update({
-    checked_in_at: new Date().toISOString(),
-    checked_in_by: userId,
-    checked_in_insured: insured,
-    checked_in_insurance_provider: insured ? patient.insurance_provider : null,
-    checked_in_insurance_number: insured ? patient.insurance_number : null,
-  }).eq('id', patientId).eq('hospital_id', hospitalId)
-    .select(patientFields.join(',')).single();
-  if (error) throw new HttpError(500, `Could not check in patient: ${error.message}`);
-
-  const visit = await client.from('patient_visits').insert({
-    hospital_id: hospitalId,
-    patient_id: patientId,
-    checked_in_by: userId,
-    checked_in_at: data.checked_in_at,
-    insured_at_checkin: insured,
-    insurance_provider_at_checkin: insured ? patient.insurance_provider : null,
-  }).select('id, checked_in_at, insured_at_checkin').single();
-  if (visit.error) throw new HttpError(500, `Patient was checked in, but visit history could not be saved: ${visit.error.message}`);
-  return { patient: data, visit: visit.data };
+  if (typeof patientId !== 'string' || !patientId) {
+    throw new HttpError(400, 'Patient ID is required.');
+  }
+  const { data, error } = await client.rpc('check_in_patient', {
+    p_hospital_id: hospitalId,
+    p_user_id: userId,
+    p_patient_id: patientId,
+  });
+  if (error) {
+    const message = error.message || 'Could not check in patient.';
+    const status = /not found/i.test(message) ? 404 : 500;
+    throw new HttpError(status, `Could not check in patient: ${message}`);
+  }
+  return data;
 }
 
 function validFilterDate(value, label) {
