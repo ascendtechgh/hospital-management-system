@@ -47,7 +47,7 @@ function DispenseModal({ prescription, onClose, onSaved }) {
 
   return (
     <dialog
-      className="patient-form-dialog clinical-dialog clinical-small-dialog"
+      className="patient-form-dialog clinical-dialog clinical-small-dialog clinical-workspace-dialog pharmacy-dispense-dialog"
       ref={dialogRef}
       aria-labelledby="dispense-modal-title"
       onCancel={(event) => { event.preventDefault(); close(); }}

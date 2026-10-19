@@ -344,21 +344,26 @@ function StaffPage() {
         </div>
       </dialog>
 
-      <section className="staff-directory">
+      <section className={`staff-directory${view === 'cards' ? ' is-card-view' : ' is-list-view'}`}>
         <div className="staff-directory-toolbar">
-          <div>
+          <div className="staff-directory-title">
             <h2>Team directory</h2>
-            <span>{loading ? 'Loading staff…' : `${filteredStaff.length} staff member${filteredStaff.length === 1 ? '' : 's'}`}</span>
+            <span className="staff-directory-count">
+              {loading ? 'Loading staff…' : `${filteredStaff.length} staff member${filteredStaff.length === 1 ? '' : 's'}`}
+            </span>
           </div>
           <div className="staff-directory-actions">
             <label className="staff-search">
-              <span className="sr-only">Search staff</span>
-              <span aria-hidden="true">⌕</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                <circle cx="10.8" cy="10.8" r="6.8" />
+                <path d="m16 16 4.2 4.2" />
+              </svg>
               <input
+                aria-label="Find a team member"
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search staff"
+                placeholder="Name, email, or role"
               />
             </label>
             <div className="staff-view-toggle" role="group" aria-label="Directory view">
@@ -369,7 +374,12 @@ function StaffPage() {
                 aria-pressed={view === 'cards'}
                 onClick={() => setView('cards')}
               >
-                ▦
+                <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+                  <rect x="2.5" y="2.5" width="6" height="6" rx="1.4" />
+                  <rect x="11.5" y="2.5" width="6" height="6" rx="1.4" />
+                  <rect x="2.5" y="11.5" width="6" height="6" rx="1.4" />
+                  <rect x="11.5" y="11.5" width="6" height="6" rx="1.4" />
+                </svg>
               </button>
               <button
                 className={view === 'list' ? 'is-active' : ''}
@@ -378,7 +388,12 @@ function StaffPage() {
                 aria-pressed={view === 'list'}
                 onClick={() => setView('list')}
               >
-                ☷
+                <svg aria-hidden="true" viewBox="0 0 20 20" fill="none">
+                  <path d="M7.5 4.5h9M7.5 10h9m-9 5.5h9" />
+                  <circle cx="3.5" cy="4.5" r=".75" />
+                  <circle cx="3.5" cy="10" r=".75" />
+                  <circle cx="3.5" cy="15.5" r=".75" />
+                </svg>
               </button>
             </div>
           </div>

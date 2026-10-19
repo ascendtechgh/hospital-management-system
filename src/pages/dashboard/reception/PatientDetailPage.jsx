@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Link,
+  Navigate,
+  useNavigate,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { useLocalDate } from '../../../hooks/useLocalDate.js';
 import { usePatientRealtime } from '../../../hooks/usePatientRealtime.js';
@@ -14,9 +21,11 @@ import { clinicalRequest } from '../../../lib/clinicalApi.js';
 import PatientFormModal from './PatientFormModal.jsx';
 import VitalsModal from '../nurse/VitalsModal.jsx';
 import ConsultationModal from '../consulting/ConsultationModal.jsx';
+import ClaimFormSheet from './ClaimFormSheet.jsx';
 
 function PatientDetailPage() {
   const { role, patientId } = useParams();
+  const { hospital } = useOutletContext();
   const { profile } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +42,10 @@ function PatientDetailPage() {
   const [clinicalCatalogs, setClinicalCatalogs] = useState(null);
   const [consultationDialogOpen, setConsultationDialogOpen] = useState(false);
   const [consultationToContinue, setConsultationToContinue] = useState(null);
+  const [consultationLabOrders, setConsultationLabOrders] = useState([]);
+  const [consultationPrescriptions, setConsultationPrescriptions] = useState([]);
+  const [claimPrintData, setClaimPrintData] = useState(null);
+  const clearClaimPrintData = useCallback(() => setClaimPrintData(null), []);
   const [clinicalLoading, setClinicalLoading] = useState(true);
   const [clinicalError, setClinicalError] = useState('');
   const [vitalsLoading, setVitalsLoading] = useState(true);
@@ -190,11 +203,27 @@ function PatientDetailPage() {
       const catalogs = clinicalCatalogs || await clinicalRequest('catalogs');
       setClinicalCatalogs(catalogs);
       setConsultationToContinue(consultation);
+      setConsultationLabOrders(
+        clinicalRecord?.lab_orders.filter((item) => item.consultation_id === consultation?.id) || [],
+      );
+      setConsultationPrescriptions(
+        clinicalRecord?.prescriptions.filter((item) => item.consultation_id === consultation?.id) || [],
+      );
       setConsultationDialogOpen(true);
     } catch (catalogError) {
       setActionError(catalogError.message || 'Could not load consultation catalogs.');
     }
   }
+
+  const patientAge = patient
+    ? calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration
+    : null;
+  const patientCoverageStatus = patient ? insuranceStatus(patient, today) : null;
+  const patientSex = patient?.sex === 'male'
+    ? 'Male'
+    : patient?.sex === 'female'
+      ? 'Female'
+      : 'Not recorded';
 
   return (
     <section className="patient-detail-page">
@@ -210,17 +239,21 @@ function PatientDetailPage() {
         <>
           <header className="patient-detail-header">
             <div className="patient-detail-identity">
-              <span className="patient-detail-avatar">{patient.full_name.split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')}</span>
-              <div>
+              <span className="patient-detail-avatar" aria-hidden="true">
+                {patient.full_name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')}
+              </span>
+              <div className="patient-detail-identity-copy">
                 <span className="workspace-overline">PATIENT RECORD</span>
                 <h1>{patient.full_name}</h1>
-                <span className="patient-detail-subtitle">
-                  {calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? 'Age not provided'}
-                  {calculateAge(patient.date_of_birth, today) != null || patient.age_at_registration != null
-                    ? ' years'
-                    : ''}
-                  {' · '}{patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded'}
-                </span>
+                <div className="patient-detail-subtitle">
+                  <span>{patientAge ?? 'Age not provided'}{patientAge !== null && patientAge !== undefined ? ' years' : ''}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>{patientSex}</span>
+                  <span className={`patient-insurance-badge is-${patientCoverageStatus}`}>
+                    {insuranceLabel(patientCoverageStatus)}
+                  </span>
+                  {patient.checked_in_at && <span className="patient-record-visit-badge">Checked in</span>}
+                </div>
               </div>
             </div>
             {(canManage || canTakeVitals) && (
@@ -232,6 +265,25 @@ function PatientDetailPage() {
               </div>
             )}
           </header>
+
+          <section className="patient-record-summary" aria-label="Patient summary">
+            <article className="patient-record-summary-card">
+              <span className="patient-record-summary-icon" aria-hidden="true">◉</span>
+              <div><span>DEMOGRAPHICS</span><strong>{patientAge ?? 'Age not provided'}{patientAge !== null && patientAge !== undefined ? ' years' : ''}</strong><small>{patientSex}</small></div>
+            </article>
+            <article className="patient-record-summary-card">
+              <span className="patient-record-summary-icon" aria-hidden="true">＋</span>
+              <div><span>INSURANCE COVERAGE</span><strong>{patient.insurance_enabled ? patient.insurance_provider || 'Provider not recorded' : 'No coverage'}</strong><small>{insuranceLabel(patientCoverageStatus)}</small></div>
+            </article>
+            <article className="patient-record-summary-card">
+              <span className="patient-record-summary-icon" aria-hidden="true">⌁</span>
+              <div><span>VISIT STATUS</span><strong>{patient.checked_in_at ? 'Checked in' : 'Not checked in'}</strong><small>{patient.checked_in_at ? formatDateTime(patient.checked_in_at) : 'No active visit'}</small></div>
+            </article>
+            <article className="patient-record-summary-card">
+              <span className="patient-record-summary-icon" aria-hidden="true">▦</span>
+              <div><span>REGISTERED</span><strong>{formatDateOnly(patient.created_at?.slice(0, 10))}</strong><small>Patient record created</small></div>
+            </article>
+          </section>
 
           {actionError && <p className="auth-notice auth-notice-error" role="alert">{actionError}</p>}
           {notice && <p className="settings-success" role="status" aria-live="polite">{notice}</p>}
@@ -404,6 +456,12 @@ function PatientDetailPage() {
               canConsult={canConsult && Boolean(patient.checked_in_at)}
               onNewConsultation={() => void openConsultation()}
               onContinueConsultation={(consultation) => void openConsultation(consultation)}
+              canPrintClaims={canManage}
+              onPrintClaim={(consultation) => setClaimPrintData({
+                consultation,
+                labOrders: clinicalRecord?.lab_orders.filter((item) => item.consultation_id === consultation.id) || [],
+                prescriptions: clinicalRecord?.prescriptions.filter((item) => item.consultation_id === consultation.id) || [],
+              })}
             />
           )}
 
@@ -425,12 +483,26 @@ function PatientDetailPage() {
             <ConsultationModal
               patient={consultationDialogOpen ? patient : null}
               consultation={consultationToContinue}
+              existingLabOrders={consultationLabOrders}
+              existingPrescriptions={consultationPrescriptions}
               catalogs={clinicalCatalogs}
               onClose={() => {
                 setConsultationDialogOpen(false);
                 setConsultationToContinue(null);
+                setConsultationLabOrders([]);
+                setConsultationPrescriptions([]);
               }}
               onSaved={() => void loadClinicalRecord()}
+            />
+          )}
+          {claimPrintData && (
+            <ClaimFormSheet
+              patient={patient}
+              consultation={claimPrintData.consultation}
+              labOrders={claimPrintData.labOrders}
+              prescriptions={claimPrintData.prescriptions}
+              hospital={hospital || { id: profile.hospital_id }}
+              onPrinted={clearClaimPrintData}
             />
           )}
         </>
@@ -448,6 +520,8 @@ function ClinicalHistoryPanel({
   canConsult,
   onNewConsultation,
   onContinueConsultation,
+  canPrintClaims,
+  onPrintClaim,
 }) {
   const consultations = record?.consultations || [];
   const labOrders = record?.lab_orders || [];
@@ -465,6 +539,9 @@ function ClinicalHistoryPanel({
   return (
     <section className="patient-clinical-tab" id={`patient-${tab}-panel`} role="tabpanel" aria-labelledby={`patient-${tab}-tab`}>
       {error && <p className="auth-notice auth-notice-error" role="alert">{error}<button className="staff-inline-button" type="button" onClick={onRetry}>Try again</button></p>}
+      {canPrintClaims && isConsultations && (
+        <p className="clinical-entry-meta">NHIS claim printing is available only when eligibility was recorded for that encounter.</p>
+      )}
       <section className="patient-current-vitals patient-clinical-current">
         <div className="nurse-vitals-section-heading">
           <div>
@@ -484,7 +561,17 @@ function ClinicalHistoryPanel({
         {loading ? (
           <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading {title.toLowerCase()}…</div>
         ) : latest ? (
-          <ClinicalEntry tab={tab} entry={latest} featured canConsult={canConsult} onContinue={onContinueConsultation} />
+          <ClinicalEntry
+            tab={tab}
+            entry={latest}
+            featured
+            canConsult={canConsult}
+            onContinue={onContinueConsultation}
+            relatedLabOrders={labOrders.filter((item) => item.consultation_id === latest.id)}
+            relatedPrescriptions={prescriptions.filter((item) => item.consultation_id === latest.id)}
+            canPrintClaim={canPrintClaims}
+            onPrintClaim={onPrintClaim}
+          />
         ) : (
           <div className="patient-no-vitals"><span className="staff-empty-icon">{isLabs ? '⌕' : '✚'}</span><p>Records will appear here as teams update the patient’s care.</p></div>
         )}
@@ -508,6 +595,10 @@ function ClinicalHistoryPanel({
                 entry={entry}
                 canConsult={canConsult}
                 onContinue={onContinueConsultation}
+                relatedLabOrders={labOrders.filter((item) => item.consultation_id === entry.id)}
+                relatedPrescriptions={prescriptions.filter((item) => item.consultation_id === entry.id)}
+                canPrintClaim={canPrintClaims}
+                onPrintClaim={onPrintClaim}
               />
             ))}
           </div>
@@ -519,7 +610,17 @@ function ClinicalHistoryPanel({
   );
 }
 
-function ClinicalEntry({ tab, entry, featured = false, canConsult = false, onContinue }) {
+function ClinicalEntry({
+  tab,
+  entry,
+  featured = false,
+  canConsult = false,
+  onContinue,
+  relatedLabOrders = [],
+  relatedPrescriptions = [],
+  canPrintClaim = false,
+  onPrintClaim,
+}) {
   if (tab === 'consultations') {
     return (
       <article className={`clinical-history-entry${featured ? ' is-featured' : ''}`}>
@@ -528,15 +629,21 @@ function ClinicalEntry({ tab, entry, featured = false, canConsult = false, onCon
           <div className="clinical-header-counts">
             {featured && <span className="clinical-status-badge">Latest</span>}
             {canConsult && <button className="staff-secondary-button" type="button" onClick={() => onContinue(entry)}>Continue</button>}
+            {canPrintClaim && entry.nhis_eligible_at_service && (
+              <button className="staff-secondary-button" type="button" onClick={() => onPrintClaim(entry)}>
+                Print NHIS claim
+              </button>
+            )}
           </div>
         </div>
         {entry.chief_complaint && <p><b>Chief complaint</b>{entry.chief_complaint}</p>}
         {entry.diagnoses?.length > 0 && (
           <div className="clinical-diagnosis-chips">
             {entry.diagnoses.map((item) => (
-              <span key={`${item.consultation_id}-${item.diagnosis_id}`}>
-                {item.diagnosis?.name || 'Diagnosis'}{item.is_primary ? ' · Primary' : ''}
-              </span>
+              <div key={`${item.consultation_id}-${item.diagnosis_id}`}>
+                <span>{item.diagnosis?.name || 'Diagnosis'}{item.is_primary ? ' · Primary' : ''}</span>
+                {item.notes && <small>{item.notes}</small>}
+              </div>
             ))}
           </div>
         )}
@@ -546,6 +653,9 @@ function ClinicalEntry({ tab, entry, featured = false, canConsult = false, onCon
           {entry.assessment && <p><b>Assessment</b>{entry.assessment}</p>}
           {entry.plan && <p><b>Plan</b>{entry.plan}</p>}
         </div>
+        {(relatedLabOrders.length > 0 || relatedPrescriptions.length > 0) && (
+          <EncounterOrders labOrders={relatedLabOrders} prescriptions={relatedPrescriptions} />
+        )}
       </article>
     );
   }
@@ -583,6 +693,50 @@ function ClinicalEntry({ tab, entry, featured = false, canConsult = false, onCon
         </div>
       )}
     </article>
+  );
+}
+
+function EncounterOrders({ labOrders, prescriptions }) {
+  return (
+    <section className="clinical-encounter-orders" aria-label="Encounter orders">
+      {labOrders.length > 0 && (
+        <div className="clinical-encounter-order-group">
+          <h3>Laboratory requests</h3>
+          <ul>
+            {labOrders.map((order) => (
+              <li key={order.id}>
+                <div>
+                  <strong>{order.lab?.name || order.lab_code}</strong>
+                  <small>{order.lab?.category || 'Laboratory'} · {order.priority} priority</small>
+                  {order.request_notes && <small>{order.request_notes}</small>}
+                  {order.result_value && <small>Result: {order.result_value}</small>}
+                  {order.result_notes && <small>{order.result_notes}</small>}
+                </div>
+                <span className={`clinical-status-badge is-${order.status}`}>{order.status.replace('_', ' ')}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {prescriptions.length > 0 && (
+        <div className="clinical-encounter-order-group">
+          <h3>Prescriptions</h3>
+          <ul>
+            {prescriptions.map((prescription) => (
+              <li key={prescription.id}>
+                <div>
+                  <strong>{prescription.drug?.name || prescription.drug_code}</strong>
+                  <small>{prescription.dose} · {prescription.route || 'Route not specified'} · {prescription.frequency} · {prescription.duration}</small>
+                  <small>Quantity {prescription.quantity} · {prescription.status.replace('_', ' ')}</small>
+                  {prescription.instructions && <small>{prescription.instructions}</small>}
+                </div>
+                <span className={`clinical-status-badge is-${prescription.status}`}>{prescription.status}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
   );
 }
 

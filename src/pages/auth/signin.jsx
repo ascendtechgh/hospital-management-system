@@ -72,12 +72,6 @@ function SignInPage() {
     <AuthLayout mode="signin">
       <div className="auth-heading">
         <span className="auth-kicker">WELCOME BACK</span>
-        <h2>Sign in to your workspace.</h2>
-        <p>Use your personal account to continue to your hospital.</p>
-      </div>
-      <div className="auth-tenant-note">
-        <span className="auth-tenant-icon">⌑</span>
-        Hospital staff sign in with their own account.
       </div>
       {supabaseConfigError && (
         <p className="auth-notice auth-notice-error" role="alert">

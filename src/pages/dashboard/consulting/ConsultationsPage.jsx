@@ -65,15 +65,7 @@ function ConsultationsPage() {
   if (profile?.role !== 'consulting') return <Navigate to={basePath} replace />;
 
   return (
-    <section className="clinical-page">
-      <header className="patients-page-heading">
-        <div>
-          <span className="workspace-overline">CONSULTING WORKSPACE</span>
-          <h1>Consultations</h1>
-        </div>
-        <span className="nurse-patient-count">{loading ? '—' : `${patients.length} checked-in`}</span>
-      </header>
-      <p className="clinical-intro">Select a checked-in patient to document the visit, add one or more diagnoses, request laboratory tests, and write prescriptions.</p>
+    <section className="clinical-page consultations-page">
       {realtime.error && <p className="auth-notice auth-notice-error" role="status">Live patient updates are unavailable: {realtime.error}</p>}
       {catalogError && <p className="auth-notice auth-notice-error" role="alert">{catalogError} Catalogs must be deployed before consultations can be saved.</p>}
       {patientError && (
@@ -81,44 +73,62 @@ function ConsultationsPage() {
           {patientError}<button className="staff-inline-button" type="button" onClick={() => void loadPatients()}>Try again</button>
         </p>
       )}
-      <label className="staff-search clinical-search">
-        <span className="sr-only">Search checked-in patients</span>
-        <span aria-hidden="true">⌕</span>
-        <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Find a patient by name or residence" />
-      </label>
-      {loading ? (
-        <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading checked-in patients…</div>
-      ) : filteredPatients.length ? (
-        <div className="clinical-patient-list">
-          {filteredPatients.map((patient) => (
-            <article className="clinical-patient-row" key={patient.id}>
-              <div className="clinical-patient-identity">
-                <span className="patient-avatar" aria-hidden="true">
-                  {patient.full_name.split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')}
-                </span>
-                <div>
-                  <strong>{patient.full_name}</strong>
-                  <span>
-                    {calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration ?? 'Age not provided'}
-                    {calculateAge(patient.date_of_birth, today) !== null || patient.age_at_registration !== null ? ' years' : ''}
-                    {' · '}{patient.sex === 'male' ? 'Male' : 'Female'}
-                  </span>
-                </div>
-              </div>
-              <div className="clinical-patient-actions">
-                <Link className="staff-secondary-button" to={`${basePath}/patients/${patient.id}?tab=consultations`}>Record history</Link>
-                <button className="staff-primary-button" type="button" onClick={() => setSelectedPatient(patient)} disabled={!catalogs}>New consultation</button>
-              </div>
-            </article>
-          ))}
+
+      <section className="consultations-directory" aria-label="Checked-in patients">
+        <div className="consultations-directory-toolbar">
+          <div>
+            <span className="workspace-overline">PATIENT QUEUE</span>
+            <h2>Ready for consultation</h2>
+          </div>
+          <label className="staff-search clinical-search">
+            <span className="sr-only">Search checked-in patients</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="10.8" cy="10.8" r="6.8" />
+              <path d="m16 16 4.3 4.3" />
+            </svg>
+            <input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name or residence" />
+          </label>
         </div>
-      ) : (
-        <div className="staff-empty-state">
-          <span className="staff-empty-icon">✚</span>
-          <h3>{search ? 'No matching patients' : 'No checked-in patients'}</h3>
-          <p>Patients checked in by reception will appear here for consultation.</p>
-        </div>
-      )}
+
+        {loading ? (
+          <div className="staff-state"><span className="auth-spinner" aria-hidden="true" /> Loading checked-in patients…</div>
+        ) : filteredPatients.length ? (
+          <div className="clinical-patient-list">
+            {filteredPatients.map((patient) => {
+              const age = calculateAge(patient.date_of_birth, today) ?? patient.age_at_registration;
+              const sex = patient.sex === 'male' ? 'Male' : patient.sex === 'female' ? 'Female' : 'Not recorded';
+              const residence = patient.residence || patient.address;
+              return (
+                <article className="clinical-patient-row" key={patient.id}>
+                  <div className="clinical-patient-card-heading">
+                    <span className="consultations-ready-indicator"><i aria-hidden="true" /> Ready</span>
+                  </div>
+                  <div className="clinical-patient-identity">
+                    <span className="patient-avatar" aria-hidden="true">
+                      {patient.full_name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')}
+                    </span>
+                    <div>
+                      <strong>{patient.full_name}</strong>
+                      <span>{age ?? 'Age not provided'}{age !== null && age !== undefined ? ' years' : ''} <i aria-hidden="true">·</i> {sex}</span>
+                      {residence && <small>{residence}</small>}
+                    </div>
+                  </div>
+                  <div className="clinical-patient-actions">
+                    <Link className="staff-secondary-button" to={`${basePath}/patients/${patient.id}?tab=consultations`}>Record history <span aria-hidden="true">↗</span></Link>
+                    <button className="staff-primary-button" type="button" onClick={() => setSelectedPatient(patient)} disabled={!catalogs}>New consultation <span aria-hidden="true">→</span></button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="staff-empty-state consultations-empty-state">
+            <span className="staff-empty-icon">✚</span>
+            <h3>{search ? 'No matching patients' : 'No checked-in patients'}</h3>
+            <p>{search ? 'Try another name or residence.' : 'Patients checked in by reception will appear here for consultation.'}</p>
+          </div>
+        )}
+      </section>
       {catalogs && (
         <ConsultationModal
           patient={selectedPatient}

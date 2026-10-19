@@ -86,15 +86,6 @@ function getInitials(name, email) {
     .join('');
 }
 
-function formatDate(date) {
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(date);
-}
-
 export default function DashboardLayout() {
   const { role } = useParams();
   const navigate = useNavigate();
@@ -461,10 +452,6 @@ export default function DashboardLayout() {
             </NavLink>
           )}
         </nav>
-        <div className="sidebar-bottom">
-          <span className="sidebar-live-dot" />
-          <span>AscendHMS workspace</span>
-        </div>
       </aside>
 
       <div className="dashboard-main-column">
@@ -682,10 +669,6 @@ export default function DashboardLayout() {
               }}
             />
           </div>
-          <footer className="workspace-footer">
-            <span>AscendHMS <i /> {roleLabel}</span>
-            <span>{formatDate(new Date())}</span>
-          </footer>
         </main>
       </div>
     </div>

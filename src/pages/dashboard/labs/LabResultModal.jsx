@@ -44,7 +44,7 @@ function LabResultModal({ order, onClose, onSaved }) {
 
   return (
     <dialog
-      className="patient-form-dialog clinical-dialog clinical-small-dialog"
+      className="patient-form-dialog clinical-dialog clinical-small-dialog clinical-workspace-dialog laboratory-result-dialog"
       ref={dialogRef}
       aria-labelledby="lab-result-modal-title"
       onCancel={(event) => { event.preventDefault(); close(); }}

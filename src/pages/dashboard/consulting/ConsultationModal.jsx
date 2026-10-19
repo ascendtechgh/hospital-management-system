@@ -9,7 +9,15 @@ const emptyNotes = {
   plan: '',
 };
 
-function ConsultationModal({ patient, catalogs, consultation = null, onClose, onSaved }) {
+function ConsultationModal({
+  patient,
+  catalogs,
+  consultation = null,
+  existingLabOrders = [],
+  existingPrescriptions = [],
+  onClose,
+  onSaved,
+}) {
   const dialogRef = useRef(null);
   const [consultationId, setConsultationId] = useState(null);
   const [notes, setNotes] = useState(emptyNotes);
@@ -24,6 +32,13 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [activeTab, setActiveTab] = useState('notes');
+  const tabs = [
+    { id: 'notes', label: 'Notes' },
+    { id: 'diagnoses', label: 'Diagnoses', count: diagnoses.length },
+    { id: 'labs', label: 'Labs', count: existingLabOrders.length + labOrders.length },
+    { id: 'drugs', label: 'Drugs', count: existingPrescriptions.length + prescriptions.length },
+  ];
 
   useEffect(() => {
     if (patient && !dialogRef.current?.open) {
@@ -35,7 +50,12 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
         assessment: consultation.assessment || '',
         plan: consultation.plan || '',
       } : emptyNotes);
-      setDiagnoses([]);
+      setDiagnoses((consultation?.diagnoses || []).map((item) => ({
+        diagnosis_id: item.diagnosis_id,
+        is_primary: item.is_primary,
+        notes: item.notes || '',
+        label: item.diagnosis?.name || 'Diagnosis',
+      })));
       setDiagnosisId('');
       setLabOrders([]);
       setLabCode('');
@@ -45,6 +65,7 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
       setPrescription(emptyPrescription());
       setError('');
       setNotice('');
+      setActiveTab('notes');
       dialogRef.current?.showModal();
     } else if (!patient && dialogRef.current?.open) {
       dialogRef.current.close();
@@ -112,7 +133,6 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
         })),
       });
       setConsultationId(result.consultation_id);
-      setDiagnoses([]);
       setNotice('Consultation progress saved. You can add tests or prescriptions now, or return later.');
       onSaved(result.consultation_id);
       return result.consultation_id;
@@ -182,25 +202,58 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
   return (
     <dialog
       ref={dialogRef}
-      className="patient-form-dialog clinical-dialog"
+      className="patient-form-dialog clinical-dialog clinical-encounter-dialog"
       aria-labelledby="consultation-modal-title"
       onCancel={(event) => { event.preventDefault(); close(); }}
       onClick={(event) => { if (event.target === event.currentTarget) close(); }}
     >
       <div className="patient-modal-card">
         <header className="patient-modal-header">
-          <span className="patient-modal-icon" aria-hidden="true">✚</span>
+          <div className="clinical-encounter-heading">
+            <span className="patient-modal-icon" aria-hidden="true">✚</span>
+            <span><strong>{patient?.full_name}</strong><small>Patient encounter</small></span>
+          </div>
           <button className="staff-close-button" type="button" aria-label="Close" onClick={close} disabled={saving}>×</button>
         </header>
-        <span className="workspace-overline">CLINICAL ENCOUNTER</span>
-        <h2 className="patient-modal-title" id="consultation-modal-title">{consultationId ? 'Continue consultation' : 'Consultation'}</h2>
-        <p className="patient-modal-description">
-          Record the visit for <strong>{patient?.full_name}</strong>. Save one part now and return later for diagnoses, tests, or prescriptions.
-        </p>
+        <div className="clinical-encounter-title">
+          <span className="workspace-overline">CLINICAL ENCOUNTER</span>
+          <h2 className="patient-modal-title" id="consultation-modal-title">{consultationId ? 'Continue consultation' : 'New consultation'}</h2>
+        </div>
         {error && <p className="auth-notice auth-notice-error" role="alert">{error}</p>}
         {notice && <p className="settings-success" role="status" aria-live="polite">{notice}</p>}
         <form className="patient-form" onSubmit={submitProgress}>
-          <section className="patient-form-section">
+          <nav className="clinical-encounter-tabs" role="tablist" aria-label="Encounter sections">
+            {tabs.map((tab, index) => (
+              <button
+                key={tab.id}
+                id={`encounter-${tab.id}-tab`}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`encounter-${tab.id}-panel`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                onClick={() => setActiveTab(tab.id)}
+                onKeyDown={(event) => {
+                  let nextIndex = null;
+                  if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+                  if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+                  if (event.key === 'Home') nextIndex = 0;
+                  if (event.key === 'End') nextIndex = tabs.length - 1;
+                  if (nextIndex !== null) {
+                    event.preventDefault();
+                    const nextTab = tabs[nextIndex];
+                    setActiveTab(nextTab.id);
+                    document.getElementById(`encounter-${nextTab.id}-tab`)?.focus();
+                  }
+                }}
+              >
+                {tab.label}
+                {tab.count > 0 && <span>{tab.count}</span>}
+              </button>
+            ))}
+          </nav>
+
+          {activeTab === 'notes' && <section className="patient-form-section clinical-encounter-tab-panel" id="encounter-notes-panel" role="tabpanel" aria-labelledby="encounter-notes-tab">
             <h3>Consultation notes</h3>
             <div className="clinical-form-grid">
               <TextArea label="Chief complaint" value={notes.chief_complaint} onChange={(value) => setNotes((current) => ({ ...current, chief_complaint: value }))} />
@@ -209,9 +262,9 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
               <TextArea label="Assessment" value={notes.assessment} onChange={(value) => setNotes((current) => ({ ...current, assessment: value }))} />
               <TextArea label="Plan" value={notes.plan} onChange={(value) => setNotes((current) => ({ ...current, plan: value }))} />
             </div>
-          </section>
+          </section>}
 
-          <section className="patient-form-section">
+          {activeTab === 'diagnoses' && <section className="patient-form-section clinical-encounter-tab-panel" id="encounter-diagnoses-panel" role="tabpanel" aria-labelledby="encounter-diagnoses-tab">
             <h3>Diagnoses <span>Multiple allowed</span></h3>
             <div className="clinical-add-row">
               <label className="auth-field">
@@ -228,10 +281,20 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
               <button className="staff-secondary-button" type="button" onClick={addDiagnosis} disabled={!diagnosisId}>Add</button>
             </div>
             <SelectedItems items={diagnoses} onRemove={(index) => setDiagnoses((current) => current.filter((_, itemIndex) => itemIndex !== index))} />
-          </section>
+          </section>}
 
-          <section className="patient-form-section">
+          {activeTab === 'labs' && <section className="patient-form-section clinical-encounter-tab-panel" id="encounter-labs-panel" role="tabpanel" aria-labelledby="encounter-labs-tab">
             <h3>Laboratory requests</h3>
+            {existingLabOrders.length > 0 && (
+              <div className="clinical-encounter-saved-lines">
+                <h4>Already sent to laboratory</h4>
+                <SelectedItems items={existingLabOrders.map((item) => ({
+                  lab_code: item.lab_code,
+                  label: item.lab?.name || item.lab_code,
+                  priority: item.priority,
+                }))} />
+              </div>
+            )}
             <div className="clinical-add-row">
               <label className="auth-field">
                 <span>Test</span>
@@ -264,10 +327,20 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
               <button className="staff-primary-button clinical-section-save" type="button" onClick={() => void saveLabRequests()} disabled={saving || !labOrders.length}>
                 {saving ? 'Saving…' : 'Send lab requests'}
               </button>
-          </section>
+          </section>}
 
-          <section className="patient-form-section">
+          {activeTab === 'drugs' && <section className="patient-form-section clinical-encounter-tab-panel" id="encounter-drugs-panel" role="tabpanel" aria-labelledby="encounter-drugs-tab">
             <h3>Prescriptions</h3>
+            {existingPrescriptions.length > 0 && (
+              <div className="clinical-encounter-saved-lines">
+                <h4>Already sent to pharmacy</h4>
+                <SelectedItems items={existingPrescriptions.map((item) => ({
+                  drug_code: item.drug_code,
+                  label: item.drug?.name || item.drug_code,
+                  quantity: item.quantity,
+                }))} />
+              </div>
+            )}
             <label className="auth-field">
               <span>Medicine</span>
               <select value={prescription.drug_code} onChange={(event) => setPrescription((current) => ({ ...current, drug_code: event.target.value }))}>
@@ -292,7 +365,7 @@ function ConsultationModal({ patient, catalogs, consultation = null, onClose, on
             <button className="staff-primary-button clinical-section-save" type="button" onClick={() => void savePrescriptions()} disabled={saving || !prescriptions.length}>
               {saving ? 'Saving…' : 'Send prescriptions to pharmacy'}
             </button>
-          </section>
+          </section>}
           <footer className="patient-form-actions">
             <button className="auth-button auth-button-back" type="button" onClick={close} disabled={saving}>Done for now</button>
             <button className="auth-button auth-button-primary patient-submit-button" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save progress'}</button>

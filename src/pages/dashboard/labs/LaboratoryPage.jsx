@@ -13,7 +13,8 @@ function LaboratoryPage() {
   const [catalogs, setCatalogs] = useState({ labs: [] });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [catalogError, setCatalogError] = useState('');
+  const [queueError, setQueueError] = useState('');
   const [search, setSearch] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [stockItem, setStockItem] = useState(null);
@@ -21,19 +22,25 @@ function LaboratoryPage() {
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    try {
-      const [catalogResult, queueResult] = await Promise.all([
-        clinicalRequest('catalogs'),
-        clinicalRequest('lab_queue'),
-      ]);
-      setCatalogs(catalogResult);
-      setOrders(queueResult.items || []);
-      setError('');
-    } catch (loadError) {
-      setError(loadError.message || 'Could not load laboratory workspace.');
-    } finally {
-      setLoading(false);
+    const [catalogResult, queueResult] = await Promise.allSettled([
+      clinicalRequest('catalogs'),
+      clinicalRequest('lab_queue'),
+    ]);
+    if (catalogResult.status === 'fulfilled') {
+      setCatalogs(catalogResult.value);
+      setCatalogError('');
+    } else {
+      setCatalogs({ labs: [] });
+      setCatalogError(catalogResult.reason?.message || 'Could not load the laboratory catalog.');
     }
+    if (queueResult.status === 'fulfilled') {
+      setOrders(queueResult.value.items || []);
+      setQueueError('');
+    } else {
+      setOrders([]);
+      setQueueError(queueResult.reason?.message || 'Could not load laboratory requests.');
+    }
+    setLoading(false);
   }, []);
 
   const realtime = usePatientRealtime(profile?.hospital_id, () => {
@@ -53,21 +60,33 @@ function LaboratoryPage() {
   const labGroups = useMemo(() => groupByCategory(
     catalogs.labs.filter((item) => `${item.name} ${item.code} ${item.category}`.toLocaleLowerCase().includes(search.toLocaleLowerCase())),
   ), [catalogs.labs, search]);
+  const pendingCount = orders.filter((order) => order.status === 'pending').length;
+  const inProgressCount = orders.filter((order) => order.status === 'in_progress').length;
+  const lowStockCount = catalogs.labs.filter((item) =>
+    (item.inventory?.quantity_on_hand ?? 0) <= (item.inventory?.reorder_level ?? 0),
+  ).length;
 
   if (profile?.role !== 'labs') return <Navigate to={basePath} replace />;
 
   return (
-    <section className="clinical-page">
-      <header className="patients-page-heading">
-        <div><span className="workspace-overline">LABORATORY WORKSPACE</span><h1>Laboratory</h1></div>
-        <div className="clinical-header-counts">
-          <span className="nurse-patient-count">{loading ? '—' : `${orders.length} open requests`}</span>
-          <span className="nurse-patient-count">{catalogs.labs.length} tests</span>
+    <section className="clinical-page clinical-workspace-page laboratory-workspace-page">
+      <header className="clinical-workspace-heading">
+        <div>
+          <span className="workspace-overline">LABORATORY WORKSPACE</span>
+          <h1>Testing &amp; results</h1>
+          <p>Process requested investigations, record results, and monitor test supplies.</p>
         </div>
+        <span className="clinical-workspace-heading-mark" aria-hidden="true">Lab</span>
       </header>
-      <p className="clinical-demo-warning" role="note">Example inventory quantities are demo values. Lab requests do not deduct stock.</p>
+      <div className="clinical-workspace-stats" aria-label="Laboratory summary">
+        <article><span>Open requests</span><strong>{loading ? '—' : orders.length}</strong><small>Awaiting a result</small></article>
+        <article><span>Pending</span><strong>{loading ? '—' : pendingCount}</strong><small>Ready to process</small></article>
+        <article><span>In progress</span><strong>{loading ? '—' : inProgressCount}</strong><small>Currently being processed</small></article>
+        <article className={lowStockCount ? 'is-attention' : ''}><span>Low-stock tests</span><strong>{loading ? '—' : lowStockCount}</strong><small>At or below reorder level</small></article>
+      </div>
       {realtime.error && <p className="auth-notice auth-notice-error" role="status">Live lab and inventory updates are unavailable: {realtime.error}</p>}
-      {error && <p className="auth-notice auth-notice-error" role="alert">{error}<button className="staff-inline-button" type="button" onClick={() => void loadData()}>Try again</button></p>}
+      {activeView === 'queue' && queueError && <p className="auth-notice auth-notice-error" role="alert">{queueError}<button className="staff-inline-button" type="button" onClick={() => void loadData()}>Try again</button></p>}
+      {activeView === 'inventory' && catalogError && <p className="auth-notice auth-notice-error" role="alert">{catalogError}<button className="staff-inline-button" type="button" onClick={() => void loadData()}>Try again</button></p>}
 
       <div className="clinical-workspace-toolbar">
         <div className="staff-view-toggle" role="group" aria-label="Laboratory workspace">
@@ -88,16 +107,19 @@ function LaboratoryPage() {
             {filteredOrders.map((order) => (
               <article className="clinical-work-item" key={order.id}>
                 <div className="clinical-work-item-main">
+                  <div className="clinical-work-patient-row">
+                    <Link className="patient-table-name" to={`${basePath}/patients/${order.patient_id}?tab=labs`}>{order.patient?.full_name || 'Patient record'} <span aria-hidden="true">↗</span></Link>
+                    <span className="clinical-work-item-date">Requested {formatDateTime(order.requested_at)}</span>
+                  </div>
                   <div className="clinical-work-item-heading">
                     <span className={`clinical-priority-badge is-${order.priority}`}>{order.priority}</span>
                     <h2>{order.catalog_item?.name || 'Laboratory test'}</h2>
-                    <span className="clinical-status-badge">{order.status.replace('_', ' ')}</span>
+                    <span className={`clinical-status-badge is-${order.status}`}>{order.status.replace('_', ' ')}</span>
                   </div>
-                  <Link className="patient-table-name" to={`${basePath}/patients/${order.patient_id}?tab=labs`}>{order.patient?.full_name || 'Patient record'} →</Link>
-                  <p>{order.catalog_item?.category} · {order.catalog_item?.code} · Requested {formatDateTime(order.requested_at)}</p>
+                  <p className="clinical-prescription-summary">{order.catalog_item?.category} · {order.catalog_item?.code}</p>
                   {order.request_notes && <p className="clinical-notes">{order.request_notes}</p>}
                 </div>
-                <button className="staff-primary-button" type="button" onClick={() => setSelectedOrder(order)}>Record result</button>
+                <button className="staff-primary-button clinical-work-action" type="button" onClick={() => setSelectedOrder(order)}>Record result</button>
               </article>
             ))}
           </div>
@@ -142,7 +164,6 @@ export function InventoryCard({ item, onAdd }) {
       <p>{item.code} · {item.category}</p>
       <div className="clinical-inventory-card-footer">
         <span><strong>{quantity}</strong> on hand <small>· reorder at {inventory?.reorder_level ?? 0}</small></span>
-        {inventory?.demo_stock && <small className="clinical-demo-tag">Example</small>}
         <button className="staff-secondary-button" type="button" onClick={onAdd}>Receive stock</button>
       </div>
     </article>

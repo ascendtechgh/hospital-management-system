@@ -261,20 +261,6 @@ export default function SignUpForm({ setupOnly = false }) {
         <span className="auth-kicker">
           {setupOnly ? 'HOSPITAL WORKSPACE' : 'GET STARTED'}
         </span>
-        <h2>
-          {setupOnly
-            ? 'Finish setting up your hospital.'
-            : step === 1
-              ? 'Create your account.'
-              : 'Set up your hospital.'}
-        </h2>
-        <p>
-          {setupOnly
-            ? 'Add your hospital details to open your administrator workspace.'
-            : step === 1
-              ? 'Start with your hospital administrator details.'
-              : 'Your account is ready. Now create your hospital workspace.'}
-        </p>
       </div>
 
       {!setupOnly && (

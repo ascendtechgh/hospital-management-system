@@ -152,17 +152,10 @@ function PatientsPage() {
         </p>
       )}
 
-      <section className="patients-directory">
+      <section className={`patients-directory${view === 'cards' ? ' is-card-view' : ' is-list-view'}`}>
         <div className="patients-toolbar">
           <div>
             <h2>Patient directory</h2>
-            <span aria-live="polite">
-              {loading
-                ? 'Loading patient records…'
-                : search
-                  ? `Showing ${filteredPatients.length} of ${patients.length} patients`
-                  : `${patients.length} registered patient${patients.length === 1 ? '' : 's'}`}
-            </span>
           </div>
           <div className="staff-directory-actions">
             <label className="staff-search patients-search">

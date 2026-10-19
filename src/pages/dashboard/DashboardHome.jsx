@@ -6,9 +6,6 @@ import { dashboardSummary } from '../../lib/dashboardApi.js';
 
 const dashboardConfig = {
   superadmin: {
-    eyebrow: 'PLATFORM OVERVIEW',
-    title: 'Platform operations',
-    description: 'A current view of hospitals and accounts across AscendHMS.',
     cards: [
       ['hospitals', 'Registered hospitals', 'Hospital workspaces'],
       ['staff', 'User accounts', 'All platform profiles'],
@@ -16,9 +13,6 @@ const dashboardConfig = {
     actions: [],
   },
   hospitaladmin: {
-    eyebrow: 'HOSPITAL OVERVIEW',
-    title: 'Hospital operations',
-    description: 'Patient activity, insurance coverage, staffing, and department workload.',
     cards: [
       ['patients', 'Registered patients', 'All patient records'],
       ['insuredPatients', 'Currently insured', 'Insurance expiry is today or later'],
@@ -38,9 +32,6 @@ const dashboardConfig = {
     ],
   },
   reception: {
-    eyebrow: 'FRONT DESK',
-    title: 'Patient flow',
-    description: 'Registration, arrivals, and insurance status at a glance.',
     cards: [
       ['patients', 'Registered patients', 'Hospital patient directory'],
       ['registrationsToday', 'New registrations', 'Patients added today'],
@@ -52,9 +43,6 @@ const dashboardConfig = {
     actions: [['Patient directory', '/dashboard/reception/patients']],
   },
   nurse: {
-    eyebrow: 'NURSING OVERVIEW',
-    title: 'Patient observations',
-    description: 'Track today’s arrivals and nursing observations.',
     cards: [
       ['arrivalsToday', 'Arrivals today', 'Recorded patient check-ins'],
       ['vitalsToday', 'Vitals recorded today', 'Observations saved today'],
@@ -66,9 +54,6 @@ const dashboardConfig = {
     ],
   },
   consulting: {
-    eyebrow: 'CLINICAL OVERVIEW',
-    title: 'Consultation workload',
-    description: 'A live snapshot of consultations, investigations, and prescriptions.',
     cards: [
       ['consultationsToday', 'Consultations today', 'Consultations created today'],
       ['arrivalsToday', 'Arrivals today', 'Recorded patient check-ins'],
@@ -82,9 +67,6 @@ const dashboardConfig = {
     ],
   },
   labs: {
-    eyebrow: 'LABORATORY OVERVIEW',
-    title: 'Laboratory workload',
-    description: 'Prioritize pending tests, follow work in progress, and watch stock levels.',
     cards: [
       ['pendingLabs', 'Pending orders', 'Waiting to be processed'],
       ['inProgressLabs', 'Tests in progress', 'Currently being processed'],
@@ -97,9 +79,6 @@ const dashboardConfig = {
     ],
   },
   pharmacy: {
-    eyebrow: 'PHARMACY OVERVIEW',
-    title: 'Dispensing and stock',
-    description: 'Keep prescriptions moving and identify medicines that need replenishment.',
     cards: [
       ['pendingPrescriptions', 'Pending prescriptions', 'Waiting to be dispensed'],
       ['partialPrescriptions', 'Partially dispensed', 'Remaining quantity still due'],
@@ -121,7 +100,7 @@ function formatMetric(value, loading, error) {
 
 function DashboardHome({ role: dashboardRole }) {
   const { profile } = useAuth();
-  const { hospital, hospitalLoading } = useOutletContext();
+  const { hospitalLoading } = useOutletContext();
   const role = dashboardRole || profile?.role;
   const config = dashboardConfig[role] || dashboardConfig.superadmin;
   const [summary, setSummary] = useState(null);
@@ -228,35 +207,9 @@ function DashboardHome({ role: dashboardRole }) {
   });
 
   const metrics = summary?.metrics || {};
-  const workspaceName = role === 'superadmin' ? 'AscendHMS' : hospital?.name || 'Your hospital';
-  const today = new Intl.DateTimeFormat(undefined, {
-    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
-  }).format(new Date());
 
   return (
-    <div className="dashboard-home dashboard-operations-home">
-      <section className="dashboard-overview-heading">
-        <div>
-          <span className="workspace-overline">{config.eyebrow}</span>
-          <h1>{config.title}</h1>
-          <p>{config.description}</p>
-        </div>
-        <div className="dashboard-overview-meta">
-          <span className="dashboard-overview-hospital">{workspaceName}</span>
-          <span>{today}</span>
-          <button className="dashboard-refresh-button" type="button" onClick={() => { setLoading(true); void loadSummary(); }} disabled={loading}>
-            {loading ? 'Updating…' : 'Refresh summary'}
-          </button>
-        </div>
-      </section>
-
-      {error && (
-        <div className="dashboard-summary-error" role="alert">
-          <span>{error}</span>
-          <button type="button" onClick={() => { setLoading(true); void loadSummary(); }}>Try again</button>
-        </div>
-      )}
-
+    <div className={`dashboard-home dashboard-operations-home dashboard-home-${role}`}>
       <section className="dashboard-operational-grid" aria-label="Operational summary">
         {config.cards.map(([key, label, hint]) => (
           <article className="dashboard-operational-card" key={key}>
@@ -266,6 +219,13 @@ function DashboardHome({ role: dashboardRole }) {
           </article>
         ))}
       </section>
+
+      {error && (
+        <div className="dashboard-summary-error" role="alert">
+          <span>{error}</span>
+          <button type="button" onClick={() => { setLoading(true); void loadSummary(); }}>Try again</button>
+        </div>
+      )}
 
       {isHospitalUser && (
         <section className="dashboard-operations-section">

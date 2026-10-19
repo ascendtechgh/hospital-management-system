@@ -62,7 +62,7 @@ async function patientRecord(client, hospitalId, patientId, actorRole) {
   const patient = await getPatient(client, patientId, hospitalId, actorRole === 'reception');
   const [consultationsResult, labResult, prescriptionsResult] = await Promise.all([
     client.from('consultations')
-      .select('id, doctor_id, chief_complaint, history, examination, assessment, plan, created_at')
+      .select('id, doctor_id, chief_complaint, history, examination, assessment, plan, created_at, nhis_eligible_at_service, insurance_type_snapshot, insurance_provider_snapshot, insurance_number_snapshot')
       .eq('hospital_id', hospitalId).eq('patient_id', patientId)
       .order('created_at', { ascending: false }).limit(100),
     client.from('lab_orders')

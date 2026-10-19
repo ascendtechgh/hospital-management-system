@@ -46,7 +46,7 @@ function InventoryStockModal({ item, itemType, onClose, onSaved }) {
 
   return (
     <dialog
-      className="patient-form-dialog clinical-dialog clinical-small-dialog"
+      className={`patient-form-dialog clinical-dialog clinical-small-dialog clinical-workspace-dialog ${itemType}-inventory-dialog`}
       ref={dialogRef}
       aria-labelledby="inventory-modal-title"
       onCancel={(event) => { event.preventDefault(); close(); }}
@@ -57,12 +57,9 @@ function InventoryStockModal({ item, itemType, onClose, onSaved }) {
           <span className="patient-modal-icon" aria-hidden="true">▤</span>
           <button className="staff-close-button" type="button" aria-label="Close" onClick={close} disabled={saving}>×</button>
         </header>
-        <span className="workspace-overline">{item?.inventory?.demo_stock ? 'DEMO STOCK RECONCILIATION' : 'INVENTORY RECEIPT'}</span>
+        <span className="workspace-overline">{item?.inventory?.demo_stock ? 'INVENTORY COUNT' : 'INVENTORY RECEIPT'}</span>
         <h2 className="patient-modal-title" id="inventory-modal-title">{item?.inventory?.demo_stock ? 'Set counted stock' : 'Add stock'}</h2>
         <p className="patient-modal-description"><strong>{item?.name}</strong> · {item?.code}</p>
-        {item?.inventory?.demo_stock && (
-          <p className="clinical-demo-warning">This replaces the example quantity with your counted on-hand stock. It does not add to the example number.</p>
-        )}
         {error && <p className="auth-notice auth-notice-error" role="alert">{error}</p>}
         <form className="patient-form" onSubmit={submit}>
           <div className="clinical-form-grid clinical-form-grid-2">
