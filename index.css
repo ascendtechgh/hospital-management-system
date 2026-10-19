@@ -7626,3 +7626,334 @@ button:focus-visible {
 .landing .mobile-site-nav[hidden] {
   display: none;
 }
+
+
+/* AscendHMS landing design system — restrained iOS-inspired blue, softened geometry. */
+.landing {
+  --landing-ink: #142844;
+  --landing-muted: #687b95;
+  --landing-blue: #2563eb;
+  --landing-blue-dark: #1746a2;
+  --landing-blue-soft: #eff5ff;
+  --landing-blue-tint: #f7faff;
+  --landing-line: #e2eaf5;
+  --landing-radius-sm: 12px;
+  --landing-radius-md: 18px;
+  --landing-radius-lg: 24px;
+  color: var(--landing-ink);
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "DM Sans", sans-serif;
+}
+
+.landing :is(h1, h2, h3, strong) {
+  color: var(--landing-ink);
+}
+
+.landing :is(p, .hero-copy, .section-intro, .capability-description, .team-card > p,
+  .workflow-detail, .security-footnote, .footer-description) {
+  color: var(--landing-muted);
+}
+
+.landing .site-header {
+  border-bottom: 1px solid rgb(226 234 245 / 82%);
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 1px 0 rgb(19 43 77 / 2%);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+}
+
+.landing .brand-mark { max-height: 48px; }
+.landing .main-nav a,
+.landing .sign-in-link,
+.landing .footer-nav a { color: #5e718b; }
+.landing .main-nav a:hover,
+.landing .sign-in-link:hover,
+.landing .footer-nav a:hover { color: var(--landing-blue); }
+
+.landing .button {
+  min-height: 48px;
+  padding-inline: 21px;
+  border-radius: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.landing .button:hover { transform: translateY(-1px); }
+.landing .button-dark {
+  color: #fff;
+  background: var(--landing-blue);
+  box-shadow: 0 5px 14px rgb(37 99 235 / 17%);
+}
+.landing .button-dark:hover {
+  background: #1d4ed8;
+  box-shadow: 0 8px 20px rgb(37 99 235 / 22%);
+}
+.landing .button-light {
+  color: #23446f;
+  border-color: #dce6f5;
+  background: #fff;
+}
+.landing .button-light:hover {
+  border-color: #b9cff5;
+  background: var(--landing-blue-tint);
+}
+.landing .button-small { min-height: 42px; border-radius: 13px; }
+
+.landing .hero { gap: clamp(30px, 4vw, 58px); }
+.landing .hero h1 {
+  color: var(--landing-ink);
+  letter-spacing: -0.055em;
+  line-height: 1.04;
+}
+.landing .hero h1 span,
+.landing .demo-brand > span > span,
+.landing .section-kicker,
+.landing .eyebrow-brand { color: var(--landing-blue); }
+.landing .eyebrow { color: #526a89; }
+.landing .eyebrow-dot,
+.landing .caption-pulse {
+  background: var(--landing-blue);
+  box-shadow: 0 0 0 4px rgb(37 99 235 / 10%);
+}
+.landing .eyebrow-divider { color: #b4c1d2; }
+.landing .hero-visual-glow { display: none; }
+.landing .hero-window {
+  border-color: var(--landing-line);
+  border-radius: 24px;
+  box-shadow: 0 28px 70px rgb(27 57 100 / 11%), 0 2px 8px rgb(27 57 100 / 4%);
+  transform: none;
+}
+.landing .window-topbar { border-bottom-color: #e8eef7; }
+.landing .window-dots i { background: #c8d7ec; }
+.landing .window-dots i:first-child,
+.landing .window-dots i:nth-child(2),
+.landing .window-dots i:nth-child(3) { background: #a9c5f4; }
+.landing .window-address {
+  border: 1px solid #e6edf7;
+  border-radius: 9px;
+  color: #7185a1;
+  background: #f7faff;
+}
+.landing .address-lock { color: var(--landing-blue); }
+.landing .window-avatar,
+.landing .sidebar-avatar {
+  color: #2455a8;
+  background: #eaf1ff;
+}
+.landing .floating-note {
+  border-color: var(--landing-line);
+  border-radius: 17px;
+  box-shadow: 0 12px 32px rgb(27 57 100 / 10%);
+}
+.landing .note-icon { border-radius: 12px; color: #fff; background: var(--landing-blue); }
+.landing .floating-note strong { color: var(--landing-ink); }
+.landing .floating-note small,
+.landing .hero-caption { color: #7b8da5; }
+.landing .note-live {
+  color: #2455a8;
+  background: #edf4ff;
+}
+.landing .scroll-cue { border-color: #d5e2f5; }
+.landing .scroll-cue span { background: #6d96df; }
+
+.landing .product-section { border-top-color: #edf2f9; }
+.landing .section-heading h2,
+.landing .security-intro h2,
+.landing .closing-content h2 {
+  color: var(--landing-ink);
+  letter-spacing: -0.045em;
+}
+.landing .product-demo {
+  border-color: #dce6f4;
+  border-radius: 24px;
+  box-shadow: 0 24px 68px rgb(27 57 100 / 8%), 0 2px 8px rgb(27 57 100 / 3%);
+}
+.landing .product-sidebar {
+  border-right-color: #e5edf8;
+  background: #f8faff;
+}
+.landing .demo-brand > span { color: var(--landing-ink); }
+.landing .demo-side-label,
+.landing .screen-overline { color: #8192aa; }
+.landing .demo-nav-item { border-radius: 10px; }
+.landing .demo-nav-active {
+  color: #2456b4;
+  border: 1px solid #dce8ff;
+  background: #edf4ff;
+}
+.landing .demo-nav-icon { color: #6688c1; }
+.landing .demo-sidebar-bottom { border-top-color: #e5edf8; }
+.landing .demo-sidebar-bottom strong { color: #3b5272; }
+.landing .product-screen-head h3 { color: var(--landing-ink); }
+.landing .screen-status {
+  border-color: #dce7f6;
+  color: #516987;
+  background: #f8fbff;
+}
+.landing .screen-status i { background: #7c9bc9; }
+.landing .product-tabs { border-bottom-color: #e4ebf5; }
+.landing .product-tab { min-height: 42px; }
+.landing .product-tab:hover,
+.landing .product-tab.is-active { color: var(--landing-blue); }
+.landing .product-tab.is-active::after { height: 3px; background: var(--landing-blue); }
+.landing .product-image-frame {
+  border-color: #e5edf8;
+  border-radius: 14px;
+  background: #f7faff;
+}
+.landing .product-image-frame img { border-radius: 13px; }
+.landing .screen-foot { color: #8192aa; }
+.landing .product-disclaimer { color: #8494aa; }
+
+.landing .capabilities-section,
+.landing .workflow-section { background: #f6f9fe; }
+.landing .capability-grid,
+.landing .teams-grid { gap: 16px; }
+.landing .capability-card,
+.landing .connected-note,
+.landing .team-card {
+  border-color: #e2eaf5;
+  border-radius: 20px;
+  box-shadow: 0 2px 7px rgb(27 57 100 / 2%);
+}
+.landing .capability-card,
+.landing .team-card {
+  padding: 24px;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.landing .capability-card:hover,
+.landing .team-card:hover {
+  transform: translateY(-2px);
+  border-color: #c9daf5;
+  box-shadow: 0 12px 28px rgb(27 57 100 / 7%);
+}
+.landing .capability-icon,
+.landing .team-icon {
+  color: #285db8;
+  border-color: #dce8fb;
+  border-radius: 13px;
+  background: #eff5ff;
+}
+.landing .card-number { color: #8da0ba; }
+.landing .capability-card h3,
+.landing .team-card h3 { color: var(--landing-ink); }
+.landing .check-list li { color: #526783; }
+.landing .hero-proof svg,
+.landing .check-list svg { color: var(--landing-blue); background: #eaf1ff; }
+
+.landing .connected-note {
+  border-color: #d7e5fb;
+  background: #edf4ff;
+}
+.landing .connected-symbol { display: none; }
+.landing .connected-symbol span { border-color: #c5d8fa; }
+.landing .connected-note h3 { color: #1d3b6c; }
+.landing .connected-note > p:not(.section-kicker) { color: #5f7392; }
+.landing .connected-note a { color: #2456b4; }
+.landing .tool-tags span {
+  border-color: #e1eaf6;
+  border-radius: 8px;
+  color: #5b708d;
+  background: #f7faff;
+}
+.landing .workflow-step:not(:last-child)::after { background: #d5e0ef; }
+.landing .workflow-marker {
+  color: #285db8;
+  border-color: #d4e2fa;
+  border-radius: 15px;
+  background: #eff5ff;
+}
+.landing .workflow-note {
+  border-color: #dce7f6;
+  border-radius: 18px;
+  background: #fff;
+}
+.landing .security-seal {
+  border-color: #dce7f6;
+  border-radius: 17px;
+  background: #f8faff;
+}
+.landing .seal-icon { color: var(--landing-blue); }
+.landing .safeguard {
+  border-bottom-color: #e5edf8;
+}
+.landing .safeguard-number { color: #8da0ba; }
+.landing .safeguard-check {
+  color: #2456b4;
+  border-radius: 12px;
+  background: #edf4ff;
+}
+.landing .closing-card {
+  overflow: hidden;
+  border-radius: 28px;
+  background: #173866;
+  box-shadow: 0 22px 54px rgb(23 56 102 / 15%);
+}
+.landing .closing-orb { display: none; }
+.landing .closing-content h2 { color: #fff; }
+.landing .closing-content > p:not(.closing-kicker) { color: #d1def1; }
+.landing .closing-kicker { color: #b8d0fb; }
+.landing .button-white {
+  color: #1d4ed8;
+  border-radius: 14px;
+  background: #fff;
+}
+.landing .closing-sign-in { color: #e4edfc; }
+.landing .closing-decoration { color: #b8d0fb; }
+.landing .closing-cross { color: #b8d0fb; }
+.landing .footer-main { border-color: #e2eaf5; }
+.landing .footer-bottom { color: #8192aa; }
+
+.landing .mobile-menu-toggle {
+  border-color: #dce6f3;
+  border-radius: 13px;
+  color: #24456f;
+  background: #fff;
+}
+.landing .mobile-site-nav {
+  border-color: #dfe8f4;
+  border-radius: 20px;
+  box-shadow: 0 18px 45px rgb(20 43 77 / 12%);
+}
+.landing .mobile-site-nav a { border-radius: 12px; }
+.landing .mobile-site-nav a:hover,
+.landing .mobile-site-nav a:focus-visible {
+  color: #1e4fae;
+  background: #f0f5ff;
+}
+.landing :is(a, button, .capability-card, .team-card, .product-demo, .hero-window) {
+  -webkit-tap-highlight-color: transparent;
+}
+.landing a:focus-visible,
+.landing button:focus-visible,
+.landing .product-tab:focus-visible {
+  outline: 3px solid rgb(37 99 235 / 48%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .landing .hero { gap: 28px; }
+  .landing .capability-card,
+  .landing .team-card { padding: 20px; }
+}
+@media (max-width: 720px) {
+  .landing .hero { gap: 34px; padding-top: 48px; }
+  .landing .hero-window { border-radius: 19px; }
+  .landing .floating-note { right: 4px; min-width: 0; max-width: calc(100% - 12px); }
+  .landing .product-demo { border-radius: 20px; }
+  .landing .product-screen-area { padding: 20px 18px 14px; }
+  .landing .capability-card,
+  .landing .team-card { border-radius: 18px; }
+  .landing .closing-card { border-radius: 22px; }
+}
+@media (max-width: 460px) {
+  .landing .hero h1 { letter-spacing: -0.045em; }
+  .landing .hero-actions { gap: 10px; flex-wrap: wrap; }
+  .landing .hero-actions .button { min-height: 46px; padding-inline: 16px; }
+  .landing .product-screen-area { padding: 17px 13px 12px; }
+  .landing .product-image-frame { border-radius: 11px; }
+  .landing .product-image-frame img { border-radius: 10px; }
+  .landing .capability-card,
+  .landing .team-card { padding: 19px; }
+  .landing .closing-card { border-radius: 20px; }
+}
