@@ -126,7 +126,7 @@ function PatientsPage() {
           <span><small>REGISTERED PATIENTS</small><strong>{loading ? '—' : patients.length}</strong></span>
         </article>
         <article className="patient-stat-card">
-          <span className="patient-stat-icon patient-stat-icon-green">↗</span>
+          <span className="patient-stat-icon patient-stat-icon-blue">↗</span>
           <span><small>CHECKED IN</small><strong>{loading ? '—' : checkedInCount}</strong></span>
         </article>
         <article className="patient-stat-card">
