@@ -255,7 +255,17 @@ async function checkInPatient(client, hospitalId, userId, patientId) {
   }).eq('id', patientId).eq('hospital_id', hospitalId)
     .select(patientFields.join(',')).single();
   if (error) throw new HttpError(500, `Could not check in patient: ${error.message}`);
-  return { patient: data };
+
+  const visit = await client.from('patient_visits').insert({
+    hospital_id: hospitalId,
+    patient_id: patientId,
+    checked_in_by: userId,
+    checked_in_at: data.checked_in_at,
+    insured_at_checkin: insured,
+    insurance_provider_at_checkin: insured ? patient.insurance_provider : null,
+  }).select('id, checked_in_at, insured_at_checkin').single();
+  if (visit.error) throw new HttpError(500, `Patient was checked in, but visit history could not be saved: ${visit.error.message}`);
+  return { patient: data, visit: visit.data };
 }
 
 function validFilterDate(value, label) {
