@@ -118,7 +118,6 @@ export default function PatientImportPage() {
       for (let i = 0; i < ready.length; i += 1) {
         const row = ready[i];
         const payload = {
-          patient_number: row.patient_number || row.mrn || undefined,
           full_name: [row.first_name, row.other_names, row.surname].map((part) => String(part || '').trim()).filter(Boolean).join(' '),
           sex: row.normalizedSex,
           date_of_birth: row.date_of_birth || null,
@@ -128,11 +127,11 @@ export default function PatientImportPage() {
           residence: row.address || row.residence || '',
           emergency_name: row.emergency_name || '',
           emergency_phone: row.emergency_phone || '',
-          insurance_type: String(row.insurance_name || '').toLowerCase() === 'nhis' ? 'nhis' : (row.insurance_name ? 'private' : 'none'),
-          insurance_provider: row.insurance_name || '',
-          insurance_number: row.insurance_number || '',
-          insurance_expiry: row.insurance_expiry || null,
           insurance_enabled: Boolean(row.insurance_name && row.insurance_number && row.insurance_expiry),
+          insurance_type: row.insurance_name && row.insurance_number && row.insurance_expiry ? (String(row.insurance_name).toLowerCase() === 'nhis' ? 'nhis' : 'other') : null,
+          insurance_provider: row.insurance_name && row.insurance_number && row.insurance_expiry ? (String(row.insurance_name).toLowerCase() === 'nhis' ? 'NHIS' : row.insurance_name) : null,
+          insurance_number: row.insurance_name && row.insurance_number && row.insurance_expiry ? row.insurance_number : null,
+          insurance_expiry: row.insurance_name && row.insurance_number && row.insurance_expiry ? row.insurance_expiry : null,
         };
         try { await patientRequest('create', payload); imported += 1; }
         catch (rowError) { failures.push(`Row ${row.__row}: ${rowError.message}`); }
