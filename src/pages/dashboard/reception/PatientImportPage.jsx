@@ -119,9 +119,7 @@ export default function PatientImportPage() {
         const row = ready[i];
         const payload = {
           patient_number: row.patient_number || row.mrn || undefined,
-          surname: row.surname.trim(),
-          first_name: row.first_name.trim(),
-          other_names: row.other_names?.trim() || '',
+          full_name: [row.first_name, row.other_names, row.surname].map((part) => String(part || '').trim()).filter(Boolean).join(' '),
           sex: row.normalizedSex,
           date_of_birth: row.date_of_birth || null,
           age_at_registration: row.estimated_age_years ? Number(row.estimated_age_years) : null,
@@ -130,6 +128,7 @@ export default function PatientImportPage() {
           residence: row.address || row.residence || '',
           emergency_name: row.emergency_name || '',
           emergency_phone: row.emergency_phone || '',
+          insurance_type: String(row.insurance_name || '').toLowerCase() === 'nhis' ? 'nhis' : (row.insurance_name ? 'private' : 'none'),
           insurance_provider: row.insurance_name || '',
           insurance_number: row.insurance_number || '',
           insurance_expiry: row.insurance_expiry || null,
