@@ -11,11 +11,13 @@ import SettingsPage from './src/pages/dashboard/SettingsPage.jsx';
 import StaffPage from './src/pages/dashboard/hospitaladmin/StaffPage.jsx';
 import StaffDetailPage from './src/pages/dashboard/hospitaladmin/StaffDetailPage.jsx';
 import PatientsPage from './src/pages/dashboard/reception/PatientsPage.jsx';
+import PatientImportPage from './src/pages/dashboard/reception/PatientImportPage.jsx';
 import PatientDetailPage from './src/pages/dashboard/reception/PatientDetailPage.jsx';
 import VitalsPage from './src/pages/dashboard/nurse/VitalsPage.jsx';
 import ConsultationsPage from './src/pages/dashboard/consulting/ConsultationsPage.jsx';
 import LaboratoryPage from './src/pages/dashboard/labs/LaboratoryPage.jsx';
 import PharmacyPage from './src/pages/dashboard/pharmacy/PharmacyPage.jsx';
+import AccountsPage from './src/pages/dashboard/accounts/AccountsPage.jsx';
 import ProtectedRoute from './src/components/ProtectedRoute.jsx';
 
 function NotFoundPage() {
@@ -38,33 +40,22 @@ function App() {
           <Route path="/login" element={<SignInPage />} />
           <Route path="/signin" element={<Navigate to="/login" replace />} />
           <Route path="/signup" element={<SignUpPage />} />
-          <Route
-            path="/setup-hospital"
-            element={
-              <ProtectedRoute>
-                <HospitalSetupPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/:role"
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/setup-hospital" element={<ProtectedRoute><HospitalSetupPage /></ProtectedRoute>} />
+          <Route path="/dashboard/:role" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route index element={<RoleDashboardPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="staff" element={<StaffPage />} />
             <Route path="staff/:staffId" element={<StaffDetailPage />} />
             <Route path="patients" element={<PatientsPage />} />
+            <Route path="patients/import" element={<PatientImportPage />} />
             <Route path="patients/:patientId" element={<PatientDetailPage />} />
             <Route path="vitals" element={<VitalsPage />} />
             <Route path="consultations" element={<ConsultationsPage />} />
             <Route path="lab-orders" element={<LaboratoryPage />} />
             <Route path="dispensing" element={<PharmacyPage />} />
+            <Route path="accounts" element={<AccountsPage />} />
+            <Route path="accounts/:section" element={<AccountsPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
