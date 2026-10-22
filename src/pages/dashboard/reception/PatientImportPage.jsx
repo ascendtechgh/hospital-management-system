@@ -4,7 +4,6 @@ import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { patientRequest } from '../../../lib/patientApi.js';
 import './patient-import.css';
 
-const required = ['surname', 'first_name', 'sex'];
 const template = 'patient_number,surname,first_name,other_names,sex,date_of_birth,estimated_age_years,phone,address,emergency_name,emergency_phone,insurance_name,insurance_number,insurance_expiry\n,Mensah,Akua,,F,1995-04-12,,0240000000,Kumasi,,,,NHIS,NHIS-00001,2027-12-31\n';
 function parseCsv(text) {
   const rows = [];
@@ -24,7 +23,7 @@ function parseCsv(text) {
   if (cell || row.length) { row.push(cell.trim()); if (row.some(Boolean)) rows.push(row); }
   if (rows.length < 2) return [];
   const headers = rows[0].map((header) => header.trim().toLowerCase().replace(/[\s-]+/g, '_'));
-  return rows.slice(1).map((values, index) => Object.fromEntries(headers.map((header, column) => [header, values[column] || ''])).__proto__ === null ? {} : rows.slice(1).map((values, index) => {
+  return rows.slice(1).map((values, index) => {
     const result = Object.fromEntries(headers.map((header, column) => [header, values[column] || '']));
     return { ...result, __row: index + 2 };
   });
