@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { clinicalRequest, groupByCategory } from '../../../lib/clinicalApi.js';
+import './consultation-diagnostics.css';
 
 const emptyNotes = {
   chief_complaint: '',
