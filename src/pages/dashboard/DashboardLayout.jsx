@@ -19,6 +19,8 @@ const roleLabels = {
   labs: 'Laboratory',
   pharmacy: 'Pharmacy',
   reception: 'Reception',
+  cashier: 'Cashier',
+  billing_claims: 'Billing & Claims',
 };
 
 function SearchIcon() {
@@ -316,7 +318,7 @@ export default function DashboardLayout() {
         keywords: 'pharmacy prescriptions dispensing drugs inventory',
       });
     }
-    if (['hospitaladmin', 'superadmin', 'reception'].includes(profile?.role)) {
+    if (['hospitaladmin', 'superadmin', 'reception', 'cashier', 'billing_claims'].includes(profile?.role)) {
       items.push({
         id: 'accounts',
         title: 'Accounts and cashier',
