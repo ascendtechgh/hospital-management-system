@@ -82,7 +82,7 @@ export default function PatientImportPage() {
   const [notice, setNotice] = useState('');
   const [committing, setCommitting] = useState(false);
   const basePath = `/dashboard/${profile?.role || role}`;
-  const canImport = ['reception', 'hospitaladmin'].includes(profile?.role);
+  const canImport = profile?.role === 'reception';
   const validated = useMemo(() => validateRows(rows, existing), [rows, existing]);
   const validRows = validated.filter((row) => row.status !== 'error');
   const visibleRows = validated.filter((row) => filter === 'all' || (filter === 'errors' ? row.status === 'error' : row.status !== 'error'));
