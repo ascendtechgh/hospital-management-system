@@ -456,7 +456,7 @@ function PatientDetailPage() {
               canConsult={canConsult && Boolean(patient.checked_in_at)}
               onNewConsultation={() => void openConsultation()}
               onContinueConsultation={(consultation) => void openConsultation(consultation)}
-              canPrintClaims={canManage}
+              canPrintClaims={canManage || canConsult}
               onPrintClaim={(consultation) => setClaimPrintData({
                 consultation,
                 labOrders: clinicalRecord?.lab_orders.filter((item) => item.consultation_id === consultation.id) || [],
@@ -631,7 +631,7 @@ function ClinicalEntry({
             {canConsult && <button className="staff-secondary-button" type="button" onClick={() => onContinue(entry)}>Continue</button>}
             {canPrintClaim && entry.nhis_eligible_at_service && (
               <button className="staff-secondary-button" type="button" onClick={() => onPrintClaim(entry)}>
-                Print NHIS claim
+                View / Print Claim Sheet
               </button>
             )}
           </div>
