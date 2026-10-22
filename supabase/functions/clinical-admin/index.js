@@ -434,6 +434,25 @@ Deno.serve(async (request) => {
         result = await saveConsultation(admin, actor.hospital_id, user.id, payload);
         break;
       }
+      case 'consultation_complete': {
+        if (actor.role !== 'consulting') throw new HttpError(403, 'Only consulting staff can complete consultations.');
+        if (typeof payload.consultation_id !== 'string' || !payload.consultation_id || typeof payload.patient_id !== 'string' || !payload.patient_id) {
+          throw new HttpError(400, 'A consultation and patient are required.');
+        }
+        await getPatient(admin, payload.patient_id, actor.hospital_id);
+        const { data, error } = await admin.from('consultations')
+          .update({ status: 'completed', completed_at: new Date().toISOString() })
+          .eq('id', payload.consultation_id)
+          .eq('patient_id', payload.patient_id)
+          .eq('hospital_id', actor.hospital_id)
+          .neq('status', 'cancelled')
+          .select('id, status, completed_at')
+          .maybeSingle();
+        if (error) throw new HttpError(500, `Could not complete consultation: ${error.message}`);
+        if (!data) throw new HttpError(404, 'Consultation was not found or has been cancelled.');
+        result = { consultation_id: data.id, status: data.status, completed_at: data.completed_at };
+        break;
+      }
       case 'lab_orders_add':
       case 'prescriptions_add': {
         if (actor.role !== 'consulting') throw new HttpError(403, 'Only consulting staff can add orders to a consultation.');
