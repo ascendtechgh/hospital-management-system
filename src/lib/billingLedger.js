@@ -156,7 +156,7 @@ export function createNhisClaimBatch(chargeIds, actor = 'Current user') {
   const selected = ledger.charges.filter((charge) =>
     chargeIds.includes(charge.id) &&
     moneyToPesewas(charge.insurerAmount) > 0 &&
-    !['Draft', 'Submitted', 'Paid'].includes(charge.claimStatus) &&
+    !charge.claimId && !['Draft', 'Submitted', 'Partially Paid', 'Paid'].includes(charge.claimStatus) &&
     charge.status !== 'Waived');
   if (!selected.length) throw new Error('Select unclaimed charge lines with an insurer amount greater than zero.');
   const year = new Date().getFullYear();
