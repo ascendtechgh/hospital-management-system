@@ -28,6 +28,108 @@ function parseCsv(text) {
     return { ...result, __row: index + 2 };
   });
 }
+async function parseXlsx(file) {
+  if (typeof DecompressionStream === 'undefined') {
+    throw new Error('This browser cannot read compressed Excel workbooks. Export the sheet as CSV UTF-8 instead.');
+  }
+  const buffer = await file.arrayBuffer();
+  const view = new DataView(buffer);
+  const bytes = new Uint8Array(buffer);
+  const decoder = new TextDecoder('utf-8');
+  const u16 = (offset) => view.getUint16(offset, true);
+  const u32 = (offset) => view.getUint32(offset, true);
+  let eocd = -1;
+  for (let offset = Math.max(0, bytes.length - 65557); offset <= bytes.length - 22; offset += 1) {
+    if (u32(offset) === 0x06054b50) eocd = offset;
+  }
+  if (eocd < 0) throw new Error('The selected file is not a supported .xlsx workbook.');
+  const entryCount = u16(eocd + 10);
+  let centralOffset = u32(eocd + 16);
+  const entries = new Map();
+  for (let index = 0; index < entryCount; index += 1) {
+    if (u32(centralOffset) !== 0x02014b50) throw new Error('The Excel workbook ZIP directory is invalid.');
+    const method = u16(centralOffset + 10);
+    const compressedSize = u32(centralOffset + 20);
+    const nameLength = u16(centralOffset + 28);
+    const extraLength = u16(centralOffset + 30);
+    const commentLength = u16(centralOffset + 32);
+    const localOffset = u32(centralOffset + 42);
+    const name = decoder.decode(bytes.slice(centralOffset + 46, centralOffset + 46 + nameLength));
+    if (u32(localOffset) !== 0x04034b50) throw new Error('The Excel workbook contains an invalid file entry.');
+    const localNameLength = u16(localOffset + 26);
+    const localExtraLength = u16(localOffset + 28);
+    const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+    const compressed = bytes.slice(dataStart, dataStart + compressedSize);
+    let content;
+    if (method === 0) content = compressed;
+    else if (method === 8) {
+      const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+      content = new Uint8Array(await new Response(stream).arrayBuffer());
+    } else {
+      throw new Error('This Excel workbook uses an unsupported compression method.');
+    }
+    entries.set(name, decoder.decode(content));
+    centralOffset += 46 + nameLength + extraLength + commentLength;
+  }
+  const parseXml = (name) => {
+    const source = entries.get(name);
+    if (!source) return null;
+    const xml = new DOMParser().parseFromString(source, 'application/xml');
+    if (xml.getElementsByTagName('parsererror').length) throw new Error(`Could not read Excel workbook file: ${name}`);
+    return xml;
+  };
+  const workbook = parseXml('xl/workbook.xml');
+  const relations = parseXml('xl/_rels/workbook.xml.rels');
+  const firstSheet = workbook?.getElementsByTagNameNS('*', 'sheet')?.[0];
+  if (!firstSheet || !relations) throw new Error('No worksheet was found in this Excel workbook.');
+  const relationId = firstSheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') || firstSheet.getAttribute('r:id');
+  const relation = [...relations.getElementsByTagNameNS('*', 'Relationship')].find((item) => item.getAttribute('Id') === relationId);
+  if (!relation) throw new Error('The first worksheet could not be located.');
+  const target = relation.getAttribute('Target') || '';
+  const sheetPath = target.startsWith('/') ? target.slice(1) : target.startsWith('xl/') ? target : `xl/${target.replace(/^\.\//, '')}`;
+  const sheet = parseXml(sheetPath);
+  if (!sheet) throw new Error('The first worksheet could not be read.');
+  const sharedXml = parseXml('xl/sharedStrings.xml');
+  const sharedStrings = sharedXml
+    ? [...sharedXml.getElementsByTagNameNS('*', 'si')].map((item) => [...item.getElementsByTagNameNS('*', 't')].map((part) => part.textContent || '').join(''))
+    : [];
+  const rows = [];
+  const sheetData = sheet.getElementsByTagNameNS('*', 'sheetData')[0];
+  for (const rowNode of [...(sheetData?.children || [])]) {
+    if (rowNode.localName !== 'row') continue;
+    const row = [];
+    for (const cell of [...rowNode.children]) {
+      if (cell.localName !== 'c') continue;
+      const reference = cell.getAttribute('r') || '';
+      const letters = reference.match(/^[A-Z]+/i)?.[0]?.toUpperCase() || '';
+      let column = 0;
+      for (const letter of letters) column = column * 26 + letter.charCodeAt(0) - 64;
+      column -= 1;
+      if (column < 0) continue;
+      let value = cell.getElementsByTagNameNS('*', 'v')[0]?.textContent || '';
+      const type = cell.getAttribute('t');
+      if (type === 's') value = sharedStrings[Number(value)] || '';
+      else if (type === 'inlineStr') value = [...cell.getElementsByTagNameNS('*', 't')].map((part) => part.textContent || '').join('');
+      else if (type === 'b') value = value === '1' ? 'TRUE' : 'FALSE';
+      row[column] = value;
+    }
+    rows.push(row.map((value) => value ?? ''));
+  }
+  if (rows.length < 2) throw new Error('The first worksheet contains no patient rows.');
+  const headers = rows[0].map((header) => String(header || '').trim().toLowerCase().replace(/[\\s-]+/g, '_'));
+  const parsed = rows.slice(1).map((values, index) => {
+    const result = Object.fromEntries(headers.map((header, column) => [header, String(values[column] ?? '').trim()]));
+    return { ...result, __row: index + 2 };
+  });
+  for (const row of parsed) {
+    if (row.date_of_birth && /^\\d+(?:\\.\\d+)?$/.test(row.date_of_birth)) {
+      const serial = Number(row.date_of_birth);
+      if (serial > 0 && serial < 100000) row.date_of_birth = new Date(Date.UTC(1899, 11, 30) + Math.floor(serial) * 86400000).toISOString().slice(0, 10);
+    }
+  }
+  return parsed;
+}
+
 function normalizeSex(value) {
   const sex = String(value || '').trim().toLowerCase();
   if (['m', 'male'].includes(sex)) return 'male';
@@ -99,8 +201,7 @@ export default function PatientImportPage() {
     try {
       const result = await patientRequest('list');
       setExisting(result.patients || []);
-      const text = await file.text();
-      const parsed = parseCsv(text);
+      const parsed = /\\.(xlsx|xlsm)$/i.test(file.name) ? await parseXlsx(file) : parseCsv(await file.text());
       if (!parsed.length) throw new Error('The file has no patient rows or its CSV headers could not be read.');
       const chunkSize = 75; const processed = [];
       for (let start = 0; start < parsed.length; start += chunkSize) {
@@ -128,8 +229,7 @@ export default function PatientImportPage() {
           phone: row.normalizedPhone || null,
           sex: row.normalizedSex,
           date_of_birth: row.date_of_birth || null,
-          age_at_registration: row.estimated_age_years ? Number(row.estimated_age_years) : null,
-          phone: row.normalizedPhone || null,
+          age_at_registration: row.estimated_age_years !== undefined && row.estimated_age_years !== '' ? Number(row.estimated_age_years) : null,
           address: row.address || row.residence || '',
           residence: row.address || row.residence || '',
           emergency_contact_name: row.emergency_name || '',
@@ -158,7 +258,7 @@ export default function PatientImportPage() {
   return <section className="patient-import-page">
     <header className="patients-page-heading"><div><span className="workspace-overline">RECEPTION WORKFLOW</span><h1>Bulk patient import</h1><p>Validate records before committing them to the patient directory.</p></div><Link className="staff-secondary-button" to={`${basePath}/patients`}>Back to patients</Link></header>
     {error && <p className="auth-notice auth-notice-error" role="alert">{error}</p>}{notice && <p className="settings-success" role="status">{notice}</p>}
-    <section className="patient-import-upload"><div className="patient-import-drop" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); void readFile(event.dataTransfer.files?.[0]); }}><span className="patient-import-file-icon">↑</span><h2>Drop your patient CSV here</h2><p>CSV UTF-8, one patient per row. Existing records are checked for duplicate phone numbers and MRNs.</p><button className="staff-primary-button" type="button" onClick={() => inputRef.current?.click()}>Choose file</button><input ref={inputRef} type="file" accept=".csv,text/csv" hidden onChange={(event) => void readFile(event.target.files?.[0])} /><small>{fileName || 'No file selected'}</small></div><div className="patient-import-template"><h3>Use the import template</h3><p>Headers: patient_number, surname, first_name, other_names, sex, date_of_birth, estimated_age_years, phone, address, emergency_name, emergency_phone, insurance_name, insurance_number, insurance_expiry.</p><button className="staff-secondary-button" type="button" onClick={() => { const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'patients_import_template.csv'; anchor.click(); URL.revokeObjectURL(url); }}>Download CSV template</button></div></section>
+    <section className="patient-import-upload"><div className="patient-import-drop" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); void readFile(event.dataTransfer.files?.[0]); }}><span className="patient-import-file-icon">↑</span><h2>Drop a patient spreadsheet here</h2><p>CSV UTF-8 or Excel .xlsx/.xlsm, one patient per row. Existing records are checked for duplicate phone numbers and MRNs.</p><button className="staff-primary-button" type="button" onClick={() => inputRef.current?.click()}>Choose file</button><input ref={inputRef} type="file" accept=".csv,.xlsx,.xlsm,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden onChange={(event) => void readFile(event.target.files?.[0])} /><small>{fileName || 'No file selected'}</small></div><div className="patient-import-template"><h3>Use the import template</h3><p>Headers: patient_number, surname, first_name, other_names, sex, date_of_birth, estimated_age_years, phone, address, emergency_name, emergency_phone, insurance_name, insurance_number, insurance_expiry.</p><button className="staff-secondary-button" type="button" onClick={() => { const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'patients_import_template.csv'; anchor.click(); URL.revokeObjectURL(url); }}>Download CSV template</button></div></section>
     {loading && <section className="patient-import-progress" aria-live="polite"><div><strong>Analyzing rows</strong><span>{progress}%</span></div><progress max="100" value={progress} /><p>Processed {Math.round(progress / 100 * rows.length)} rows of {rows.length || 'file'}.</p></section>}
     {validated.length > 0 && <><div className="patient-import-stats"><Metric label="Rows found" value={validated.length} /><Metric label="Ready to import" value={count('valid')} /><Metric label="Warnings" value={count('warning')} /><Metric label="Critical errors" value={count('error')} /></div><div className="patient-import-toolbar"><div><h2>Dry-run review</h2><p>No records are written until you confirm the import.</p></div><div className="patient-import-filters">{[['all','All'],['errors','Errors only'],['valid','Valid only']].map(([id,label]) => <button type="button" key={id} className={filter === id ? 'is-active' : ''} onClick={() => setFilter(id)}>{label}</button>)}</div></div><div className="staff-table-wrap patient-import-table-wrap"><table className="staff-table patient-import-table"><thead><tr><th>Row</th><th>Patient</th><th>Sex</th><th>DOB / age</th><th>Phone</th><th>MRN</th><th>Validation</th></tr></thead><tbody>{visibleRows.map((row) => <tr key={row.__row} className={`import-row-${row.status}`}><td>{row.__row}</td><td><strong>{row.first_name} {row.other_names} {row.surname}</strong></td><td>{row.normalizedSex || row.sex || 'Missing'}</td><td>{row.date_of_birth || row.estimated_age_years || 'Not recorded'}</td><td>{row.normalizedPhone || row.phone || 'Not recorded'}</td><td>{row.patient_number || row.mrn || 'Assigned on save'}</td><td>{row.errors.map((item) => <span className="import-validation-error" key={item}>{item}</span>)}{row.warnings.map((item) => <span className="import-validation-warning" key={item}>{item}</span>)}{!row.errors.length && !row.warnings.length && <span className="import-validation-valid">Ready</span>}</td></tr>)}</tbody></table></div><footer className="patient-import-footer"><span>{validRows.length} rows can be imported. {count('error')} rows with errors will be skipped.</span><button className="staff-primary-button" type="button" disabled={!validRows.length || committing} onClick={() => void commitImport()}>{committing ? 'Importing…' : `Import ${validRows.length} valid patients`}</button></footer></>}
   </section>;
