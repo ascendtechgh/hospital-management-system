@@ -3,7 +3,7 @@ import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { patientRequest } from '../../../lib/patientApi.js';
 import { supabase } from '../../../lib/supabase.js';
-import { auditEvent, formatGHS, getLedger, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveReconciliation } from '../../../lib/billingLedger.js';
+import { appendCharge, auditEvent, createCharge, formatGHS, getLedger, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveReconciliation } from '../../../lib/billingLedger.js';
 import ThermalReceipt from './ThermalReceipt.jsx';
 import './accounts.css';
 
@@ -46,6 +46,8 @@ export default function AccountsPage() {
   const [varianceReason, setVarianceReason] = useState('');
   const [reconciliations, setReconciliations] = useState(() => getReconciliations());
   const [transactionSearch, setTransactionSearch] = useState('');
+  const [chargeDialogOpen, setChargeDialogOpen] = useState(false);
+  const [chargeForm, setChargeForm] = useState({ patientId: '', category: 'Consultation', description: '', quantity: '1', unitPrice: '', nhisPrice: '', sourceRefId: '', sourceStatus: 'Completed' });
 
   const refreshLedger = useCallback(() => setLedger(getLedger()), []);
   useEffect(() => {
@@ -83,6 +85,34 @@ export default function AccountsPage() {
   const expectedCard = paymentsToday.filter((p) => p.paymentMethod === 'Bank Card').reduce((sum, p) => sum + Number(p.amountPaid || 0), 0);
   const physicalCash = Number(cashCount || 0);
   const variance = physicalCash - (Number(openingFloat || 0) + expectedCash);
+
+  function submitFulfilledCharge(event) {
+    event.preventDefault();
+    setError('');
+    setNotice('');
+    try {
+      const patient = patients.find((item) => item.id === chargeForm.patientId);
+      if (!patient) throw new Error('Select a patient before adding a charge.');
+      const charge = createCharge({
+        patient,
+        category: chargeForm.category,
+        description: chargeForm.description,
+        quantity: Number(chargeForm.quantity),
+        unitPrice: Number(chargeForm.unitPrice),
+        nhisPrice: Number(chargeForm.nhisPrice || 0),
+        sourceRefId: chargeForm.sourceRefId,
+        sourceStatus: chargeForm.sourceStatus,
+      });
+      appendCharge(charge);
+      setLedger(getLedger());
+      setChargeDialogOpen(false);
+      setChargeForm({ patientId: '', category: 'Consultation', description: '', quantity: '1', unitPrice: '', nhisPrice: '', sourceRefId: '', sourceStatus: 'Completed' });
+      auditEvent('billing.charge_created', `${charge.category}: ${charge.description} for ${patient.full_name}`, cashierName);
+      setNotice('Fulfilled service added to the patient billing ledger.');
+    } catch (chargeError) {
+      setError(chargeError.message || 'The charge could not be recorded.');
+    }
+  }
 
   function selectPatient(id) {
     setSelectedPatientId(id);
@@ -172,6 +202,7 @@ export default function AccountsPage() {
       {notice && <p className="settings-success" role="status">{notice}</p>}
 
       {activeTab === 'overview' && <>
+        <div className="accounts-overview-actions"><p>Only completed or fulfilled service facts can enter the billing ledger.</p><button className="staff-primary-button" type="button" onClick={() => setChargeDialogOpen(true)}>Record fulfilled service</button></div>
         <div className="accounts-metric-grid">
           <Metric label="Gross charges today" value={formatGHS(grossValue)} hint={`${chargesToday.length} charge facts recorded`} />
           <Metric label="Patient payments today" value={formatGHS(cashCollected + momoCollected + cardCollected)} hint="Confirmed local transactions" />
@@ -205,6 +236,7 @@ export default function AccountsPage() {
 
       {activeTab === 'analytics' && <><div className="accounts-metric-grid"><Metric label="Gross charge value" value={formatGHS(grossValue)} hint="Charges created today" /><Metric label="Insurance allocation" value={formatGHS(insuranceValue)} hint="Insurer portion only" /><Metric label="Patient portion" value={formatGHS(netPatientDue)} hint="Before payments" /><Metric label="Payments recorded" value={formatGHS(cashCollected + momoCollected + cardCollected)} hint="Cash, Mobile Money and card" /></div><section className="accounts-panel"><PanelHeading title="Revenue by department" subtitle="Based on recorded charge facts, not pending orders" />{['Consultation', 'Laboratory', 'Pharmacy', 'Procedure'].map((category) => { const amount = moneySum(chargesToday.filter((charge) => charge.category === category), 'chargeAmount'); const max = Math.max(1, grossValue); return <div className="accounts-chart-row" key={category}><span>{category}</span><div><i style={{ width: `${Math.min(100, amount / max * 100)}%` }} /></div><strong>{formatGHS(amount)}</strong></div>; })}</section></>}
 
+      {chargeDialogOpen && <div className="billing-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setChargeDialogOpen(false); }}><section className="accounts-charge-dialog" role="dialog" aria-modal="true" aria-labelledby="charge-dialog-title"><header className="accounts-panel-heading"><div><h2 id="charge-dialog-title">Record fulfilled service</h2><p>Use a completed consultation, completed lab, dispensed medicine or confirmed procedure reference.</p></div><button className="staff-secondary-button" type="button" onClick={() => setChargeDialogOpen(false)}>Close</button></header><form onSubmit={submitFulfilledCharge} className="accounts-charge-form"><label className="accounts-field"><span>Patient</span><select required value={chargeForm.patientId} onChange={(event) => setChargeForm((current) => ({ ...current, patientId: event.target.value }))}><option value="">Select patient</option>{patients.map((patient) => <option key={patient.id} value={patient.id}>{patient.full_name} · {patient.patient_number || patient.mrn || 'MRN not recorded'}</option>)}</select></label><label className="accounts-field"><span>Charge category</span><select value={chargeForm.category} onChange={(event) => setChargeForm((current) => ({ ...current, category: event.target.value }))}>{['Consultation', 'Laboratory', 'Pharmacy', 'Procedure'].map((item) => <option key={item}>{item}</option>)}</select></label><label className="accounts-field"><span>Service description</span><input required value={chargeForm.description} onChange={(event) => setChargeForm((current) => ({ ...current, description: event.target.value }))} /></label><div className="accounts-charge-form-grid"><label className="accounts-field"><span>Quantity</span><input required type="number" min="1" step="1" value={chargeForm.quantity} onChange={(event) => setChargeForm((current) => ({ ...current, quantity: event.target.value }))} /></label><label className="accounts-field"><span>Cash unit price (GH₵)</span><input required type="number" min="0" step="0.01" value={chargeForm.unitPrice} onChange={(event) => setChargeForm((current) => ({ ...current, unitPrice: event.target.value }))} /></label><label className="accounts-field"><span>NHIS tariff per unit (GH₵)</span><input type="number" min="0" step="0.01" value={chargeForm.nhisPrice} onChange={(event) => setChargeForm((current) => ({ ...current, nhisPrice: event.target.value }))} /></label><label className="accounts-field"><span>Source status</span><select value={chargeForm.sourceStatus} onChange={(event) => setChargeForm((current) => ({ ...current, sourceStatus: event.target.value }))}><option>Completed</option><option>Dispensed</option><option>Confirmed</option><option>Pending</option></select></label></div><label className="accounts-field"><span>Completed source record ID</span><input required value={chargeForm.sourceRefId} onChange={(event) => setChargeForm((current) => ({ ...current, sourceRefId: event.target.value }))} placeholder="Lab order, dispensation, procedure or visit ID" /></label><p className="accounts-payment-note">The ledger blocks pending sources. Keep the source ID from the original clinical record to prevent duplicate billing.</p><button className="staff-primary-button" type="submit">Add charge to ledger</button></form></section></div>}
       {receipt && <ThermalReceipt payment={receipt.payment} charges={receipt.charges} patient={receipt.patient} hospital={hospital} onClose={() => setReceipt(null)} />}
     </section>
   );
