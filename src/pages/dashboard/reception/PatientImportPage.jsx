@@ -151,7 +151,7 @@ function validateRows(rows, existing) {
     if (!row.surname?.trim()) errors.push('Surname is required');
     if (!row.first_name?.trim()) errors.push('First name is required');
     if (!normalizeSex(row.sex)) errors.push('Sex must be M, F, Male or Female');
-    if (row.date_of_birth && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date_of_birth) || new Date(`${row.date_of_birth}T00:00:00Z`).toISOString?.().slice(0, 10) !== row.date_of_birth)) errors.push('Date of birth must be a real date in YYYY-MM-DD format');
+    if (row.date_of_birth && !isValidIsoDate(row.date_of_birth)) errors.push('Date of birth must be a real date in YYYY-MM-DD format');
     if (!row.date_of_birth && String(row.estimated_age_years ?? '').trim() === '') errors.push('Date of birth or estimated age is required');
     if (!row.date_of_birth && String(row.estimated_age_years ?? '').trim() !== '') warnings.push('Age is estimated because date of birth is missing');
     if (row.estimated_age_years && (!Number.isInteger(Number(row.estimated_age_years)) || Number(row.estimated_age_years) < 0 || Number(row.estimated_age_years) > 130)) errors.push('Estimated age must be a whole number from 0 to 130');
