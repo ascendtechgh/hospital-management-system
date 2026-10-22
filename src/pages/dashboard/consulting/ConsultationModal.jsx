@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { clinicalRequest, groupByCategory } from '../../../lib/clinicalApi.js';
+import { recordFulfilledService } from '../../../lib/billingLedger.js';
 import './consultation-diagnostics.css';
 
 const emptyNotes = {
@@ -153,6 +154,48 @@ function ConsultationModal({
     setSaving(true);
     await saveProgress();
     setSaving(false);
+  }
+
+  async function completeConsultation() {
+    setError('');
+    setNotice('');
+    if (!notes.chief_complaint.trim() || (!notes.assessment.trim() && !notes.plan.trim())) {
+      setError('Add the chief complaint and at least an assessment or plan before completing the consultation.');
+      setActiveTab('notes');
+      return;
+    }
+    setSaving(true);
+    try {
+      const id = await saveProgress();
+      if (!id) return;
+      await clinicalRequest('consultation_complete', { consultation_id: id, patient_id: patient.id });
+      let billingNotice = 'Consultation completed.';
+      try {
+        const billing = recordFulfilledService({
+          patient,
+          visitId: id,
+          category: 'Consultation',
+          description: 'Clinical consultation',
+          quantity: 1,
+          sourceRefId: id,
+          sourceCode: 'CONSULTATION',
+          sourceStatus: 'Completed',
+        });
+        billingNotice += billing.status === 'unpriced'
+          ? ' Its fee is waiting for a matching local tariff in Accounts.'
+          : billing.status === 'billed'
+            ? ' The fee was added to the local billing ledger.'
+            : ' The fee was already recorded in the local billing ledger.';
+      } catch {
+        billingNotice += ' The local billing entry could not be recorded; check Accounts.';
+      }
+      setNotice(billingNotice);
+      onSaved(id);
+    } catch (completeError) {
+      setError(completeError.message || 'Consultation could not be completed.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function saveLabRequests() {
@@ -374,6 +417,7 @@ function ConsultationModal({
           </section>}
           <footer className="patient-form-actions">
             <button className="auth-button auth-button-back" type="button" onClick={close} disabled={saving}>Done for now</button>
+            <button className="auth-button auth-button-back" type="button" onClick={() => void completeConsultation()} disabled={saving}>{saving ? 'Completing…' : 'Complete consultation & bill'}</button>
             <button className="auth-button auth-button-primary patient-submit-button" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save progress'}</button>
           </footer>
         </form>
