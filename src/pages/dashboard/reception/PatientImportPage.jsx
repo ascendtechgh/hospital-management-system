@@ -193,15 +193,15 @@ export default function PatientImportPage() {
   async function readFile(file) {
     if (!file) return;
     setError(''); setNotice(''); setRows([]); setProgress(0);
-    if (!/\.csv$/i.test(file.name)) {
-      setError('This build supports CSV files. Save Excel workbooks as CSV UTF-8 before importing.');
+    if (!/\.(csv|xlsx|xlsm)$/i.test(file.name)) {
+      setError('Choose a CSV UTF-8 or Excel .xlsx/.xlsm workbook.');
       return;
     }
     setFileName(file.name); setLoading(true);
     try {
       const result = await patientRequest('list');
       setExisting(result.patients || []);
-      const parsed = /\\.(xlsx|xlsm)$/i.test(file.name) ? await parseXlsx(file) : parseCsv(await file.text());
+      const parsed = /\.(xlsx|xlsm)$/i.test(file.name) ? await parseXlsx(file) : parseCsv(await file.text());
       if (!parsed.length) throw new Error('The file has no patient rows or its CSV headers could not be read.');
       const chunkSize = 75; const processed = [];
       for (let start = 0; start < parsed.length; start += chunkSize) {
