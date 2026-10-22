@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { clinicalRequest } from '../../../lib/clinicalApi.js';
+import { recordFulfilledService } from '../../../lib/billingLedger.js';
 
 function DispenseModal({ prescription, onClose, onSaved }) {
   const dialogRef = useRef(null);
@@ -7,6 +8,7 @@ function DispenseModal({ prescription, onClose, onSaved }) {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [billingNotice, setBillingNotice] = useState('');
   const remaining = prescription
     ? prescription.quantity - prescription.dispensed_quantity
     : 0;
@@ -16,6 +18,7 @@ function DispenseModal({ prescription, onClose, onSaved }) {
       setQuantity(String(Math.min(remaining, prescription.inventory?.quantity_on_hand || 0) || ''));
       setNotes('');
       setError('');
+      setBillingNotice('');
       dialogRef.current?.showModal();
     } else if (!prescription && dialogRef.current?.open) {
       dialogRef.current.close();
@@ -33,9 +36,29 @@ function DispenseModal({ prescription, onClose, onSaved }) {
     try {
       await clinicalRequest('dispense', {
         prescription_id: prescription.id,
-        quantity,
+        quantity: Number(quantity),
         notes,
       });
+      try {
+        const dispensedTotal = Number(prescription.dispensed_quantity || 0) + Number(quantity);
+        const billing = recordFulfilledService({
+          patient: prescription.patient,
+          visitId: prescription.consultation_id,
+          category: 'Pharmacy',
+          description: prescription.catalog_item?.name || prescription.drug_code,
+          quantity: Number(quantity),
+          sourceRefId: `dispense:${prescription.id}:total:${dispensedTotal}`,
+          sourceCode: prescription.drug_code,
+          sourceStatus: 'Dispensed',
+        });
+        setBillingNotice(billing.status === 'unpriced'
+          ? 'Medicine dispensed. This quantity is waiting for a tariff in Accounts → Tariffs & procedures.'
+          : billing.status === 'billed'
+            ? 'Medicine dispensed and the charge was added to the local billing ledger.'
+            : 'Medicine dispensed. This quantity was already recorded for billing.');
+      } catch {
+        setBillingNotice('Medicine dispensed, but its local billing entry could not be recorded. Check Accounts before closing the encounter.');
+      }
       onSaved();
       onClose();
     } catch (saveError) {
@@ -71,6 +94,7 @@ function DispenseModal({ prescription, onClose, onSaved }) {
           {prescription?.instructions && <span>{prescription.instructions}</span>}
         </div>
         {error && <p className="auth-notice auth-notice-error" role="alert">{error}</p>}
+        {billingNotice && <p className="auth-notice" role="status">{billingNotice}</p>}
         <form className="patient-form" onSubmit={submit}>
           <label className="auth-field">
             <span>Quantity to dispense</span>
