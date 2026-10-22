@@ -3,7 +3,7 @@ import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { patientRequest } from '../../../lib/patientApi.js';
 import { supabase } from '../../../lib/supabase.js';
-import { appendCharge, auditEvent, billUnpricedService, createCharge, formatGHS, getBillingCatalog, getLedger, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveBillingCatalog, saveReconciliation, setBillingScope } from '../../../lib/billingLedger.js';
+import { appendCharge, auditEvent, billUnpricedService, createCharge, createNhisClaimBatch, formatGHS, getBillingCatalog, getLedger, getNhisClaims, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveBillingCatalog, saveReconciliation, setBillingScope, updateNhisClaimStatus } from '../../../lib/billingLedger.js';
 import ThermalReceipt from './ThermalReceipt.jsx';
 import './accounts.css';
 
@@ -14,6 +14,7 @@ const tabs = [
   { id: 'reconciliation', label: 'Daily reconciliation', path: '/reconciliation' },
   { id: 'analytics', label: 'Financial analytics', path: '/analytics' },
   { id: 'tariffs', label: 'Tariffs & procedures', path: '/tariffs' },
+  { id: 'claims', label: 'NHIS claims', path: '/claims' },
 ];
 
 function todayKey() { return new Date().toISOString().slice(0, 10); }
@@ -24,11 +25,15 @@ export default function AccountsPage() {
   const { profile, user } = useAuth();
   const [params] = useSearchParams();
   const page = window.location.pathname.split('/').filter(Boolean).at(-1);
-  const activeTab = page === 'cashier' || page === 'receipts' || page === 'reconciliation' || page === 'analytics' || page === 'tariffs' ? page : 'overview';
+  const activeTab = page === 'cashier' || page === 'receipts' || page === 'reconciliation' || page === 'analytics' || page === 'tariffs' || page === 'claims' ? page : 'overview';
   const basePath = `/dashboard/${profile?.role || role}`;
   setBillingScope(profile?.hospital_id || user?.id || 'local');
   const [ledger, setLedger] = useState(() => getLedger());
   const [billingCatalog, setBillingCatalog] = useState(() => getBillingCatalog());
+  const [claims, setClaims] = useState(() => getNhisClaims());
+  const [claimSelection, setClaimSelection] = useState([]);
+  const [claimNotes, setClaimNotes] = useState({});
+  const [claimSettlements, setClaimSettlements] = useState({});
   const [tariffDialogOpen, setTariffDialogOpen] = useState(false);
   const [procedureDialogOpen, setProcedureDialogOpen] = useState(false);
   const [procedureError, setProcedureError] = useState('');
@@ -60,12 +65,13 @@ export default function AccountsPage() {
   const [chargeDialogOpen, setChargeDialogOpen] = useState(false);
   const [chargeForm, setChargeForm] = useState({ patientId: '', category: 'Consultation', description: '', quantity: '1', unitPrice: '', nhisPrice: '', sourceRefId: '', sourceStatus: 'Completed' });
 
-  const refreshLedger = useCallback(() => setLedger(getLedger()), []);
+  const refreshLedger = useCallback(() => { setLedger(getLedger()); setClaims(getNhisClaims()); }, []);
   useEffect(() => {
     setBillingScope(profile?.hospital_id || user?.id || 'local');
     setLedger(getLedger());
     setBillingCatalog(getBillingCatalog());
     setReconciliations(getReconciliations());
+    setClaims(getNhisClaims());
   }, [profile?.hospital_id, user?.id]);
 
   useEffect(() => {
@@ -203,6 +209,59 @@ export default function AccountsPage() {
     } catch (submitError) {
       setProcedureError(submitError.message || 'Procedure could not be recorded.');
     }
+  }
+
+  const claimableCharges = ledger.charges.filter((charge) =>
+    moneyToPesewas(charge.insurerAmount) > 0 &&
+    !['Draft', 'Submitted', 'Paid'].includes(charge.claimStatus) &&
+    charge.status !== 'Waived');
+
+  function createClaimBatch() {
+    setError('');
+    setNotice('');
+    try {
+      const batch = createNhisClaimBatch(claimSelection, cashierName);
+      setClaims(getNhisClaims());
+      setLedger(getLedger());
+      setClaimSelection([]);
+      setNotice(`Draft claim ${batch.claimNumber} created with ${batch.lines.length} charge lines.`);
+      auditEvent('nhis.claim_created', `${batch.claimNumber} · ${batch.lines.length} lines · ${formatGHS(batch.totalAmount)}`, cashierName);
+    } catch (claimError) {
+      setError(claimError.message || 'NHIS claim could not be created.');
+    }
+  }
+
+  function updateClaim(claim, status) {
+    setError('');
+    setNotice('');
+    try {
+      const updated = updateNhisClaimStatus(claim.id, status, {
+        note: claimNotes[claim.id] || '',
+        settledAmount: claimSettlements[claim.id] ?? claim.totalAmount,
+      });
+      setClaims(getNhisClaims());
+      setLedger(getLedger());
+      setNotice(`${updated.claimNumber} marked ${status.toLowerCase()}.`);
+      auditEvent('nhis.claim_status_changed', `${updated.claimNumber} → ${status}`, cashierName);
+    } catch (claimError) {
+      setError(claimError.message || 'Claim status could not be updated.');
+    }
+  }
+
+  function exportClaimCsv(claim) {
+    const fields = ['claim_number', 'patient_name', 'mrn', 'service_category', 'service_description', 'quantity', 'service_date', 'source_reference', 'gross_charge_ghs', 'insurer_amount_ghs'];
+    const quote = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+    const lines = claim.lines.map((line) => [
+      claim.claimNumber, line.patientName, line.mrn, line.category, line.description,
+      line.quantity, line.createdAt?.slice(0, 10), line.sourceRefId, line.chargeAmount, line.insurerAmount,
+    ].map(quote).join(','));
+    const blob = new Blob([[fields.map(quote).join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${claim.claimNumber.toLowerCase()}_lines.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 
   function resolveUnpricedService(service) {
@@ -355,6 +414,11 @@ export default function AccountsPage() {
           <div className="staff-table-wrap"><table className="staff-table"><thead><tr><th>Service</th><th>Category</th><th>Source code</th><th>Cash</th><th>NHIS</th><th /></tr></thead><tbody>{billingCatalog.services.map((item) => <tr key={item.id}><td><strong>{item.name}</strong></td><td>{item.category}</td><td><code>{item.sourceCode}</code></td><td>{formatGHS(item.cashPrice)}</td><td>{formatGHS(item.nhisPrice || 0)}</td><td><div className="accounts-inline-actions"><button className="staff-secondary-button" type="button" onClick={() => openTariffEditor(item)}>Edit</button><button className="staff-secondary-button" type="button" onClick={() => removeTariff(item.id)}>Remove</button></div></td></tr>)}</tbody></table>{!billingCatalog.services.length && <p className="accounts-empty">No tariffs configured. Add a tariff with the exact source code used by the clinical catalog, for example LAB-001 or PH-004.</p>}</div>
         </section>
         <section className="accounts-panel"><PanelHeading title="Fulfilled services awaiting a price" subtitle="Completed services are recorded here when no matching tariff exists." />{ledger.unpricedServices.map((service) => <article className="accounts-unpriced-row" key={service.id}><div><strong>{service.description}</strong><small>{service.patientName} · {service.category} · {service.sourceCode || 'No source code'} · {new Date(service.createdAt).toLocaleString('en-GB')}</small></div><button className="staff-primary-button" type="button" onClick={() => resolveUnpricedService(service)}>Apply tariff</button></article>)}{!ledger.unpricedServices.length && <p className="accounts-empty">No fulfilled services are waiting for a tariff.</p>}</section>
+      </div>}
+
+      {activeTab === 'claims' && <div className="accounts-claims-layout">
+        <section className="accounts-panel"><header className="accounts-panel-heading"><div><h2>Unclaimed insurer charges</h2><p>Build a local NHIS claim batch from completed services with an insurer allocation.</p></div><button className="staff-primary-button" type="button" onClick={createClaimBatch} disabled={!claimSelection.length}>Create claim ({claimSelection.length})</button></header><div className="staff-table-wrap"><table className="staff-table"><thead><tr><th>Select</th><th>Patient</th><th>Service</th><th>Service date</th><th>Insurer amount</th></tr></thead><tbody>{claimableCharges.map((charge) => <tr key={charge.id}><td><input aria-label={`Select ${charge.description} for NHIS claim`} type="checkbox" checked={claimSelection.includes(charge.id)} onChange={(event) => setClaimSelection((current) => event.target.checked ? [...current, charge.id] : current.filter((id) => id !== charge.id))} /></td><td><strong>{charge.patientName}</strong><small>{charge.mrn || 'MRN not recorded'}</small></td><td>{charge.description}<small>{charge.category} · {charge.sourceRefId}</small></td><td>{charge.createdAt?.slice(0, 10)}</td><td>{formatGHS(charge.insurerAmount)}</td></tr>)}</tbody></table>{!claimableCharges.length && <p className="accounts-empty">No unclaimed insurer charges. Add an NHIS tariff and complete insured services to create claim lines.</p>}</div></section>
+        <section className="accounts-panel"><PanelHeading title="NHIS claim batches" subtitle="Local draft, submission and payment tracking" />{claims.map((claim) => <article className="accounts-claim-card" key={claim.id}><header><div><strong>{claim.claimNumber}</strong><small>{claim.lines.length} lines · Created {new Date(claim.createdAt).toLocaleDateString('en-GB')} by {claim.createdBy}</small></div><span className={`accounts-claim-status is-${claim.status.toLowerCase()}`}>{claim.status}</span></header><div className="accounts-claim-total"><span>Claimed amount</span><strong>{formatGHS(claim.totalAmount)}</strong></div>{claim.status === 'Paid' && <div className="accounts-claim-total"><span>Insurer payment received</span><strong>{formatGHS(claim.settledAmount || 0)}</strong></div>}<label className="accounts-field"><span>{claim.status === 'Submitted' ? 'Settlement / rejection note' : 'Claim note (optional)'}</span><textarea rows="2" value={claimNotes[claim.id] || ''} onChange={(event) => setClaimNotes((current) => ({ ...current, [claim.id]: event.target.value }))} placeholder={claim.status === 'Submitted' ? 'Payment reference or rejection reason' : 'Notes for this batch'} /></label>{claim.status === 'Submitted' && <label className="accounts-field"><span>Amount received (GH₵)</span><input type="number" min="0" max={claim.totalAmount} step="0.01" value={claimSettlements[claim.id] ?? String(claim.totalAmount)} onChange={(event) => setClaimSettlements((current) => ({ ...current, [claim.id]: event.target.value }))} /></label>}<div className="accounts-inline-actions"><button className="staff-secondary-button" type="button" onClick={() => exportClaimCsv(claim)}>Export lines CSV</button>{claim.status === 'Draft' && <button className="staff-primary-button" type="button" onClick={() => updateClaim(claim, 'Submitted')}>Mark submitted</button>}{claim.status === 'Submitted' && <><button className="staff-primary-button" type="button" onClick={() => updateClaim(claim, 'Paid')}>Record payment</button><button className="staff-secondary-button" type="button" onClick={() => updateClaim(claim, 'Rejected')}>Mark rejected</button></>}</div>{claim.notes && <p className="accounts-claim-note">Latest note: {claim.notes}</p>}</article>)}{!claims.length && <p className="accounts-empty">No claim batches have been created.</p>}</section>
       </div>}
 
       {activeTab === 'analytics' && <><div className="accounts-metric-grid"><Metric label="Gross charge value" value={formatGHS(grossValue)} hint="Charges created today" /><Metric label="Insurance allocation" value={formatGHS(insuranceValue)} hint="Insurer portion only" /><Metric label="Patient portion" value={formatGHS(netPatientDue)} hint="Before payments" /><Metric label="Payments recorded" value={formatGHS(cashCollected + momoCollected + cardCollected)} hint="Cash, Mobile Money and card" /></div><section className="accounts-panel"><PanelHeading title="Revenue by department" subtitle="Based on recorded charge facts, not pending orders" />{['Consultation', 'Laboratory', 'Pharmacy', 'Procedure'].map((category) => { const amount = moneySum(chargesToday.filter((charge) => charge.category === category), 'chargeAmount'); const max = Math.max(1, grossValue); return <div className="accounts-chart-row" key={category}><span>{category}</span><div><i style={{ width: `${Math.min(100, amount / max * 100)}%` }} /></div><strong>{formatGHS(amount)}</strong></div>; })}</section></>}
