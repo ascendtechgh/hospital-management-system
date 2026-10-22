@@ -44,7 +44,12 @@ function validateRows(rows, existing) {
     if (!row.first_name?.trim()) errors.push('First name is required');
     if (!normalizeSex(row.sex)) errors.push('Sex must be M, F, Male or Female');
     if (row.date_of_birth && !/^\d{4}-\d{2}-\d{2}$/.test(row.date_of_birth)) errors.push('Date of birth must use YYYY-MM-DD');
-    if (!row.date_of_birth && !row.estimated_age_years) warnings.push('No date of birth or estimated age');
+    if (!row.date_of_birth && !row.estimated_age_years) errors.push('Date of birth or estimated age is required');
+    if (!row.date_of_birth && row.estimated_age_years) warnings.push('Age is estimated because date of birth is missing');
+    if (row.estimated_age_years && (!Number.isInteger(Number(row.estimated_age_years)) || Number(row.estimated_age_years) < 0 || Number(row.estimated_age_years) > 130)) errors.push('Estimated age must be a whole number from 0 to 130');
+    if (row.insurance_name || row.insurance_number || row.insurance_expiry) {
+      if (!(row.insurance_name && row.insurance_number && row.insurance_expiry)) warnings.push('Incomplete insurance details will be omitted');
+    }
     const phone = normalizePhone(row.phone);
     if (row.phone && !phone) errors.push('Phone must be a Ghanaian mobile number');
     if (phone && (phones.has(phone) || seenPhones.has(phone))) errors.push('Duplicate phone number');
@@ -119,14 +124,16 @@ export default function PatientImportPage() {
         const row = ready[i];
         const payload = {
           full_name: [row.first_name, row.other_names, row.surname].map((part) => String(part || '').trim()).filter(Boolean).join(' '),
+          patient_number: row.patient_number || row.mrn || undefined,
+          phone: row.normalizedPhone || null,
           sex: row.normalizedSex,
           date_of_birth: row.date_of_birth || null,
           age_at_registration: row.estimated_age_years ? Number(row.estimated_age_years) : null,
           phone: row.normalizedPhone || null,
           address: row.address || row.residence || '',
           residence: row.address || row.residence || '',
-          emergency_name: row.emergency_name || '',
-          emergency_phone: row.emergency_phone || '',
+          emergency_contact_name: row.emergency_name || '',
+          emergency_contact_phone: row.emergency_phone || '',
           insurance_enabled: Boolean(row.insurance_name && row.insurance_number && row.insurance_expiry),
           insurance_type: row.insurance_name && row.insurance_number && row.insurance_expiry ? (String(row.insurance_name).toLowerCase() === 'nhis' ? 'nhis' : 'other') : null,
           insurance_provider: row.insurance_name && row.insurance_number && row.insurance_expiry ? (String(row.insurance_name).toLowerCase() === 'nhis' ? 'NHIS' : row.insurance_name) : null,
