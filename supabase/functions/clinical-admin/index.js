@@ -192,7 +192,7 @@ async function attachPatientAndCatalog(client, hospitalId, records, codeField, c
   const patientIds = [...new Set(records.map((item) => item.patient_id))];
   const codes = [...new Set(records.map((item) => item[codeField]))];
   const [patients, catalog] = await Promise.all([
-    client.from('patients').select('id, full_name, date_of_birth, age_at_registration, sex')
+    client.from('patients').select('id, full_name, patient_number, phone, date_of_birth, age_at_registration, sex, insurance_enabled, insurance_expiry, insurance_type, insurance_provider, insurance_number')
       .eq('hospital_id', hospitalId).in('id', patientIds),
     client.from(catalogTable).select('*').in('code', codes),
   ]);
