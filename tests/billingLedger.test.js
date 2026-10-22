@@ -39,6 +39,9 @@ const insuredPatient = {
   full_name: 'Akua Mensah',
   patient_number: 'MRN-100001',
   insurance_enabled: true,
+  insurance_type: 'nhis',
+  insurance_provider: 'NHIS',
+  insurance_number: 'NHIS-00001',
   insurance_expiry: '2099-12-31',
 };
 
