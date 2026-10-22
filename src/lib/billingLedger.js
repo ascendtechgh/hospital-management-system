@@ -1,6 +1,7 @@
 const STORAGE_KEY = 'ascendhms.billing.v1';
 const RECONCILIATION_KEY = 'ascendhms.reconciliation.v1';
 const CATALOG_KEY = 'ascendhms.billing-catalog.v1';
+const CLAIMS_KEY = 'ascendhms.nhis-claims.v1';
 
 let storageScope = 'local';
 
@@ -138,6 +139,92 @@ export function billUnpricedService(serviceId) {
 
 export function getReconciliations() {
   return readJson(scopedKey(RECONCILIATION_KEY), []);
+}
+
+export function getNhisClaims() {
+  const claims = readJson(scopedKey(CLAIMS_KEY), []);
+  return Array.isArray(claims) ? claims : [];
+}
+
+function saveNhisClaims(claims) {
+  writeJson(scopedKey(CLAIMS_KEY), claims);
+}
+
+export function createNhisClaimBatch(chargeIds, actor = 'Current user') {
+  const ledger = getLedger();
+  const claims = getNhisClaims();
+  const selected = ledger.charges.filter((charge) =>
+    chargeIds.includes(charge.id) &&
+    moneyToPesewas(charge.insurerAmount) > 0 &&
+    !['Draft', 'Submitted', 'Paid'].includes(charge.claimStatus) &&
+    charge.status !== 'Waived');
+  if (!selected.length) throw new Error('Select unclaimed charge lines with an insurer amount greater than zero.');
+  const year = new Date().getFullYear();
+  const sequence = claims.filter((claim) => claim.claimNumber?.startsWith(`NHIS-${year}-`)).length + 1;
+  const now = new Date().toISOString();
+  const batch = {
+    id: crypto.randomUUID(),
+    claimNumber: `NHIS-${year}-${String(sequence).padStart(4, '0')}`,
+    status: 'Draft',
+    chargeIds: selected.map((charge) => charge.id),
+    lines: selected.map((charge) => ({
+      chargeId: charge.id, patientId: charge.patientId, patientName: charge.patientName,
+      mrn: charge.mrn || '', category: charge.category, description: charge.description,
+      sourceRefId: charge.sourceRefId, quantity: charge.quantity,
+      chargeAmount: charge.chargeAmount, insurerAmount: charge.insurerAmount,
+      createdAt: charge.createdAt,
+    })),
+    totalAmount: pesewasToMoney(selected.reduce((sum, charge) => sum + moneyToPesewas(charge.insurerAmount), 0)),
+    createdBy: actor,
+    createdAt: now,
+    submittedAt: null,
+    settledAt: null,
+    settledAmount: null,
+    notes: '',
+  };
+  for (const charge of selected) {
+    charge.claimId = batch.id;
+    charge.claimNumber = batch.claimNumber;
+    charge.claimStatus = 'Draft';
+    charge.updatedAt = now;
+  }
+  ledger.charges = ledger.charges;
+  saveLedger(ledger);
+  saveNhisClaims([batch, ...claims]);
+  return batch;
+}
+
+export function updateNhisClaimStatus(claimId, status, { note = '', settledAmount } = {}) {
+  if (!['Submitted', 'Paid', 'Rejected'].includes(status)) throw new Error('Choose a valid claim status.');
+  const claims = getNhisClaims();
+  const claim = claims.find((item) => item.id === claimId);
+  if (!claim) throw new Error('NHIS claim batch was not found.');
+  if (status === 'Submitted' && claim.status !== 'Draft') throw new Error('Only draft claims can be marked submitted.');
+  if (['Paid', 'Rejected'].includes(status) && claim.status !== 'Submitted') throw new Error('Only submitted claims can be settled or rejected.');
+  if (status === 'Rejected' && !String(note).trim()) throw new Error('Add the NHIS rejection reason before recording it.');
+  if (status === 'Paid') {
+    const amount = moneyToPesewas(settledAmount);
+    if (amount < 0 || amount > moneyToPesewas(claim.totalAmount)) throw new Error('The insurer payment must be between zero and the claimed amount.');
+    claim.settledAmount = pesewasToMoney(amount);
+    claim.settledAt = new Date().toISOString();
+  }
+  const now = new Date().toISOString();
+  claim.status = status;
+  claim.notes = String(note || '').trim();
+  if (status === 'Submitted') claim.submittedAt = now;
+  const ledger = getLedger();
+  for (const charge of ledger.charges) {
+    if (charge.claimId !== claimId) continue;
+    charge.claimStatus = status;
+    if (status === 'Rejected') {
+      charge.claimId = null;
+      charge.claimNumber = null;
+    }
+    charge.updatedAt = now;
+  }
+  saveLedger(ledger);
+  saveNhisClaims(claims);
+  return claim;
 }
 
 export function saveReconciliation(record) {
