@@ -3,7 +3,7 @@ import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { patientRequest } from '../../../lib/patientApi.js';
 import { supabase } from '../../../lib/supabase.js';
-import { appendCharge, auditEvent, billUnpricedService, createCharge, formatGHS, getBillingCatalog, getLedger, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveBillingCatalog, saveReconciliation } from '../../../lib/billingLedger.js';
+import { appendCharge, auditEvent, billUnpricedService, createCharge, formatGHS, getBillingCatalog, getLedger, getReconciliations, moneyToPesewas, patientBalance, recordPayment, saveBillingCatalog, saveReconciliation, setBillingScope } from '../../../lib/billingLedger.js';
 import ThermalReceipt from './ThermalReceipt.jsx';
 import './accounts.css';
 
@@ -26,6 +26,7 @@ export default function AccountsPage() {
   const page = window.location.pathname.split('/').filter(Boolean).at(-1);
   const activeTab = page === 'cashier' || page === 'receipts' || page === 'reconciliation' || page === 'analytics' || page === 'tariffs' ? page : 'overview';
   const basePath = `/dashboard/${profile?.role || role}`;
+  setBillingScope(profile?.hospital_id || user?.id || 'local');
   const [ledger, setLedger] = useState(() => getLedger());
   const [billingCatalog, setBillingCatalog] = useState(() => getBillingCatalog());
   const [tariffDialogOpen, setTariffDialogOpen] = useState(false);
@@ -60,6 +61,13 @@ export default function AccountsPage() {
   const [chargeForm, setChargeForm] = useState({ patientId: '', category: 'Consultation', description: '', quantity: '1', unitPrice: '', nhisPrice: '', sourceRefId: '', sourceStatus: 'Completed' });
 
   const refreshLedger = useCallback(() => setLedger(getLedger()), []);
+  useEffect(() => {
+    setBillingScope(profile?.hospital_id || user?.id || 'local');
+    setLedger(getLedger());
+    setBillingCatalog(getBillingCatalog());
+    setReconciliations(getReconciliations());
+  }, [profile?.hospital_id, user?.id]);
+
   useEffect(() => {
     window.addEventListener('ascendhms:billing-change', refreshLedger);
     window.addEventListener('storage', refreshLedger);
