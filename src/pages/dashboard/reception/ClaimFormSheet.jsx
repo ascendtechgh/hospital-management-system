@@ -9,7 +9,7 @@ const MAIN_MEDICINE_ROWS = 5;
 function claimReference(consultation) {
   const raw = String(consultation?.id || '').replace(/[^0-9]/g, '');
   const suffix = (raw || '0').slice(-6).padStart(6, '0');
-  return `CLM-${new Date(consultation?.created_at || Date.now()).getFullYear()}-${suffix}`.slice(0, 13);
+  return `CLM${suffix}${String(consultation?.created_at ? new Date(consultation.created_at).getFullYear() : new Date().getFullYear()).slice(-2)}`.slice(0, 13).padEnd(13, '0');
 }
 
 function money(value) {
