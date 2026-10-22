@@ -471,7 +471,7 @@ export default function DashboardLayout() {
               <span className="sidebar-nav-symbol" aria-hidden="true">＋</span><span>Pharmacy</span>
             </NavLink>
           )}
-          {['hospitaladmin', 'superadmin', 'reception'].includes(profile?.role) && (
+          {['hospitaladmin', 'superadmin', 'reception', 'cashier', 'billing_claims'].includes(profile?.role) && (
             <NavLink className={({ isActive }) => `sidebar-nav-link${isActive ? ' is-active' : ''}`} to={`${basePath}/accounts`} title="Accounts and cashier">
               <span className="sidebar-nav-symbol" aria-hidden="true">₵</span><span>Accounts</span>
             </NavLink>
