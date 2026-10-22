@@ -98,7 +98,7 @@ export function recordFulfilledService({ patient, visitId, category, description
       mrn: patient.patient_number || patient.mrn || '', visitId: visitId || '', category,
       description: String(description || category).trim(), quantity: Math.max(1, Math.floor(Number(quantity) || 1)),
       sourceRefId, sourceCode: String(sourceCode || ''), sourceStatus, createdAt: new Date().toISOString(),
-      insuranceSnapshot: { insurance_enabled: patient.insurance_enabled, insurance_expiry: patient.insurance_expiry },
+      insuranceSnapshot: { insurance_enabled: patient.insurance_enabled, insurance_expiry: patient.insurance_expiry, insurance_type: patient.insurance_type, insurance_provider: patient.insurance_provider, insurance_number: patient.insurance_number },
     };
     ledger.unpricedServices.unshift(service);
     saveLedger(ledger);
@@ -156,6 +156,7 @@ export function createNhisClaimBatch(chargeIds, actor = 'Current user') {
   const selected = ledger.charges.filter((charge) =>
     chargeIds.includes(charge.id) &&
     moneyToPesewas(charge.insurerAmount) > 0 &&
+    (String(charge.insuranceType || '').toLowerCase() === 'nhis' || String(charge.insuranceProvider || '').trim().toLowerCase() === 'nhis') &&
     !charge.claimId && !['Draft', 'Submitted', 'Partially Paid', 'Paid'].includes(charge.claimStatus) &&
     charge.status !== 'Waived');
   if (!selected.length) throw new Error('Select unclaimed charge lines with an insurer amount greater than zero.');
@@ -169,7 +170,7 @@ export function createNhisClaimBatch(chargeIds, actor = 'Current user') {
     chargeIds: selected.map((charge) => charge.id),
     lines: selected.map((charge) => ({
       chargeId: charge.id, patientId: charge.patientId, patientName: charge.patientName,
-      mrn: charge.mrn || '', category: charge.category, description: charge.description,
+      mrn: charge.mrn || '', insuranceProvider: charge.insuranceProvider || 'NHIS', insuranceNumber: charge.insuranceNumber || '', category: charge.category, description: charge.description,
       sourceRefId: charge.sourceRefId, quantity: charge.quantity,
       chargeAmount: charge.chargeAmount, insurerAmount: charge.insurerAmount,
       createdAt: charge.createdAt,
@@ -255,13 +256,18 @@ export function createCharge({ patient, visitId, category, description, quantity
     throw new Error('Enter a valid quantity and cash price.');
   }
   const grossPesewas = moneyToPesewas(qty * cash);
-  const coveredPesewas = isInsuranceActive(patient) ? Math.min(grossPesewas, moneyToPesewas(qty * Math.max(0, tariff))) : 0;
+  const isNhis = String(patient.insurance_type || '').toLowerCase() === 'nhis' || String(patient.insurance_provider || '').trim().toLowerCase() === 'nhis';
+  const coveredPesewas = isNhis && isInsuranceActive(patient) ? Math.min(grossPesewas, moneyToPesewas(qty * Math.max(0, tariff))) : 0;
   return {
     id: crypto.randomUUID(),
     visitId: visitId || '',
     patientId: patient.id,
     patientName: patient.full_name || 'Patient',
     mrn: patient.patient_number || patient.mrn || '',
+    insuranceType: patient.insurance_type || '',
+    insuranceProvider: patient.insurance_provider || '',
+    insuranceNumber: patient.insurance_number || '',
+    insuranceExpiry: patient.insurance_expiry || '',
     category,
     description: String(description || category).trim(),
     quantity: qty,
