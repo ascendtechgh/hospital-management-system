@@ -3,12 +3,14 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { usePatientRealtime } from '../../../hooks/usePatientRealtime.js';
 import { clinicalRequest, groupByCategory } from '../../../lib/clinicalApi.js';
+import { setBillingScope } from '../../../lib/billingLedger.js';
 import InventoryStockModal from '../clinical/InventoryStockModal.jsx';
 import LabResultModal from './LabResultModal.jsx';
 
 function LaboratoryPage() {
   const { role } = useParams();
   const { profile } = useAuth();
+  setBillingScope(profile?.hospital_id || 'local');
   const basePath = `/dashboard/${profile?.role || role}`;
   const [catalogs, setCatalogs] = useState({ labs: [] });
   const [orders, setOrders] = useState([]);
