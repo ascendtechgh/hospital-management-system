@@ -107,7 +107,7 @@ export function recordPayment({ patientId, visitId, chargeIds, amountPaid, payme
   const ledger = getLedger();
   const selected = ledger.charges.filter((charge) => chargeIds.includes(charge.id) && charge.patientId === patientId && !['Settled', 'Claimed', 'Waived'].includes(charge.status));
   if (!selected.length) throw new Error('No unsettled charges were selected.');
-  const due = selected.reduce((sum, charge) => sum + moneyToPesewas(charge.patientAmount - paidAgainstCharge(ledger.payments, charge.id)), 0);
+  const due = selected.reduce((sum, charge) => sum + Math.max(0, moneyToPesewas(charge.patientAmount) - paidAgainstCharge(ledger.payments, charge.id)), 0);
   const paid = moneyToPesewas(amountPaid);
   if (paid <= 0 || paid > due) throw new Error('Payment must be greater than zero and cannot exceed the patient balance.');
   if (paymentMethod === 'Cash' && moneyToPesewas(cashTendered) < paid) throw new Error('Cash tendered cannot be less than the payment amount.');
