@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { clinicalRequest } from '../../../lib/clinicalApi.js';
+import { recordFulfilledService } from '../../../lib/billingLedger.js';
 
 function LabResultModal({ order, onClose, onSaved }) {
   const dialogRef = useRef(null);
@@ -7,12 +8,14 @@ function LabResultModal({ order, onClose, onSaved }) {
   const [resultNotes, setResultNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [billingNotice, setBillingNotice] = useState('');
 
   useEffect(() => {
     if (order && !dialogRef.current?.open) {
       setResultValue('');
       setResultNotes('');
       setError('');
+      setBillingNotice('');
       dialogRef.current?.showModal();
     } else if (!order && dialogRef.current?.open) {
       dialogRef.current.close();
@@ -33,6 +36,25 @@ function LabResultModal({ order, onClose, onSaved }) {
         result_value: resultValue,
         result_notes: resultNotes,
       });
+      try {
+        const billing = recordFulfilledService({
+          patient: order.patient,
+          visitId: order.consultation_id,
+          category: 'Laboratory',
+          description: order.catalog_item?.name || order.lab_code,
+          quantity: 1,
+          sourceRefId: order.id,
+          sourceCode: order.lab_code,
+          sourceStatus: 'Completed',
+        });
+        setBillingNotice(billing.status === 'unpriced'
+          ? 'Result saved. This test is waiting for a tariff in Accounts → Tariffs & procedures.'
+          : billing.status === 'billed'
+            ? 'Result saved and the test charge was added to the local billing ledger.'
+            : 'Result saved. This test was already recorded for billing.');
+      } catch {
+        setBillingNotice('Result saved, but its local billing entry could not be recorded. Check Accounts before closing the encounter.');
+      }
       onSaved();
       onClose();
     } catch (saveError) {
@@ -62,6 +84,7 @@ function LabResultModal({ order, onClose, onSaved }) {
         </p>
         {order?.request_notes && <p className="clinical-helper">Request note: {order.request_notes}</p>}
         {error && <p className="auth-notice auth-notice-error" role="alert">{error}</p>}
+        {billingNotice && <p className="auth-notice" role="status">{billingNotice}</p>}
         <form className="patient-form" onSubmit={submit}>
           <label className="auth-field">
             <span>Result</span>

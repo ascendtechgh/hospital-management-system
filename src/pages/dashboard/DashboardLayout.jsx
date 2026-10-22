@@ -19,6 +19,8 @@ const roleLabels = {
   labs: 'Laboratory',
   pharmacy: 'Pharmacy',
   reception: 'Reception',
+  cashier: 'Cashier',
+  billing_claims: 'Billing & Claims',
 };
 
 function SearchIcon() {
@@ -316,6 +318,24 @@ export default function DashboardLayout() {
         keywords: 'pharmacy prescriptions dispensing drugs inventory',
       });
     }
+    if (['hospitaladmin', 'superadmin', 'reception', 'cashier', 'billing_claims'].includes(profile?.role)) {
+      items.push({
+        id: 'accounts',
+        title: 'Accounts and cashier',
+        detail: 'Patient balances, receipts and reconciliation',
+        href: `${basePath}/accounts`,
+        keywords: 'accounts billing cashier receipts payments finance reconciliation',
+      });
+    }
+    if (profile?.role === 'reception') {
+      items.push({
+        id: 'patient-import',
+        title: 'Bulk patient import',
+        detail: 'Validate and import patient records',
+        href: `${basePath}/patients/import`,
+        keywords: 'patient import csv excel bulk upload',
+      });
+    }
 
     if (hospital) {
       items.push({
@@ -449,6 +469,11 @@ export default function DashboardLayout() {
           {profile?.role === 'pharmacy' && (
             <NavLink className={({ isActive }) => `sidebar-nav-link${isActive ? ' is-active' : ''}`} to={`${basePath}/dispensing`} title="Pharmacy">
               <span className="sidebar-nav-symbol" aria-hidden="true">＋</span><span>Pharmacy</span>
+            </NavLink>
+          )}
+          {['hospitaladmin', 'superadmin', 'reception', 'cashier', 'billing_claims'].includes(profile?.role) && (
+            <NavLink className={({ isActive }) => `sidebar-nav-link${isActive ? ' is-active' : ''}`} to={`${basePath}/accounts`} title="Accounts and cashier">
+              <span className="sidebar-nav-symbol" aria-hidden="true">₵</span><span>Accounts</span>
             </NavLink>
           )}
         </nav>

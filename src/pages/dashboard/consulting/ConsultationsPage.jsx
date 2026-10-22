@@ -5,11 +5,13 @@ import { useLocalDate } from '../../../hooks/useLocalDate.js';
 import { usePatientRealtime } from '../../../hooks/usePatientRealtime.js';
 import { patientRequest, calculateAge } from '../../../lib/patientApi.js';
 import { clinicalRequest } from '../../../lib/clinicalApi.js';
+import { setBillingScope } from '../../../lib/billingLedger.js';
 import ConsultationModal from './ConsultationModal.jsx';
 
 function ConsultationsPage() {
   const { role } = useParams();
   const { profile } = useAuth();
+  setBillingScope(profile?.hospital_id || 'local');
   const today = useLocalDate();
   const basePath = `/dashboard/${profile?.role || role}`;
   const [patients, setPatients] = useState([]);

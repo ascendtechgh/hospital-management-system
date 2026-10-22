@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext.jsx';
 import { usePatientRealtime } from '../../../hooks/usePatientRealtime.js';
 import { clinicalRequest, groupByCategory } from '../../../lib/clinicalApi.js';
+import { setBillingScope } from '../../../lib/billingLedger.js';
 import { InventoryCard } from '../labs/LaboratoryPage.jsx';
 import InventoryStockModal from '../clinical/InventoryStockModal.jsx';
 import DispenseModal from './DispenseModal.jsx';
@@ -20,6 +21,7 @@ function formatDateTime(value) {
 function PharmacyPage() {
   const { role } = useParams();
   const { profile } = useAuth();
+  setBillingScope(profile?.hospital_id || 'local');
   const basePath = `/dashboard/${profile?.role || role}`;
   const [catalogs, setCatalogs] = useState({ drugs: [] });
   const [prescriptions, setPrescriptions] = useState([]);

@@ -14,6 +14,8 @@ const hospitalRoles = new Set([
   'labs',
   'pharmacy',
   'reception',
+  'cashier',
+  'billing_claims',
 ]);
 const receptionOnlyActions = new Set(['create', 'update', 'delete', 'check_in']);
 const vitalsReadRoles = new Set([
@@ -28,6 +30,8 @@ const patientFields = [
   'id',
   'hospital_id',
   'full_name',
+  'patient_number',
+  'phone',
   'date_of_birth',
   'age_at_registration',
   'sex',
@@ -139,6 +143,8 @@ function patientPayload(payload) {
 
   return {
     full_name: fullName,
+    ...(Object.prototype.hasOwnProperty.call(payload, 'patient_number') ? { patient_number: text(payload.patient_number, 'Patient number', 40, { optional: true }) || null } : {}),
+    ...(Object.prototype.hasOwnProperty.call(payload, 'phone') ? { phone: text(payload.phone, 'Phone number', 40, { optional: true }) || null } : {}),
     date_of_birth: dateOfBirth,
     age_at_registration: age,
     sex,
@@ -195,7 +201,7 @@ async function getPatient(client, patientId, hospitalId, role) {
   }
   let query = client.from('patients').select(patientFields.join(','))
     .eq('id', patientId).eq('hospital_id', hospitalId);
-  if (role !== 'reception') query = query.not('checked_in_at', 'is', null);
+  if (!['reception', 'hospitaladmin', 'cashier', 'billing_claims'].includes(role)) query = query.not('checked_in_at', 'is', null);
   const { data, error } = await query.maybeSingle();
   if (error) throw new HttpError(500, `Could not load patient: ${error.message}`);
   if (!data) throw new HttpError(404, 'Patient was not found or has not been checked in.');
@@ -205,7 +211,7 @@ async function getPatient(client, patientId, hospitalId, role) {
 async function listPatients(client, hospitalId, role) {
   let query = client.from('patients').select(patientFields.join(','))
     .eq('hospital_id', hospitalId).order('created_at', { ascending: false }).limit(500);
-  if (role !== 'reception') query = query.not('checked_in_at', 'is', null);
+  if (!['reception', 'hospitaladmin', 'cashier', 'billing_claims'].includes(role)) query = query.not('checked_in_at', 'is', null);
   const { data, error } = await query;
   if (error) throw new HttpError(500, `Could not load patients: ${error.message}`);
   return { patients: data || [] };

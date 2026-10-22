@@ -84,7 +84,7 @@ async function patientRecord(client, hospitalId, patientId, actorRole) {
   const consultationIds = consultations.map((item) => item.id);
   const diagnosisRowsResult = consultationIds.length
     ? await client.from('consultation_diagnoses')
-      .select('consultation_id, diagnosis_id, is_primary, notes, diagnosis:diagnosis_catalog(id, category, name)')
+      .select('consultation_id, diagnosis_id, is_primary, notes, clinical_status, diagnosis:diagnosis_catalog(id, category, name, icd10_code)')
       .in('consultation_id', consultationIds)
     : { data: [], error: null };
   if (diagnosisRowsResult.error) {
@@ -129,7 +129,7 @@ async function patientRecord(client, hospitalId, patientId, actorRole) {
 
 async function catalogs(client, hospitalId) {
   const [diagnoses, labs, drugs, labStock, drugStock] = await Promise.all([
-    client.from('diagnosis_catalog').select('id, category, name').order('category').order('name'),
+    client.from('diagnosis_catalog').select('id, category, name, icd10_code').order('category').order('name'),
     client.from('lab_catalog').select('code, category, name, initial_stock_status').order('category').order('name'),
     client.from('drug_catalog').select('code, category, name').order('category').order('name'),
     client.from('hospital_lab_inventory').select('lab_code, quantity_on_hand, reorder_level, demo_stock').eq('hospital_id', hospitalId),
@@ -192,7 +192,7 @@ async function attachPatientAndCatalog(client, hospitalId, records, codeField, c
   const patientIds = [...new Set(records.map((item) => item.patient_id))];
   const codes = [...new Set(records.map((item) => item[codeField]))];
   const [patients, catalog] = await Promise.all([
-    client.from('patients').select('id, full_name, date_of_birth, age_at_registration, sex')
+    client.from('patients').select('id, full_name, patient_number, phone, date_of_birth, age_at_registration, sex, insurance_enabled, insurance_expiry, insurance_type, insurance_provider, insurance_number')
       .eq('hospital_id', hospitalId).in('id', patientIds),
     client.from(catalogTable).select('*').in('code', codes),
   ]);
@@ -227,12 +227,20 @@ function consultationPayload(payload) {
     if (item.is_primary !== undefined && typeof item.is_primary !== 'boolean') {
       throw new HttpError(400, 'Diagnosis primary status must be true or false.');
     }
+    const clinicalStatus = item.clinical_status || 'Confirmed';
+    if (!['Suspected', 'Confirmed', 'Differential'].includes(clinicalStatus)) {
+      throw new HttpError(400, 'Choose Suspected, Confirmed or Differential diagnosis status.');
+    }
     return {
       diagnosis_id: diagnosisId,
       is_primary: item.is_primary === true,
+      clinical_status: clinicalStatus,
       notes: requiredText(item.notes, 'Diagnosis notes', 1000, { optional: true }),
     };
   });
+  if (diagnoses.length && diagnoses.filter((item) => item.is_primary).length !== 1) {
+    throw new HttpError(400, 'Choose exactly one primary diagnosis for this encounter.');
+  }
   const labOrders = validArray(payload.lab_orders || [], 'Lab requests', 50).map((item) => {
     const labCode = requiredText(item?.lab_code, 'Laboratory test code', 20);
     const priority = item.priority || 'routine';
@@ -314,7 +322,7 @@ async function saveConsultation(client, hospitalId, userId, payload) {
     if (diagnoses.length) {
       const { error } = await client.from('consultation_diagnoses').upsert(
         diagnoses.map((item) => ({ ...item, consultation_id: consultationId })),
-        { onConflict: 'consultation_id,diagnosis_id', ignoreDuplicates: true },
+        { onConflict: 'consultation_id,diagnosis_id' },
       );
       if (error) throw new HttpError(500, `Consultation notes were saved, but diagnoses could not be added: ${error.message}`);
     }
@@ -424,6 +432,25 @@ Deno.serve(async (request) => {
         if (actor.role !== 'consulting') throw new HttpError(403, 'Only consulting staff can create consultations.');
         await getPatient(admin, payload.patient_id, actor.hospital_id);
         result = await saveConsultation(admin, actor.hospital_id, user.id, payload);
+        break;
+      }
+      case 'consultation_complete': {
+        if (actor.role !== 'consulting') throw new HttpError(403, 'Only consulting staff can complete consultations.');
+        if (typeof payload.consultation_id !== 'string' || !payload.consultation_id || typeof payload.patient_id !== 'string' || !payload.patient_id) {
+          throw new HttpError(400, 'A consultation and patient are required.');
+        }
+        await getPatient(admin, payload.patient_id, actor.hospital_id);
+        const { data, error } = await admin.from('consultations')
+          .update({ status: 'completed', completed_at: new Date().toISOString() })
+          .eq('id', payload.consultation_id)
+          .eq('patient_id', payload.patient_id)
+          .eq('hospital_id', actor.hospital_id)
+          .neq('status', 'cancelled')
+          .select('id, status, completed_at')
+          .maybeSingle();
+        if (error) throw new HttpError(500, `Could not complete consultation: ${error.message}`);
+        if (!data) throw new HttpError(404, 'Consultation was not found or has been cancelled.');
+        result = { consultation_id: data.id, status: data.status, completed_at: data.completed_at };
         break;
       }
       case 'lab_orders_add':

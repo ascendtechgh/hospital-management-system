@@ -10,6 +10,8 @@ const staffRoles = [
   { value: 'labs', label: 'Laboratory' },
   { value: 'pharmacy', label: 'Pharmacy' },
   { value: 'reception', label: 'Reception' },
+  { value: 'cashier', label: 'Cashier' },
+  { value: 'billing_claims', label: 'Billing & Claims' },
 ];
 
 const roleLabels = Object.fromEntries(
