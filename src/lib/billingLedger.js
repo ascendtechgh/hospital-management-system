@@ -201,7 +201,7 @@ export function updateNhisClaimStatus(claimId, status, { note = '', settledAmoun
   if (!claim) throw new Error('NHIS claim batch was not found.');
   if (status === 'Submitted' && claim.status !== 'Draft') throw new Error('Only draft claims can be marked submitted.');
   if (status === 'Paid' && !['Submitted', 'Partially Paid'].includes(claim.status)) throw new Error('Only submitted or partially paid claims can receive a payment.');
-  if (status === 'Rejected' && !['Submitted', 'Partially Paid'].includes(claim.status)) throw new Error('Only submitted or partially paid claims can be rejected.');
+  if (status === 'Rejected' && claim.status !== 'Submitted') throw new Error('Only submitted claims with no payment received can be rejected.');
   if (status === 'Rejected' && !String(note).trim()) throw new Error('Add the NHIS rejection reason before recording it.');
   if (status === 'Paid') {
     const amount = moneyToPesewas(settledAmount);
