@@ -143,3 +143,31 @@ test('NHIS claim can be submitted and settled in partial payments', () => {
   assert.equal(paid.settledAmount, 80);
   assert.equal(getNhisClaims()[0].status, 'Paid');
 });
+
+test('local billing records are isolated by hospital scope', () => {
+  reset();
+  recordFulfilledService({
+    patient: insuredPatient, category: 'Laboratory', description: 'Test',
+    sourceRefId: 'lab-scope-1', sourceCode: 'LAB-UNKNOWN', sourceStatus: 'Completed',
+  });
+  assert.equal(getLedger().unpricedServices.length, 1);
+  setBillingScope('another-hospital');
+  assert.equal(getLedger().unpricedServices.length, 0);
+  setBillingScope('test-hospital');
+  assert.equal(getLedger().unpricedServices.length, 1);
+});
+
+test('NHIS tariff is not assigned to a different insurance provider', () => {
+  reset();
+  saveBillingCatalog({ services: [{
+    id: 'tariff-1', category: 'Laboratory', sourceCode: 'LAB-001',
+    name: 'Full blood count', cashPrice: 100, nhisPrice: 80,
+  }] });
+  const result = recordFulfilledService({
+    patient: { ...insuredPatient, insurance_type: 'other', insurance_provider: 'Private Provider' },
+    category: 'Laboratory', description: 'Full blood count', sourceRefId: 'lab-private-1',
+    sourceCode: 'LAB-001', sourceStatus: 'Completed',
+  });
+  assert.equal(result.charge.insurerAmount, 0);
+  assert.equal(result.charge.patientAmount, 100);
+});
