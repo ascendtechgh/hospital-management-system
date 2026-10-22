@@ -188,7 +188,6 @@ export function createNhisClaimBatch(chargeIds, actor = 'Current user') {
     charge.claimStatus = 'Draft';
     charge.updatedAt = now;
   }
-  ledger.charges = ledger.charges;
   saveLedger(ledger);
   saveNhisClaims([batch, ...claims]);
   return batch;
@@ -282,6 +281,7 @@ export function appendCharge(charge) {
   const duplicate = ledger.charges.some((item) => item.sourceRefId === charge.sourceRefId && item.category === charge.category);
   if (duplicate) throw new Error('This fulfilled source has already been added to the billing ledger.');
   ledger.charges.unshift(charge);
+  ledger.unpricedServices = ledger.unpricedServices.filter((item) => !(item.sourceRefId === charge.sourceRefId && item.category === charge.category));
   saveLedger(ledger);
   return charge;
 }
