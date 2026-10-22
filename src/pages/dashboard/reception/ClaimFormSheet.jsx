@@ -6,17 +6,6 @@ const MAIN_DIAGNOSIS_ROWS = 4;
 const MAIN_LAB_ROWS = 5;
 const MAIN_MEDICINE_ROWS = 5;
 
-function claimReference(consultation) {
-  const raw = String(consultation?.id || '').replace(/[^0-9]/g, '');
-  const suffix = (raw || '0').slice(-6).padStart(6, '0');
-  return `CLM${suffix}${String(consultation?.created_at ? new Date(consultation.created_at).getFullYear() : new Date().getFullYear()).slice(-2)}`.slice(0, 13).padEnd(13, '0');
-}
-
-function money(value) {
-  const amount = Number(value);
-  return Number.isFinite(amount) && amount >= 0 ? amount : null;
-}
-
 function validDate(value) {
   if (!value) return null;
   const date = new Date(value);
@@ -114,7 +103,7 @@ function SheetTable({ title, headers, rows, count, className = '' }) {
   );
 }
 
-function ClaimPageOne({ patient, consultation, hospital, claimDate, procedures, claimNumber, hiCode }) {
+function ClaimPageOne({ patient, consultation, hospital, claimDate, procedures }) {
   const sex = patient.sex?.toLowerCase();
   const age = ageAtDate(patient.date_of_birth, consultation.created_at);
   return (
@@ -122,8 +111,8 @@ function ClaimPageOne({ patient, consultation, hospital, claimDate, procedures, 
       <PageHeading claimDate={consultation.created_at} hospital={hospital} />
       <div className="nf-top-fields">
         <Field label="NAME OF SCHEME"><Boxes value={consultation.insurance_provider_snapshot || 'NHIS'} count={26} grow /></Field>
-        <Field label="CLAIM NUMBER"><Boxes value={claimNumber} count={13} /></Field>
-        <Field label="HI CODE"><Boxes value={hiCode || hospital?.hi_code || hospital?.insurance_code || ""} count={12} /></Field>
+        <Field label="CLAIM NUMBER"><Boxes value="" count={13} /></Field>
+        <Field label="HI CODE"><Boxes value="" count={12} /></Field>
       </div>
 
       <section className="nf-section">
@@ -170,21 +159,13 @@ function ClaimPageOne({ patient, consultation, hospital, claimDate, procedures, 
   );
 }
 
-function ClaimPageTwo({ patient, consultation, hospital, claimDate, diagnoses, labs, medicines, claimNumber }) {
-  const procedureTotal = (consultation.procedures || []).reduce((sum, item) => sum + (money(item.total_amount ?? item.totalAmount ?? item.tariff_amount ?? item.price) || 0), 0);
-  const investigationTotal = labs.reduce((sum, item) => sum + (money(item.total_amount ?? item.totalAmount ?? item.tariff_amount ?? item.price) || 0), 0);
-  const medicineTotal = medicines.reduce((sum, item) => {
-    const lineTotal = money(item.total_amount ?? item.totalAmount ?? item.total_price);
-    const unit = money(item.unit_price ?? item.unitPrice ?? item.price);
-    return sum + (lineTotal ?? (unit == null ? 0 : unit * Number(item.quantity || 0)));
-  }, 0);
+function ClaimPageTwo({ patient, consultation, hospital, claimDate, diagnoses, labs, medicines }) {
   const summaryLines = [
     ['A. In-patient tariff', null],
-    ['B. Out-patient tariff', procedureTotal || null],
-    ['C. Investigations', investigationTotal || null],
-    ['D. Pharmacy', medicineTotal || null],
+    ['B. Out-patient tariff', null],
+    ['C. Investigations', null],
+    ['D. Pharmacy', null],
   ];
-  const totalClaimed = procedureTotal + investigationTotal + medicineTotal;
   return (
     <section className="nf-page">
       <PageHeading claimDate={claimDate} hospital={hospital} />
@@ -193,12 +174,12 @@ function ClaimPageTwo({ patient, consultation, hospital, claimDate, diagnoses, l
       <SheetTable title="INVESTIGATIONS (1 TO 5)" headers={['#', 'Investigation', 'Date', 'NHIA / tariff code']} count={MAIN_LAB_ROWS}
         rows={labs.map((item, index) => ({ '#': index + 1, Investigation: item.lab?.name || item.lab_code || '', Date: dateParts(item.requested_at), 'NHIA / tariff code': item.nhia_code || '', id: item.id || index }))} />
       <SheetTable title="MEDICINES (1 TO 5)" headers={['#', 'Description', 'Price (GHS)', 'Qty', 'Total (GHS)', 'NHIA code']} count={MAIN_MEDICINE_ROWS}
-        rows={medicines.map((item, index) => ({ '#': index + 1, Description: item.drug?.name || item.drug_code || '', 'Price (GHS)': money(item.unit_price ?? item.unitPrice ?? item.price) == null ? '' : Number(item.unit_price ?? item.unitPrice ?? item.price).toFixed(2), Qty: item.quantity ?? '', 'Total (GHS)': money(item.total_amount ?? item.totalAmount ?? item.total_price) == null ? (money(item.unit_price ?? item.unitPrice ?? item.price) == null ? '' : (Number(item.unit_price ?? item.unitPrice ?? item.price) * Number(item.quantity || 0)).toFixed(2)) : Number(item.total_amount ?? item.totalAmount ?? item.total_price).toFixed(2), 'NHIA code': item.nhia_code || item.drug?.nhia_code || item.drug?.code || '', id: item.id || index }))} />
+        rows={medicines.map((item, index) => ({ '#': index + 1, Description: item.drug?.name || item.drug_code || '', 'Price (GHS)': '', Qty: item.quantity ?? '', 'Total (GHS)': '', 'NHIA code': item.nhia_code || '', id: item.id || index }))} />
       <section className="nf-section nf-summary">
         <h2>CLIENT CLAIM SUMMARY (GHS)</h2>
         <div className="nf-summary-grid">
           {summaryLines.map(([label, value]) => <div key={label}><span>{label}</span><Amount value={value} /></div>)}
-          <div className="nf-total"><strong>TOTAL CLAIMED</strong><Amount value={totalClaimed || null} ints={5} /></div>
+          <div className="nf-total"><strong>TOTAL CLAIMED</strong><Amount value={null} ints={5} /></div>
         </div>
         <div className="nf-signature-row">
           <div><span>HEALTH FACILITY INSURANCE OFFICER - SIGNATURE</span><div className="nf-signature-line" /></div>
@@ -245,7 +226,7 @@ const printStyles = `
 .claim-print-sheet{width:210mm;color:#000;background:#e5e7eb;padding:8mm;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;font-size:8pt}
 .nf-page{width:186mm;min-height:277mm;box-sizing:border-box;background:#fff;padding:0;position:relative;margin:0 auto 8mm;page-break-after:always;break-after:page;overflow:hidden}
 .nf-page:last-child{page-break-after:auto;break-after:auto}
-.nf-heading{display:flex;justify-content:space-between;gap:4mm;border-bottom:.5mm solid #000;padding-bottom:2mm;margin-bottom:2mm}.nf-heading-main{display:flex;flex-direction:column;gap:1mm}.nf-heading h1{font-size:17pt;line-height:1.1;margin:0;font-weight:800}.nf-heading-main>strong{font-size:10pt}.nf-heading-main>span,.nf-heading-side>span{font-size:7pt}.nf-heading-side{min-width:40mm;display:flex;flex-direction:column;gap:1mm;text-align:right;align-items:flex-end}.nf-heading-side>b{font-size:8pt}
+.nf-heading{display:flex;justify-content:space-between;gap:4mm;border-bottom:.5mm solid #000;padding-bottom:2mm;margin-bottom:2mm}.nf-heading-main{display:flex;flex-direction:column;gap:1mm}.nf-heading h1{font-size:15pt;line-height:1.1;margin:0;font-weight:800}.nf-heading-main>strong{font-size:10pt}.nf-heading-main>span,.nf-heading-side>span{font-size:7pt}.nf-heading-side{min-width:40mm;display:flex;flex-direction:column;gap:1mm;text-align:right;align-items:flex-end}.nf-heading-side>b{font-size:8pt}
 .nf-top-fields{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:2mm;margin-bottom:2mm}.nf-field{min-width:0;display:flex;flex-direction:column;gap:1mm}.nf-field>span:first-child{font-size:6.5pt;font-weight:700;text-transform:uppercase}.nf-field-value{min-height:5mm;display:flex;align-items:center;gap:1mm;min-width:0}.nf-section{border:.25mm solid #000;margin:0 0 2mm;padding:1.5mm}.nf-section h2{font-size:8pt;margin:0 0 1.5mm;font-weight:800}.nf-client-grid{display:grid;grid-template-columns:1fr 1fr .75fr;gap:2mm 3mm}.nf-service-dates{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;margin:2mm 0}.nf-check-row{display:flex;align-items:center;gap:3mm;min-height:5mm}.nf-wrap{flex-wrap:wrap}.nf-spacer{flex:1}.nf-check-item{display:inline-flex;align-items:center;gap:1mm;white-space:nowrap;font-size:7pt}.nf-check{width:3mm;height:3mm;border:.25mm solid #000;display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:9pt;line-height:1}.nf-check.is-checked{font-size:10pt}.nf-boxes{display:inline-flex;align-items:stretch;flex-shrink:0}.nf-c{width:4.5mm;height:5.2mm;border:.25mm solid #000;margin-left:-.25mm;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;font:8pt 'Courier New',monospace;white-space:nowrap}.nf-boxes-grow .nf-c{flex:1}.nf-date{display:inline-flex;align-items:center;gap:.4mm;white-space:nowrap}.nf-date i{font-style:normal;font-weight:700}.nf-amount{display:inline-flex;align-items:center;gap:.3mm}.nf-amount b{font-family:'Courier New',monospace}
 .nf-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7pt}.nf-table th,.nf-table td{border:.25mm solid #000;padding:1mm;vertical-align:middle;overflow-wrap:anywhere}.nf-table th{font-size:6.5pt;text-align:center;background:#f3f4f6}.nf-table tbody tr{height:7mm}.nf-table th:first-child,.nf-table td:first-child{width:7mm;text-align:center}.nf-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5mm 5mm}.nf-summary-grid>div{display:flex;align-items:center;justify-content:space-between;gap:2mm;min-height:7mm;border-bottom:.2mm solid #777}.nf-total{grid-column:1/-1;border-top:.5mm solid #000;border-bottom:.5mm solid #000;font-size:10pt;padding:1mm 0}.nf-signature-row{display:grid;grid-template-columns:1.5fr 1fr .8fr;gap:3mm;margin-top:3mm}.nf-signature-row>div{display:flex;flex-direction:column;gap:2mm}.nf-signature-row span,.nf-scheme-grid .nf-field>span:first-child{font-size:6.5pt;font-weight:700}.nf-signature-line{display:block;border-bottom:.25mm solid #000;height:8mm}.nf-scheme-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm}.nf-footer{position:absolute;bottom:0;left:0;right:0;border-top:.2mm solid #777;padding-top:1mm;display:flex;justify-content:space-between;font-size:6.5pt}.nf-continuation-title{font-size:12pt;margin:8mm 0 4mm}.nf-scheme-only{margin-top:2mm}
 @page{size:A4;margin:10mm 12mm}
@@ -263,8 +244,6 @@ export default function ClaimFormSheet({
 }) {
   const diagnoses = consultation.diagnoses || [];
   const claimDate = consultation.created_at;
-  const claimNumber = useMemo(() => claimReference(consultation), [consultation?.id, consultation?.created_at]);
-  const hiCode = hospital?.hi_code || hospital?.insurance_code || '';
   const procedures = consultation.procedures || [];
   const diagnosisRows = useMemo(() => diagnoses.map((item, index) => ({
     '#': index + 1,
@@ -324,8 +303,8 @@ export default function ClaimFormSheet({
         </div>
         <div className="claim-print-workspace">
           <article className="claim-print-sheet">
-            <ClaimPageOne patient={patient} consultation={consultation} hospital={hospital} claimDate={claimDate} procedures={procedures} claimNumber={claimNumber} hiCode={hiCode} />
-            <ClaimPageTwo patient={patient} consultation={consultation} hospital={hospital} claimDate={claimDate} diagnoses={diagnoses} labs={labOrders} medicines={prescriptions} claimNumber={claimNumber} />
+            <ClaimPageOne patient={patient} consultation={consultation} hospital={hospital} claimDate={claimDate} procedures={procedures} />
+            <ClaimPageTwo patient={patient} consultation={consultation} hospital={hospital} claimDate={claimDate} diagnoses={diagnoses} labs={labOrders} medicines={prescriptions} />
             {hasOverflow && (
               <ContinuationPage patient={patient} hospital={hospital} claimDate={claimDate} title="ADDITIONAL CLAIM LINES"
                 rows={[
