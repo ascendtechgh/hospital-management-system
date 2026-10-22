@@ -13,6 +13,8 @@ const staffRoles = new Set([
   'labs',
   'pharmacy',
   'reception',
+  'cashier',
+  'billing_claims',
 ]);
 
 class HttpError extends Error {
