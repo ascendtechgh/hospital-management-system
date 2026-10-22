@@ -325,7 +325,7 @@ export default function DashboardLayout() {
         keywords: 'accounts billing cashier receipts payments finance reconciliation',
       });
     }
-    if (['reception', 'hospitaladmin'].includes(profile?.role)) {
+    if (profile?.role === 'reception') {
       items.push({
         id: 'patient-import',
         title: 'Bulk patient import',
