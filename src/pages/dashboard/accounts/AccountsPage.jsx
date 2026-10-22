@@ -179,7 +179,7 @@ export default function AccountsPage() {
     setError('');
   }
 
-  if (!['hospitaladmin', 'superadmin', 'cashier', 'billing_claims'].includes(profile?.role)) return <Navigate to={basePath} replace />;
+  if (!['hospitaladmin', 'superadmin', 'cashier', 'billing_claims', 'reception'].includes(profile?.role)) return <Navigate to={basePath} replace />;
 
   const visibleTransactions = ledger.payments.filter((payment) => `${payment.receiptNumber} ${payment.cashierName} ${payment.momoRef || ''}`.toLowerCase().includes(transactionSearch.toLowerCase()));
   const cashCollected = moneySum(paymentsToday.filter((p) => p.paymentMethod === 'Cash'), 'amountPaid');
