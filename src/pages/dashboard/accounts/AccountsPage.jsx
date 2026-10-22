@@ -213,7 +213,7 @@ export default function AccountsPage() {
 
   const claimableCharges = ledger.charges.filter((charge) =>
     moneyToPesewas(charge.insurerAmount) > 0 &&
-    !['Draft', 'Submitted', 'Paid'].includes(charge.claimStatus) &&
+    !charge.claimId && !['Draft', 'Submitted', 'Partially Paid', 'Paid'].includes(charge.claimStatus) &&
     charge.status !== 'Waived');
 
   function createClaimBatch() {
