@@ -121,6 +121,7 @@ export function recordPayment({ patientId, visitId, chargeIds, amountPaid, payme
     patientId,
     visitId: visitId || '',
     chargeIds: selected.map((charge) => charge.id),
+    allocations: (() => { let remaining = paid; const result = {}; for (const charge of selected) { const outstanding = Math.max(0, moneyToPesewas(charge.patientAmount) - paidAgainstCharge(ledger.payments, charge.id)); const applied = Math.min(remaining, outstanding); result[charge.id] = pesewasToMoney(applied); remaining -= applied; } return result; })(),
     amountPaid: pesewasToMoney(paid),
     paymentMethod,
     network: network || '',
@@ -133,21 +134,20 @@ export function recordPayment({ patientId, visitId, chargeIds, amountPaid, payme
   };
   ledger.payments.unshift(payment);
   for (const charge of selected) {
-    const totalPaid = ledger.payments.filter((p) => p.chargeIds.includes(charge.id)).reduce((sum, p) => sum + moneyToPesewas(p.amountPaid) * (p.chargeIds.length === 1 ? 1 : 0), 0);
     const chargePaid = paidAgainstCharge(ledger.payments, charge.id);
     charge.status = chargePaid >= moneyToPesewas(charge.patientAmount) ? 'Settled' : chargePaid > 0 ? 'Partially Settled' : 'Pending';
     charge.updatedAt = now.toISOString();
-    void totalPaid;
   }
   saveLedger(ledger);
   return payment;
 }
 
 export function paidAgainstCharge(payments, chargeId) {
-  const matching = payments.filter((payment) => payment.chargeIds.includes(chargeId));
-  if (!matching.length) return 0;
-  const chargePayments = matching.filter((payment) => payment.chargeIds.length === 1);
-  return chargePayments.reduce((sum, payment) => sum + moneyToPesewas(payment.amountPaid), 0);
+  return payments.reduce((sum, payment) => {
+    if (payment.allocations && Object.prototype.hasOwnProperty.call(payment.allocations, chargeId)) return sum + moneyToPesewas(payment.allocations[chargeId]);
+    if (payment.chargeIds?.length === 1 && payment.chargeIds[0] === chargeId) return sum + moneyToPesewas(payment.amountPaid);
+    return sum;
+  }, 0);
 }
 
 export function patientBalance(charge, payments) {
