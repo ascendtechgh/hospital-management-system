@@ -116,13 +116,13 @@ async function parseXlsx(file) {
     rows.push(row.map((value) => value ?? ''));
   }
   if (rows.length < 2) throw new Error('The first worksheet contains no patient rows.');
-  const headers = rows[0].map((header) => String(header || '').trim().toLowerCase().replace(/[\\s-]+/g, '_'));
+  const headers = rows[0].map((header) => String(header || '').trim().toLowerCase().replace(/[\s-]+/g, '_'));
   const parsed = rows.slice(1).map((values, index) => {
     const result = Object.fromEntries(headers.map((header, column) => [header, String(values[column] ?? '').trim()]));
     return { ...result, __row: index + 2 };
   });
   for (const row of parsed) {
-    if (row.date_of_birth && /^\\d+(?:\\.\\d+)?$/.test(row.date_of_birth)) {
+    if (row.date_of_birth && /^\d+(?:\.\d+)?$/.test(row.date_of_birth)) {
       const serial = Number(row.date_of_birth);
       if (serial > 0 && serial < 100000) row.date_of_birth = new Date(Date.UTC(1899, 11, 30) + Math.floor(serial) * 86400000).toISOString().slice(0, 10);
     }
