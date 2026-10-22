@@ -114,7 +114,7 @@ function PatientsPage() {
           <h1>Patients</h1>
         </div>
         {canManage && (
-          <div className="patient-header-actions">
+          <div className="patient-header-actions" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <Link className="staff-secondary-button" to={`${basePath}/patients/import`}>Bulk import</Link>
             <button className="staff-primary-button" type="button" onClick={openRegistration}>
               <span aria-hidden="true">+</span> Register patient
