@@ -114,9 +114,12 @@ function PatientsPage() {
           <h1>Patients</h1>
         </div>
         {canManage && (
-          <button className="staff-primary-button" type="button" onClick={openRegistration}>
-            <span aria-hidden="true">+</span> Register patient
-          </button>
+          <div className="patient-header-actions">
+            <Link className="staff-secondary-button" to={`${basePath}/patients/import`}>Bulk import</Link>
+            <button className="staff-primary-button" type="button" onClick={openRegistration}>
+              <span aria-hidden="true">+</span> Register patient
+            </button>
+          </div>
         )}
       </header>
 
