@@ -213,6 +213,7 @@ export default function AccountsPage() {
 
   const claimableCharges = ledger.charges.filter((charge) =>
     moneyToPesewas(charge.insurerAmount) > 0 &&
+    (String(charge.insuranceType || '').toLowerCase() === 'nhis' || String(charge.insuranceProvider || '').trim().toLowerCase() === 'nhis') &&
     !charge.claimId && !['Draft', 'Submitted', 'Partially Paid', 'Paid'].includes(charge.claimStatus) &&
     charge.status !== 'Waived');
 
@@ -250,10 +251,10 @@ export default function AccountsPage() {
   }
 
   function exportClaimCsv(claim) {
-    const fields = ['claim_number', 'patient_name', 'mrn', 'service_category', 'service_description', 'quantity', 'service_date', 'source_reference', 'gross_charge_ghs', 'insurer_amount_ghs'];
+    const fields = ['claim_number', 'patient_name', 'mrn', 'insurance_provider', 'nhis_member_number', 'service_category', 'service_description', 'quantity', 'service_date', 'source_reference', 'gross_charge_ghs', 'insurer_amount_ghs'];
     const quote = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`;
     const lines = claim.lines.map((line) => [
-      claim.claimNumber, line.patientName, line.mrn, line.category, line.description,
+      claim.claimNumber, line.patientName, line.mrn, line.insuranceProvider, line.insuranceNumber, line.category, line.description,
       line.quantity, line.createdAt?.slice(0, 10), line.sourceRefId, line.chargeAmount, line.insurerAmount,
     ].map(quote).join(','));
     const blob = new Blob([[fields.map(quote).join(','), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8;' });
