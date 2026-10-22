@@ -29,6 +29,7 @@ function parseCsv(text) {
   });
 }
 async function parseXlsx(file) {
+  if (file.size > 20 * 1024 * 1024) throw new Error('Excel workbooks must be 20 MB or smaller. Split larger files into smaller imports.');
   if (typeof DecompressionStream === 'undefined') {
     throw new Error('This browser cannot read compressed Excel workbooks. Export the sheet as CSV UTF-8 instead.');
   }
@@ -46,10 +47,14 @@ async function parseXlsx(file) {
   const entryCount = u16(eocd + 10);
   let centralOffset = u32(eocd + 16);
   const entries = new Map();
+  let totalUncompressed = 0;
   for (let index = 0; index < entryCount; index += 1) {
     if (u32(centralOffset) !== 0x02014b50) throw new Error('The Excel workbook ZIP directory is invalid.');
     const method = u16(centralOffset + 10);
     const compressedSize = u32(centralOffset + 20);
+    const uncompressedSize = u32(centralOffset + 24);
+    totalUncompressed += uncompressedSize;
+    if (totalUncompressed > 50 * 1024 * 1024) throw new Error('The Excel workbook expands beyond the 50 MB import limit. Remove embedded files or split the workbook.');
     const nameLength = u16(centralOffset + 28);
     const extraLength = u16(centralOffset + 30);
     const commentLength = u16(centralOffset + 32);
