@@ -199,7 +199,7 @@ async function getPatient(client, patientId, hospitalId, role) {
   }
   let query = client.from('patients').select(patientFields.join(','))
     .eq('id', patientId).eq('hospital_id', hospitalId);
-  if (role !== 'reception') query = query.not('checked_in_at', 'is', null);
+  if (!['reception', 'hospitaladmin'].includes(role)) query = query.not('checked_in_at', 'is', null);
   const { data, error } = await query.maybeSingle();
   if (error) throw new HttpError(500, `Could not load patient: ${error.message}`);
   if (!data) throw new HttpError(404, 'Patient was not found or has not been checked in.');
