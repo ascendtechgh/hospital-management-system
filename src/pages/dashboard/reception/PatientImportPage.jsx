@@ -22,7 +22,7 @@ function parseCsv(text) {
   }
   if (cell || row.length) { row.push(cell.trim()); if (row.some(Boolean)) rows.push(row); }
   if (rows.length < 2) return [];
-  const headers = rows[0].map((header) => header.trim().toLowerCase().replace(/[\s-]+/g, '_'));
+  const headers = rows[0].map((header) => header.replace(/^\uFEFF/, '').trim().toLowerCase().replace(/[\s-]+/g, '_'));
   return rows.slice(1).map((values, index) => {
     const result = Object.fromEntries(headers.map((header, column) => [header, values[column] || '']));
     return { ...result, __row: index + 2 };
@@ -116,7 +116,7 @@ async function parseXlsx(file) {
     rows.push(row.map((value) => value ?? ''));
   }
   if (rows.length < 2) throw new Error('The first worksheet contains no patient rows.');
-  const headers = rows[0].map((header) => String(header || '').trim().toLowerCase().replace(/[\s-]+/g, '_'));
+  const headers = rows[0].map((header) => String(header || '').replace(/^\uFEFF/, '').trim().toLowerCase().replace(/[\s-]+/g, '_'));
   const parsed = rows.slice(1).map((values, index) => {
     const result = Object.fromEntries(headers.map((header, column) => [header, String(values[column] ?? '').trim()]));
     return { ...result, __row: index + 2 };
@@ -145,9 +145,9 @@ function validateRows(rows, existing) {
     if (!row.surname?.trim()) errors.push('Surname is required');
     if (!row.first_name?.trim()) errors.push('First name is required');
     if (!normalizeSex(row.sex)) errors.push('Sex must be M, F, Male or Female');
-    if (row.date_of_birth && !/^\d{4}-\d{2}-\d{2}$/.test(row.date_of_birth)) errors.push('Date of birth must use YYYY-MM-DD');
-    if (!row.date_of_birth && !row.estimated_age_years) errors.push('Date of birth or estimated age is required');
-    if (!row.date_of_birth && row.estimated_age_years) warnings.push('Age is estimated because date of birth is missing');
+    if (row.date_of_birth && (!/^\d{4}-\d{2}-\d{2}$/.test(row.date_of_birth) || new Date(`${row.date_of_birth}T00:00:00Z`).toISOString?.().slice(0, 10) !== row.date_of_birth)) errors.push('Date of birth must be a real date in YYYY-MM-DD format');
+    if (!row.date_of_birth && String(row.estimated_age_years ?? '').trim() === '') errors.push('Date of birth or estimated age is required');
+    if (!row.date_of_birth && String(row.estimated_age_years ?? '').trim() !== '') warnings.push('Age is estimated because date of birth is missing');
     if (row.estimated_age_years && (!Number.isInteger(Number(row.estimated_age_years)) || Number(row.estimated_age_years) < 0 || Number(row.estimated_age_years) > 130)) errors.push('Estimated age must be a whole number from 0 to 130');
     if (row.insurance_name || row.insurance_number || row.insurance_expiry) {
       if (!(row.insurance_name && row.insurance_number && row.insurance_expiry)) warnings.push('Incomplete insurance details will be omitted');
