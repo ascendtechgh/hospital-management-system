@@ -55,6 +55,8 @@ function ConsultationModal({
         is_primary: item.is_primary,
         notes: item.notes || '',
         label: item.diagnosis?.name || 'Diagnosis',
+        icd10_code: item.diagnosis?.icd10_code || '',
+        clinical_status: item.clinical_status || 'Confirmed',
       })));
       setDiagnosisId('');
       setLabOrders([]);
@@ -84,6 +86,8 @@ function ConsultationModal({
       is_primary: current.length === 0 && !consultation?.diagnoses?.some((item) => item.is_primary),
       notes: '',
       label: catalogs.diagnoses.find((item) => item.id === id)?.name || 'Diagnosis',
+      icd10_code: catalogs.diagnoses.find((item) => item.id === id)?.icd10_code || '',
+      clinical_status: 'Confirmed',
     }]);
     setDiagnosisId('');
   }
@@ -126,9 +130,10 @@ function ConsultationModal({
         patient_id: patient.id,
         consultation_id: consultationId || undefined,
         ...notes,
-        diagnoses: diagnoses.map(({ diagnosis_id, is_primary, notes: diagnosisNotes }) => ({
+        diagnoses: diagnoses.map(({ diagnosis_id, is_primary, clinical_status, notes: diagnosisNotes }) => ({
           diagnosis_id,
           is_primary,
+          clinical_status,
           notes: diagnosisNotes,
         })),
       });
@@ -273,14 +278,14 @@ function ConsultationModal({
                   <option value="">Choose a diagnosis</option>
                   {Object.entries(groupByCategory(catalogs.diagnoses)).map(([category, items]) => (
                     <optgroup key={category} label={category}>
-                      {items.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+                      {items.map((item) => <option key={item.id} value={item.id}>{item.icd10_code ? `${item.icd10_code} · ` : ''}{item.name}</option>)}
                     </optgroup>
                   ))}
                 </select>
               </label>
               <button className="staff-secondary-button" type="button" onClick={addDiagnosis} disabled={!diagnosisId}>Add</button>
             </div>
-            <SelectedItems items={diagnoses} onRemove={(index) => setDiagnoses((current) => current.filter((_, itemIndex) => itemIndex !== index))} />
+            {diagnoses.length > 0 && <div className="clinical-diagnosis-list">{diagnoses.map((item, index) => <article className="clinical-diagnosis-row" key={item.diagnosis_id}><div className="clinical-diagnosis-name"><strong>{item.label}</strong><small>{item.icd10_code || 'ICD-10 code not assigned'}</small></div><label><span>Designation</span><select value={item.is_primary ? 'primary' : 'secondary'} onChange={(event) => setDiagnoses((current) => current.map((diagnosis, rowIndex) => ({ ...diagnosis, is_primary: event.target.value === 'primary' && rowIndex === index })))}><option value="primary">Primary</option><option value="secondary">Secondary</option></select></label><label><span>Clinical status</span><select value={item.clinical_status || 'Confirmed'} onChange={(event) => setDiagnoses((current) => current.map((diagnosis, rowIndex) => rowIndex === index ? { ...diagnosis, clinical_status: event.target.value } : diagnosis))}><option>Suspected</option><option>Confirmed</option><option>Differential</option></select></label><button className="staff-secondary-button" type="button" onClick={() => setDiagnoses((current) => current.filter((_, rowIndex) => rowIndex !== index))}>Remove</button></article>)}</div>}
           </section>}
 
           {activeTab === 'labs' && <section className="patient-form-section clinical-encounter-tab-panel" id="encounter-labs-panel" role="tabpanel" aria-labelledby="encounter-labs-tab">
