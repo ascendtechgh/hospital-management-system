@@ -28,6 +28,8 @@ const patientFields = [
   'id',
   'hospital_id',
   'full_name',
+  'patient_number',
+  'phone',
   'date_of_birth',
   'age_at_registration',
   'sex',
@@ -139,6 +141,8 @@ function patientPayload(payload) {
 
   return {
     full_name: fullName,
+    ...(Object.prototype.hasOwnProperty.call(payload, 'patient_number') ? { patient_number: text(payload.patient_number, 'Patient number', 40, { optional: true }) || null } : {}),
+    ...(Object.prototype.hasOwnProperty.call(payload, 'phone') ? { phone: text(payload.phone, 'Phone number', 40, { optional: true }) || null } : {}),
     date_of_birth: dateOfBirth,
     age_at_registration: age,
     sex,
