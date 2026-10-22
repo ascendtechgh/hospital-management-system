@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'ascendhms.billing.v1';
 const RECONCILIATION_KEY = 'ascendhms.reconciliation.v1';
+const CATALOG_KEY = 'ascendhms.billing-catalog.v1';
 
 export const CHARGE_CATEGORIES = ['Consultation', 'Laboratory', 'Pharmacy', 'Procedure'];
 export const PAYMENT_METHODS = ['Cash', 'Mobile Money', 'Bank Card'];
@@ -37,11 +38,92 @@ export function getLedger() {
   return {
     charges: Array.isArray(ledger.charges) ? ledger.charges : [],
     payments: Array.isArray(ledger.payments) ? ledger.payments : [],
+    unpricedServices: Array.isArray(ledger.unpricedServices) ? ledger.unpricedServices : [],
   };
 }
 
 export function saveLedger(ledger) {
   writeJson(STORAGE_KEY, ledger);
+}
+
+export function getBillingCatalog() {
+  const catalog = readJson(CATALOG_KEY, { services: [] });
+  return { services: Array.isArray(catalog.services) ? catalog.services : [] };
+}
+
+export function saveBillingCatalog(catalog) {
+  const services = Array.isArray(catalog?.services) ? catalog.services : [];
+  const seen = new Set();
+  for (const service of services) {
+    const key = `${String(service.category).toLowerCase()}:${String(service.sourceCode).trim().toLowerCase()}`;
+    if (!service.id || !CHARGE_CATEGORIES.includes(service.category) || !String(service.name || '').trim() || !String(service.sourceCode || '').trim()) {
+      throw new Error('Each tariff needs a category, service name and unique source code.');
+    }
+    if (seen.has(key)) throw new Error('A tariff already exists for this category and source code.');
+    seen.add(key);
+    if (!Number.isFinite(Number(service.cashPrice)) || Number(service.cashPrice) < 0 ||
+      !Number.isFinite(Number(service.nhisPrice ?? 0)) || Number(service.nhisPrice ?? 0) < 0) {
+      throw new Error('Tariff prices must be valid non-negative amounts.');
+    }
+  }
+  writeJson(CATALOG_KEY, { services });
+  return { services };
+}
+
+export function recordFulfilledService({ patient, visitId, category, description, quantity = 1, sourceRefId, sourceCode, sourceStatus = 'Completed' }) {
+  if (!patient?.id || !sourceRefId || !['completed', 'dispensed', 'confirmed'].includes(String(sourceStatus).toLowerCase())) {
+    throw new Error('A patient and completed or fulfilled source record are required before billing.');
+  }
+  const ledger = getLedger();
+  if (ledger.charges.some((item) => item.sourceRefId === sourceRefId && item.category === category) ||
+      ledger.unpricedServices.some((item) => item.sourceRefId === sourceRefId && item.category === category)) {
+    return { status: 'duplicate', charge: ledger.charges.find((item) => item.sourceRefId === sourceRefId && item.category === category) || null };
+  }
+  const tariff = getBillingCatalog().services.find((item) =>
+    item.category === category && String(item.sourceCode).trim().toLowerCase() === String(sourceCode || '').trim().toLowerCase());
+  if (!tariff) {
+    const service = {
+      id: crypto.randomUUID(), patientId: patient.id, patientName: patient.full_name || 'Patient',
+      mrn: patient.patient_number || patient.mrn || '', visitId: visitId || '', category,
+      description: String(description || category).trim(), quantity: Math.max(1, Math.floor(Number(quantity) || 1)),
+      sourceRefId, sourceCode: String(sourceCode || ''), sourceStatus, createdAt: new Date().toISOString(),
+      insuranceSnapshot: { insurance_enabled: patient.insurance_enabled, insurance_expiry: patient.insurance_expiry },
+    };
+    ledger.unpricedServices.unshift(service);
+    saveLedger(ledger);
+    return { status: 'unpriced', service };
+  }
+  const charge = createCharge({
+    patient, visitId, category, description: description || tariff.name, quantity,
+    unitPrice: Number(tariff.cashPrice), nhisPrice: Number(tariff.nhisPrice || 0),
+    sourceRefId, sourceStatus,
+  });
+  appendCharge(charge);
+  return { status: 'billed', charge };
+}
+
+export function billUnpricedService(serviceId) {
+  const ledger = getLedger();
+  const service = ledger.unpricedServices.find((item) => item.id === serviceId);
+  if (!service) throw new Error('The pending service could not be found.');
+  const tariff = getBillingCatalog().services.find((item) =>
+    item.category === service.category && String(item.sourceCode).trim().toLowerCase() === String(service.sourceCode || '').trim().toLowerCase());
+  if (!tariff) throw new Error('Add a tariff matching this service category and source code first.');
+  if (ledger.charges.some((item) => item.sourceRefId === service.sourceRefId && item.category === service.category)) {
+    ledger.unpricedServices = ledger.unpricedServices.filter((item) => item.id !== serviceId);
+    saveLedger(ledger);
+    return { status: 'duplicate' };
+  }
+  const charge = createCharge({
+    patient: { id: service.patientId, full_name: service.patientName, patient_number: service.mrn, ...service.insuranceSnapshot },
+    visitId: service.visitId, category: service.category, description: service.description,
+    quantity: service.quantity, unitPrice: Number(tariff.cashPrice), nhisPrice: Number(tariff.nhisPrice || 0),
+    sourceRefId: service.sourceRefId, sourceStatus: service.sourceStatus,
+  });
+  ledger.charges.unshift(charge);
+  ledger.unpricedServices = ledger.unpricedServices.filter((item) => item.id !== serviceId);
+  saveLedger(ledger);
+  return { status: 'billed', charge };
 }
 
 export function getReconciliations() {
