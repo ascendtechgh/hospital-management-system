@@ -2,6 +2,16 @@ const STORAGE_KEY = 'ascendhms.billing.v1';
 const RECONCILIATION_KEY = 'ascendhms.reconciliation.v1';
 const CATALOG_KEY = 'ascendhms.billing-catalog.v1';
 
+let storageScope = 'local';
+
+export function setBillingScope(scope) {
+  storageScope = String(scope || 'local');
+}
+
+function scopedKey(key) {
+  return `${key}:${encodeURIComponent(storageScope)}`;
+}
+
 export const CHARGE_CATEGORIES = ['Consultation', 'Laboratory', 'Pharmacy', 'Procedure'];
 export const PAYMENT_METHODS = ['Cash', 'Mobile Money', 'Bank Card'];
 
@@ -34,7 +44,7 @@ function writeJson(key, value) {
 }
 
 export function getLedger() {
-  const ledger = readJson(STORAGE_KEY, { charges: [], payments: [] });
+  const ledger = readJson(scopedKey(STORAGE_KEY), { charges: [], payments: [], unpricedServices: [] });
   return {
     charges: Array.isArray(ledger.charges) ? ledger.charges : [],
     payments: Array.isArray(ledger.payments) ? ledger.payments : [],
@@ -43,11 +53,11 @@ export function getLedger() {
 }
 
 export function saveLedger(ledger) {
-  writeJson(STORAGE_KEY, ledger);
+  writeJson(scopedKey(STORAGE_KEY), ledger);
 }
 
 export function getBillingCatalog() {
-  const catalog = readJson(CATALOG_KEY, { services: [] });
+  const catalog = readJson(scopedKey(CATALOG_KEY), { services: [] });
   return { services: Array.isArray(catalog.services) ? catalog.services : [] };
 }
 
@@ -66,7 +76,7 @@ export function saveBillingCatalog(catalog) {
       throw new Error('Tariff prices must be valid non-negative amounts.');
     }
   }
-  writeJson(CATALOG_KEY, { services });
+  writeJson(scopedKey(CATALOG_KEY), { services });
   return { services };
 }
 
@@ -127,13 +137,13 @@ export function billUnpricedService(serviceId) {
 }
 
 export function getReconciliations() {
-  return readJson(RECONCILIATION_KEY, []);
+  return readJson(scopedKey(RECONCILIATION_KEY), []);
 }
 
 export function saveReconciliation(record) {
   const all = getReconciliations();
   all.unshift(record);
-  writeJson(RECONCILIATION_KEY, all);
+  writeJson(scopedKey(RECONCILIATION_KEY), all);
   return all;
 }
 
@@ -237,7 +247,7 @@ export function patientBalance(charge, payments) {
 }
 
 export function auditEvent(action, detail, actor = 'Current user') {
-  const key = 'ascendhms.audit.v1';
+  const key = scopedKey('ascendhms.audit.v1');
   const entries = readJson(key, []);
   entries.unshift({ id: crypto.randomUUID(), action, detail, actor, createdAt: new Date().toISOString() });
   writeJson(key, entries.slice(0, 500));
