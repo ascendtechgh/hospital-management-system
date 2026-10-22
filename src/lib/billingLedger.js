@@ -200,22 +200,26 @@ export function updateNhisClaimStatus(claimId, status, { note = '', settledAmoun
   const claim = claims.find((item) => item.id === claimId);
   if (!claim) throw new Error('NHIS claim batch was not found.');
   if (status === 'Submitted' && claim.status !== 'Draft') throw new Error('Only draft claims can be marked submitted.');
-  if (['Paid', 'Rejected'].includes(status) && claim.status !== 'Submitted') throw new Error('Only submitted claims can be settled or rejected.');
+  if (status === 'Paid' && !['Submitted', 'Partially Paid'].includes(claim.status)) throw new Error('Only submitted or partially paid claims can receive a payment.');
+  if (status === 'Rejected' && !['Submitted', 'Partially Paid'].includes(claim.status)) throw new Error('Only submitted or partially paid claims can be rejected.');
   if (status === 'Rejected' && !String(note).trim()) throw new Error('Add the NHIS rejection reason before recording it.');
   if (status === 'Paid') {
     const amount = moneyToPesewas(settledAmount);
-    if (amount < 0 || amount > moneyToPesewas(claim.totalAmount)) throw new Error('The insurer payment must be between zero and the claimed amount.');
-    claim.settledAmount = pesewasToMoney(amount);
-    claim.settledAt = new Date().toISOString();
+    const outstanding = Math.max(0, moneyToPesewas(claim.totalAmount) - moneyToPesewas(claim.settledAmount || 0));
+    if (amount <= 0 || amount > outstanding) throw new Error('Enter a positive insurer payment no greater than the outstanding claim amount.');
+    const cumulative = moneyToPesewas(claim.settledAmount || 0) + amount;
+    claim.settledAmount = pesewasToMoney(cumulative);
+    claim.status = cumulative >= moneyToPesewas(claim.totalAmount) ? 'Paid' : 'Partially Paid';
+    if (claim.status === 'Paid') claim.settledAt = new Date().toISOString();
   }
   const now = new Date().toISOString();
-  claim.status = status;
+  if (status !== 'Paid') claim.status = status;
   claim.notes = String(note || '').trim();
   if (status === 'Submitted') claim.submittedAt = now;
   const ledger = getLedger();
   for (const charge of ledger.charges) {
     if (charge.claimId !== claimId) continue;
-    charge.claimStatus = status;
+    charge.claimStatus = claim.status;
     if (status === 'Rejected') {
       charge.claimId = null;
       charge.claimNumber = null;
